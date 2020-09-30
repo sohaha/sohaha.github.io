@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Loading...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="//cdn.jsdelivr.net/npm/vue-run-static@0.0.3/run.js"></script>
+</head>
+<style>
+    [v-cloak] {
+        display: none;
+    }
+
+</style>
+
+<body>
+    <div id="app" v-cloak>
+        <transition name="fade" mode="out-in">
+            <router-view></router-view>
+        </transition>
+    </div>
+    <script>
+        VueRun.config({
+            cdn: "//cdn.jsdelivr.net/npm/vue-run-static@0.0.3" // 如有需要可以自行把需要的依赖库下载至本地
+        });
+        VueRun.init(function () {
+            var defPage = { template: '<div>默认页面 <hr> <router-link to="/demo"> 点击跳转到 Dome</router-link><hr> <router-link to="/es6"> 点击跳转到 Es6 Demo</router-link><hr> <router-link to="/remote"> 点击跳转到 远程页面</router-link></div>' }
+            var routes = [
+                // 支持加载远程组件：VueRun("http://xxx.com/xxx.vue")
+                { path: '/remote', component: VueRun("//cdn.jsdelivr.net/gh/sohaha/sohaha.github.io@master/vue-run/demo/remote.vue") },
+                { path: '/demo', component: VueRun("./demo.vue") },
+                { path: '/es6', component: VueRun("./es6.vue") },
+                { path: '*', component: defPage }
+            ]
+
+            new Vue({
+                el: '#app',
+                router: new VueRouter({
+                    routes: routes
+                }),
+                mounted: function () {
+                    document.title = "加载完成"
+                }
+            })
+        }, {
+            js: [
+                // 路由
+                VueRun.lib("/lib/vue-router.js"),
+                VueRun.lib('/lib/composition.js')
+            ]
+        })
+    </script>
+</body>
+
+</html>
