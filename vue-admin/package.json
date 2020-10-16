@@ -1,6 +1,6 @@
 {
   "name": "vue-run-static",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "免编译远程 Vue 组件",
   "main": "run.js",
   "scripts": {},
