@@ -34,7 +34,10 @@ export default {
     let icons = ref([]);
 
     function getIcons() {
-      VueRun.httpRequest('./pages/main/demo/iconfont.json').then(function (e) {
+      VueRun.httpRequest('./pages/demo/iconfont.json').then(function (e) {
+        if (typeof e === 'string') {
+          e = JSON.parse(e)
+        }
         icons.value = e.glyphs;
       });
     }
