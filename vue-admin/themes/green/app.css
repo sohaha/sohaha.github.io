@@ -111,11 +111,20 @@
     color: rgb(255, 255, 255) !important;
 }
 
+.el-menu--vertical .el-menu--popup-right-start .el-menu-item.is-active,
 #app .el-menu-item,
 #app .el-submenu__title,
 #app .el-menu-item i,
 #app .el-submenu__title i {
     color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.el-menu--vertical .el-menu--popup-right-start{
+    background: #5faea6 !important;
+}
+
+.el-menu--vertical .el-menu--popup-right-start .el-menu-item{
+    color: rgb(60 60 60) !important
 }
 
 #app .el-breadcrumb__inner {

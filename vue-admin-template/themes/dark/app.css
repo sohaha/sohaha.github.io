@@ -108,11 +108,11 @@
 }
 
 /* 菜单按钮 */
+.el-menu--vertical .el-menu--popup-right-start .el-menu-item.is-active,
 #app .el-menu-item.is-active,
 #app .el-submenu.is-active .el-submenu__title,
 #app .el-submenu.is-active .el-submenu__title i,
 #app .el-menu-item.is-active i {
-
     color: rgb(255, 255, 255) !important;
 }
 
@@ -121,6 +121,14 @@
 #app .el-menu-item i,
 #app .el-submenu__title i {
     color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.el-menu--vertical .el-menu--popup-right-start{
+    background: #0f0f0f !important;
+}
+
+.el-menu--vertical .el-menu--popup-right-start .el-menu-item{
+    color: rgb(160 160 160) !important;
 }
 
 #app .el-breadcrumb__inner {
