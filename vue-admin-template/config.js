@@ -16,12 +16,11 @@ VueRun.config({
   }
 });
 
-var themes = {
-  lavender: [VueRun.lib('/themes/lavender/theme/index.css'), VueRun.lib('/themes/lavender/app.css')],
-  green: [VueRun.lib('/themes/green/theme/index.css'), VueRun.lib('/themes/green/app.css')],
-  dark: [VueRun.lib('/themes/dark/theme/index.css'), VueRun.lib('/themes/dark/app.css')],
-  diablo: ['./themes/diablo/theme/index.css', './themes/diablo/app.css'],
-};
+const themePrefixPath = '/vue-admin-template/themes';
+let themes = [];
+['lavender', 'green', 'dark', 'diablo'].forEach((theme) => {
+  themes[theme] = [VueRun.lib(themePrefixPath + '/' + theme + '/theme/index.css'), VueRun.lib(themePrefixPath + '/' + theme + '/app.css')]
+});
 
 VueRun.init(function () {
   app.requestInit();

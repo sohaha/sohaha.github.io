@@ -422,21 +422,34 @@ img {
   clear: both;
 }
 
+#app .el-submenu__title {
+  height: 46px;
+  margin-top: 7px;
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  position: relative;
+}
 
+#app .is-opened .el-submenu__title {
+  color: #ffffff;
+  background: #413EE7 !important;
+}
 
+#app .el-submenu__icon-arrow {
+  position: static;
+  margin-top: 0;
+  margin-left: 16px;
+}
 
+#app .el-submenu {
+  padding-left: 20px;
+  padding-right: 20px;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@media (min-device-width: 320px) and (max-device-width: 640px) {
+  .aside-nav.open {
+    background: #202038;
+  }
+}
