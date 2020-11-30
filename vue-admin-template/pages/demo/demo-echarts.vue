@@ -17,7 +17,7 @@
 </template>
 <script>
 export default load({
-  js: ['//cdn.jsdelivr.net/npm/zls-manage/echarts/v-charts.js'],
+  js: [['//cdn.jsdelivr.net/npm/zls-manage/echarts/echarts.js', '//cdn.jsdelivr.net/npm/zls-manage/echarts/v-charts.js']],
   css: ['//cdn.jsdelivr.net/npm/zls-manage/echarts/v-charts.css']
 }).then(async () => {
   const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;

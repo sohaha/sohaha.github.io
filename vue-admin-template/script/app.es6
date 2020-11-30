@@ -117,6 +117,8 @@ function forInitRouter(data, parent) {
       e.component = VueRun(e.url);
     }
     // e.meta = { has: e.has }
+    if (!e.hasOwnProperty('meta')) e.meta = {};
+
     if (parent && e.path.indexOf('/') !== 0) {
       // e.path = parent.path + '/' + e.path;
       e.path = (parent.path + '/' + e.path).replace(/\/\//, '/');
@@ -131,7 +133,6 @@ function forInitRouter(data, parent) {
 export function resetRouter(router) {
   return (routerData, global) => {
     let data = [].concat(defaultRouter);
-    // data[2].children = data[2].children.concat(routerData);
     data[2].children = [].concat(routerData);
     data = forInitRouter(data, global);
     const newRouter = new VueRouter({
@@ -170,7 +171,7 @@ const appendRouter2Children = [
       {
         'name': '默认示例',
         'path': 'demo',
-        'url': '//sohaha.73zls.com/vue-admin/demo/demo.vue',
+        'url': assetsCdn + '/pages/demo/demo.vue',
         'icon': 'icon-settings-',
         'meta': {
           'show': true,
@@ -180,7 +181,7 @@ const appendRouter2Children = [
       {
         'name': '列表示例',
         'path': 'demo-lists',
-        'url': '//sohaha.73zls.com/vue-admin/demo/demo-lists.vue',
+        'url': assetsCdn + '/pages/demo/demo-lists.vue',
         'icon': 'icon-list',
         'meta': {
           'show': true,
@@ -190,7 +191,7 @@ const appendRouter2Children = [
       {
         'name': '列表编辑',
         'path': 'demo-lists-edit',
-        'url': '//sohaha.73zls.com/vue-admin/demo/demo-lists-edit.vue',
+        'url': assetsCdn + '/pages/demo/demo-lists-edit.vue',
         'icon': 'icon-edit',
         'meta': {
           'show': true,
@@ -200,7 +201,7 @@ const appendRouter2Children = [
       {
         'name': '表单示例',
         'path': 'demo-form',
-        'url': '//sohaha.73zls.com/vue-admin/demo/demo-form.vue',
+        'url': assetsCdn + '/pages/demo/demo-form.vue',
         'icon': 'icon-checkmark-square-',
         'meta': {
           'show': true,
@@ -210,7 +211,7 @@ const appendRouter2Children = [
       {
         'name': '动态表单',
         'path': 'demo-form2',
-        'url': '//sohaha.73zls.com/vue-admin/demo/demo-form2.vue',
+        'url': assetsCdn + '/pages/demo/demo-form2.vue',
         'icon': 'icon-layout',
         'meta': {
           'show': true,
@@ -220,7 +221,7 @@ const appendRouter2Children = [
       {
         'name': '标签示例',
         'path': 'demo-tabs',
-        'url': '//sohaha.73zls.com/vue-admin/demo/demo-tabs.vue',
+        'url': assetsCdn + '/pages/demo/demo-tabs.vue',
         'icon': 'icon-pricetags',
         'meta': {
           'show': true,
@@ -230,7 +231,7 @@ const appendRouter2Children = [
       {
         'name': '图标示例',
         'path': 'demo-icon',
-        'url': '//sohaha.73zls.com/vue-admin/demo/demo-icon.vue',
+        'url': assetsCdn + '/pages/demo/demo-icon.vue',
         'icon': 'icon-award',
         'meta': {
           'show': true,
@@ -240,7 +241,7 @@ const appendRouter2Children = [
       {
         'name': 'Markdown',
         'path': 'demo-markdown',
-        'url': '//sohaha.73zls.com/vue-admin/demo/demo-markdown.vue',
+        'url': assetsCdn + '/pages/demo/demo-markdown.vue',
         'icon': 'icon-file-remove',
         'meta': {
           'show': true,
@@ -250,7 +251,7 @@ const appendRouter2Children = [
       {
         'name': '可视化图表',
         'path': 'demo-echarts',
-        'url': '//sohaha.73zls.com/vue-admin/demo/demo-echarts.vue',
+        'url': assetsCdn + '/pages/demo/demo-echarts.vue',
         'icon': 'icon-pie-chart-',
         'meta': {
           'show': true,
@@ -260,7 +261,7 @@ const appendRouter2Children = [
       {
         'name': '富文本示例',
         'path': 'demo-content',
-        'url': '//sohaha.73zls.com/vue-admin/demo/demo-content.vue',
+        'url': assetsCdn + '/pages/demo/demo-content.vue',
         'icon': 'icon-file-text',
         'meta': {
           'show': true,
@@ -275,8 +276,6 @@ export function initRouter() {
   router = new VueRouter({
     routes: defaultRouter
   });
-
-  // router.beforeEach(function (to, from, next) {
   router.beforeResolve(function (to, from, next) {
     var title = config.title;
     if (typeof to.name === 'string') {
@@ -360,7 +359,7 @@ export function requestInit() {
       }
       let data = (typeof error.response.data === 'object') ? error.response.data : {
         code: -1,
-        msg: '',
+        msg: '接口返回非合法格式',
         data: error.response
       };
       // data.msg && useTip().notify('error', data.msg || msg, '温馨提示');

@@ -590,7 +590,7 @@ export default {
     }
 
     function getIcons() {
-      VueRun.httpRequest('./pages/main/demo/iconfont.json').then(function (e) {
+      VueRun.httpRequest(assetsCdn + '/pages/demo/iconfont.json').then(function (e) {
         if (typeof e === 'string') {
           e = JSON.parse(e)
         }

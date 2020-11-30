@@ -1,7 +1,7 @@
 <template>
   <el-breadcrumb class="breadcrumb" separator-class="el-icon-arrow-right">
     <transition-group name="slide-fade">
-      <el-breadcrumb-item v-for="(v, i) in breadcrumb" :key="v.name" :class="breadcrumbClass(v)" @click.native="go(v)">
+      <el-breadcrumb-item v-for="(v, i) in breadcrumb" :key="v.path+'/'+v.name" :class="breadcrumbClass(v)" @click.native="go(v)">
         <i class="icon-home" v-if="i===0"></i>{{ v.name }}
       </el-breadcrumb-item>
     </transition-group>
