@@ -16,10 +16,11 @@ VueRun.config({
   }
 });
 
+const themeCdn = '//sohaha.73zls.com';
 const themePrefixPath = '/vue-admin-template/themes';
 let themes = [];
 ['lavender', 'green', 'dark', 'diablo'].forEach((theme) => {
-  themes[theme] = [VueRun.lib(themePrefixPath + '/' + theme + '/theme/index.css'), VueRun.lib(themePrefixPath + '/' + theme + '/app.css')]
+  themes[theme] = [themeCdn + themePrefixPath + '/' + theme + '/theme/index.css', themeCdn + themePrefixPath + '/' + theme + '/app.css']
 });
 
 VueRun.init(function () {
