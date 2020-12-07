@@ -35,7 +35,7 @@
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
 const {useRouter, useStore, useCache, useTip, useLoading, useConfirm} = hook;
 const {user: userApi, useRequest} = api;
-const {useInitTitle, useInitPage} = util;
+const {useInitTitle} = util;
 
 export default {
   components: {

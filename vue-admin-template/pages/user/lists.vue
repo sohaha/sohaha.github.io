@@ -5,23 +5,23 @@
       <div class="view-title-right float-clear">
         <el-form @submit.prevent.stop.native inline class="tip-top">
           <el-form-item>
-            <el-input clearable @keyup.enter.stop.prevent.native="ml_searchRow" v-model="ml_searchKey"
+            <el-input clearable @keyup.enter.stop.prevent.native="listChange" v-model="listKey"
                       placeholder="用户昵称" size="mini">
-              <el-button @click="ml_searchRow" type="success" slot="append" size="mini"
+              <el-button @click="listChange" type="success" slot="append" size="mini"
                          icon="el-icon-search"></el-button>
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="mini" @click="create" icon="el-icon-plus">添加</el-button>
-            <el-button type="info" size="mini" @click="ml_reloadLists" icon="el-icon-refresh">刷新</el-button>
+            <el-button type="primary" size="mini" @click="useCreate" icon="el-icon-plus">添加</el-button>
+            <el-button type="info" size="mini" @click="listChange" icon="el-icon-refresh">刷新</el-button>
           </el-form-item>
         </el-form>
       </div>
     </div>
     <fieldset>
       <legend>{{ title }}</legend>
-      <aside v-loading="ml_listsLoading">
-        <el-table :data="ml_data" style="width: 100%" size="mini">
+      <aside v-loading="listLoading">
+        <el-table :data="listData" style="width: 100%" size="mini">
           <el-table-column label="头像" width="80">
             <template slot-scope="scope">
               <el-tooltip placement="right-end" effect="light" :visible-arrow="false">
@@ -67,14 +67,14 @@
           <el-table-column label="操作" width="200">
             <template slot-scope="scope">
               <div class="btns-operating">
-                <el-button type="info" size="mini" @click="editRow(scope)" icon="el-icon-edit" title="编辑用户">编 辑
+                <el-button type="info" size="mini" @click="useEditRow(scope)" icon="el-icon-edit" title="编辑用户">编 辑
                 </el-button>
                 <el-popover placement="top" width="160" v-model="scope.row.popover">
                   <p>
                     确定删除？ <br> {{ scope.row.username }} </p>
                   <div>
                     <el-button size="mini" @click="scope.row.popover = false" type="info" plain>取 消</el-button>
-                    <el-button type="danger" size="mini" @click="deleteRow(scope)" plain>确 定</el-button>
+                    <el-button type="danger" size="mini" @click="useDeleteRow(scope)" plain>确 定</el-button>
                   </div>
                   <el-button :disabled="isMe(scope.row.username)" slot="reference" size="mini" type="danger"
                              icon="el-icon-delete" title="删除用户">删 除
@@ -84,89 +84,77 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="tip-page" v-if="!!ml_pagetotal">
-          <el-pagination :current-page.sync="ml_page" @size-change="ml_sizeChange" @current-change="ml_currentChange"
-                         background layout="prev, pager, next, sizes" :total="ml_pagetotal"
-                         :page-size.sync="ml_pagesize"></el-pagination>
+        <div class="tip-page" v-if="!!listPages.total">
+          <el-pagination
+              :current-page.sync="listPages.curpage"
+              @size-change="listChange"
+              @current-change="listChange"
+              background
+              layout="prev, pager, next, sizes, total"
+              :total="listPages.total"
+              :page-size.sync="listPages.pagesize">
+          </el-pagination>
         </div>
       </aside>
     </fieldset>
     <el-dialog class="dialog-view" :title="viewDialogtitle" :visible.sync="viewDialogVisible"
                :close-on-press-escape="false" :close-on-click-modal="false" center>
-      <user-view :info="info" @submit="userSubmitSucceed"></user-view>
+      <user-view :info="info" @submit="useUserSubmitSucceed"></user-view>
     </el-dialog>
   </div>
 </template>
 <script>
 const {ref, reactive, computed, onMounted, watch} = vue;
 const {useRouter, useStore, useCache, useTip, useLoading} = hook;
-const {user: userApi, useRequest} = api;
-const {useInitTitle, useInitPage, getInfo} = util;
+const {user: userApi, useRequestWith, useRequestPage} = api;
+const {useInitTitle, getInfo} = util;
 export default {
   components: {
     userView: VueRun('components/user-view.vue')
   },
   setup(prop, ctx) {
     const {title} = useInitTitle(ctx);
-    const {ml_change, ml_data, ml_listsLoading, ml_page, ml_pagetotal, ml_pagesize, ml_currentChange, ml_sizeChange, ml_searchKey, ml_searchRow, ml_reloadLists, ml_getLists} = useInitPage();
-    // ml_searchKey.value = !useRouter(ctx).route.query.hasOwnProperty('key') ? '' : useRouter(ctx).route.query.key;
-    const searchKey = computed(() => {
-      return !useRouter(ctx).route.query.hasOwnProperty('key') ? '' : useRouter(ctx).route.query.key;
-    })
 
-    watch(() => [searchKey.value, useRouter(ctx).route.query.v], ([val, val2]) => {
-      ml_searchKey.value = val;
-      getLists();
-    }, {immediate: true})
+    let listKey = ref('');
+    const lists = useRequestPage(userApi.list, {page: 1, pagesize: 10, key: listKey}, {
+      dataHandle(e) {
+        e.items = e.items.map((e) => {
+          e.group_name = [];
+          for (let k in e.groups) {
+            if (e.groups.hasOwnProperty(k)) {
+              e.group_name.push(e.groups[k]);
+            }
+          }
+          e.popover = false;
 
-    onMounted(() => {
-      // ml_reloadLists();
-    })
+          return e;
+        })
 
-    watch(ml_change, (val) => {
-      getLists();
+        return e;
+      }
     })
+    let lastPage = 0;
+    watch(lists.loading, (l) => {
+      if (!l) {
+        if (lists.error.value) {
+          useTip().message('error', lists.error.value);
+          lists.error.value = null;
+          lists.pages.value.curpage = lastPage;
+          return;
+        }
+        lastPage = lists.pages.value.curpage;
+      }
+    });
+    const listRes = {
+      listData: lists.items,
+      listLoading: lists.loading,
+      listPages: lists.pages,
+      listChange: lists.change,
+    };
 
     const baseUrl = computed(() => {
       return config.baseURL;
     })
-
-    function getLists() {
-      let param = {page: ml_page.value, pagesize: ml_pagesize.value};
-      if (ml_searchKey.value) {
-        param['key'] = ml_searchKey.value;
-      }
-      ml_listsLoading.value = true;
-      const {loading, error, data, run} = useRequest(userApi.list(param));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          let res = (val.data.items || []).map(function (e) {
-            e.group_name = [];
-            for (let k in e.groups) {
-              if (e.groups.hasOwnProperty(k)) {
-                e.group_name.push(e.groups[k]);
-              }
-            }
-            e.level_name = [];
-            for (let k in e.levels) {
-              if (e.levels.hasOwnProperty(k)) {
-                e.level_name.push(e.levels[k]);
-              }
-            }
-            e.popover = false;
-            return e;
-          });
-
-          let page = val.data.page;
-          ml_getLists(JSON.parse(JSON.stringify(res)), page);
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch([data, error], () => {
-        ml_listsLoading.value = false;
-      })
-    }
 
     let info = ref({});
     let viewDialogVisible = ref(false);
@@ -178,39 +166,35 @@ export default {
       return name === useStore(ctx).getters.nickname;
     }
 
-    function create() {
+    function useCreate() {
       viewDialogVisible.value = true;
       info.value = {};
     }
 
-    function editRow(e) {
+    function useEditRow(e) {
       info.value = e.row;
       viewDialogVisible.value = !viewDialogVisible.value;
     }
 
-    function deleteRow(v) {
-      const {loading, error, data, run} = useRequest(userApi.deleteUser({id: v.row.id}));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          ml_data.value.splice(v.$index, 1);
-          if (ml_data.length <= 0) {
-            ml_reloadLists();
-          }
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+    const deleteRow = useRequestWith(userApi.deleteUser, {manual: true});
+
+    async function useDeleteRow(v) {
+      const [, err] = await deleteRow.run({id: v.row.id});
+      if (err) {
         useTip().message('warning', err);
-      })
-      watch([data, error], ([d, e]) => {
-        v.row.popover = false;
-      })
+      } else {
+        lists.items.value.splice(v.$index, 1);
+        if (lists.items.value.length <= 0) {
+          lists.change();
+        }
+      }
+
+      v.row.popover = false;
     }
 
-    function userSubmitSucceed(id) {
+    function useUserSubmitSucceed(id) {
       viewDialogVisible.value = false;
-      ml_reloadLists();
+      lists.change();
       if (+id === +useStore(ctx).state.user.id) {
         getInfo();
       }
@@ -218,25 +202,14 @@ export default {
 
     return {
       title,
-      searchKey,
-      ml_change,
-      ml_searchKey,
-      ml_listsLoading,
-      ml_page,
-      ml_data,
-      ml_pagetotal,
-      ml_pagesize,
-      ml_currentChange,
-      ml_sizeChange,
-      ml_searchRow,
-      ml_reloadLists,
-      ml_getLists,
+      listKey,
+      ...listRes,
       baseUrl,
       isMe,
-      create,
-      editRow,
-      deleteRow,
-      userSubmitSucceed,
+      useCreate,
+      useEditRow,
+      useDeleteRow,
+      useUserSubmitSucceed,
       viewDialogtitle,
       viewDialogVisible,
       info

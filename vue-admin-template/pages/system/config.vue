@@ -13,7 +13,7 @@
               <el-switch v-model="form.debug" active-text="开发模式"/>
             </el-tooltip>
             <el-tooltip content="开启维护模式之后除了白名单内Ip，其他用户无法访问。" transition="el-zoom-in-bottom" placement="top-start">
-              <el-switch @change='changeMaintainMode' v-model="form.maintainMode" active-text="维护模式"/>
+              <el-switch @change='useChangeMaintainMode' v-model="form.maintainMode" active-text="维护模式"/>
             </el-tooltip>
           </el-form-item>
           <el-form-item label="登录模式">
@@ -23,7 +23,7 @@
             </el-tooltip>
           </el-form-item>
           <el-form-item>
-            <el-button size="mini" type="primary" @click="submit">提 交</el-button>
+            <el-button size="mini" type="primary" @click="useSubmit">提 交</el-button>
           </el-form-item>
         </el-form>
       </aside>
@@ -34,8 +34,8 @@
 
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
 const {useRouter, useStore, useCache, useTip, useLoading, useConfirm} = hook;
-const {user: userApi, useRequest} = api;
-const {useInitTitle, useInitPage, getInfo} = util;
+const {user: userApi, useRequestWith} = api;
+const {useInitTitle} = util;
 
 let initForm = {ipWhitelist: '', maintainMode: null, debug: false};
 
@@ -45,14 +45,14 @@ export default {
     const {title} = useInitTitle(ctx);
 
     onMounted(() => {
-      getConfig();
+      useGetConfig();
     })
 
     let formRef = ref(null);
     let form = ref(Object.assign({}, initForm));
     let rules = ref({});
 
-    function changeMaintainMode(val) {
+    function useChangeMaintainMode(val) {
       if (val === true) {
         useConfirm().warning('警告', '是否真的要开启维护模式', '', function () {
           form.value.maintainMode = false;
@@ -60,48 +60,41 @@ export default {
       }
     }
 
-    function getConfig() {
-      const {loading, error, data, run} = useRequest(userApi.getSystemConfig);
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          form.value = Object.assign({}, initForm, val.data);
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+    const getConfig = useRequestWith(userApi.getSystemConfig, {manual: true});
+
+    async function useGetConfig() {
+      const [data, err] = await getConfig.run();
+      if (err) {
         useTip().message('warning', err);
-      })
+      } else {
+        form.value = Object.assign({}, initForm, data);
+      }
     }
 
-    function submit() {
-      formRef.value.validate((valid) => {
+    const submit = useRequestWith(userApi.setSystemConfig, {manual: true});
+
+    function useSubmit() {
+      formRef.value.validate(async (valid) => {
         if (valid) {
-          const {loading, error, data, run} = useRequest(userApi.setSystemConfig(form.value));
-          watch(data, (val) => {
-            if (val.data && val.code < 400) {
-              useTip().message('success', '更新成功');
-            } else {
-              useTip().message('warning', val.msg);
-            }
-          })
-          watch(error, (err) => {
+          const [, err] = await submit.run(form.value);
+          if (err) {
             useTip().message('warning', err);
-          })
+          } else {
+            useTip().message('success', '更新成功');
+          }
         } else {
           return false;
         }
       })
     }
 
-
     return {
       title,
       rules,
       form,
       formRef,
-      changeMaintainMode,
-      submit
+      useChangeMaintainMode,
+      useSubmit
     };
   }
 };

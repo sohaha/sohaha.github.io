@@ -59,7 +59,7 @@
 let MessageCountTime;
 const {useStore, useRouter, useTip} = hook;
 const {reactive, ref, watch, computed, onMounted, onBeforeUnmount} = vue;
-const {user: userApi, useRequest} = api;
+const {user: userApi, useRequestWith} = api;
 export default {
   name: 'headerView',
   props: {
@@ -95,22 +95,22 @@ export default {
       return useStore(ctx).state.unreadMessageCount;
     })
 
-    function getUnreadMessageCount() {
-      clearTimeout(MessageCountTime);
-      const {loading, error, data, run} = useRequest(userApi.unreadMessageCount);
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          if (useStore(ctx).state.unreadMessageCount !== val.data.count) {
-            useStore(ctx).commit('setUnreadMessageCount', val.data.count)
-          }
-        } else {
-          useTip().message('warning', val.msg);
-        }
+    const unreadMessageCountApi = useRequestWith(userApi.unreadMessageCount, {manual: true});
 
-        if (useStore(ctx).state.token && window['messagesRegularly']) {
-          MessageCountTime = setTimeout(getUnreadMessageCount, window['messagesRegularly']);
+    async function getUnreadMessageCount() {
+      clearTimeout(MessageCountTime);
+
+      const [data, err] = await unreadMessageCountApi.run();
+      if (err) {
+        useTip().message('warning', err);
+      } else {
+        if (useStore(ctx).state.unreadMessageCount !== data.count) {
+          useStore(ctx).commit('setUnreadMessageCount', data.count)
         }
-      })
+      }
+      if (useStore(ctx).state.token && window['messagesRegularly']) {
+        MessageCountTime = setTimeout(getUnreadMessageCount, window['messagesRegularly']);
+      }
     }
 
 

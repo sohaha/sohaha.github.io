@@ -47,8 +47,8 @@
       <el-input v-model="ruleForm.password2" type="password"></el-input>
     </el-form-item>
     <el-form-item label="用户身份" prop="group_id" v-if="hasGroup">
-      <el-select v-model="ruleForm.group_id" placeholder="请选择角色">
-        <el-option v-for="(v,k) in groups" :key="k" :label="v.name" :value="''+v.id"></el-option>
+      <el-select v-model="ruleForm.group_id" placeholder="请选择角色" multiple>
+        <el-option v-for="(v,k) in groups" :key="k" :label="v.name" :value="v.id"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="用户状态" prop="status">
@@ -92,7 +92,7 @@ let initRuleForm = {
   avatar: '',
   remark: '',
   email: '',
-  group_id: ''
+  group_id: []
 }
 
 export default {
@@ -116,7 +116,7 @@ export default {
       avatar: '',
       remark: '',
       email: '',
-      group_id: ''
+      group_id: []
     });
     let imgHost = ref("")
 

@@ -12,7 +12,7 @@
       <el-input v-model="ruleForm.pass2" type='password'></el-input>
     </el-form-item>
     <div class='center'>
-      <el-button type="primary" @click="submitForm">修 改</el-button>
+      <el-button type="primary" @click="useSubmitForm">修 改</el-button>
       <el-button @click="resetForm">放 弃</el-button>
     </div>
   </el-form>
@@ -20,7 +20,7 @@
 <script>
 const {useRouter, useStore, useTip} = hook;
 const {reactive, toRef, ref, watch, computed, onMounted} = vue;
-const {user: userApi, useRequest} = api;
+const {user: userApi, useRequestWith} = api;
 
 let initRuleForm = {
   pass: '',
@@ -63,22 +63,19 @@ export default {
       }
     })
 
-    function submitForm() {
-      ruleFormRef.value.validate((valid) => {
+    const submitForm = useRequestWith(userApi.editPassword, {manual: true});
+
+    function useSubmitForm() {
+      ruleFormRef.value.validate(async (valid) => {
         if (valid) {
-          const {loading, error, data, run} = useRequest(userApi.editPassword(Object.assign({userid: userid.value}, ruleForm.value)));
-          watch(data, (val) => {
-            if (val.code === 200) {
-              resetForm();
-              ctx.emit('success', val.data);
-              useTip().message('success', '密码修改成功');
-            } else {
-              useTip().message('warning', val.msg);
-            }
-          })
-          watch(error, (err) => {
+          const [data, err] = await submitForm.run(Object.assign({userid: userid.value}, ruleForm.value));
+          if (err) {
             useTip().message('warning', err);
-          })
+          } else {
+            resetForm();
+            ctx.emit('success', data);
+            useTip().message('success', '密码修改成功');
+          }
         } else {
           return false;
         }
@@ -99,7 +96,7 @@ export default {
       ruleForm,
       userid,
       rules,
-      submitForm,
+      useSubmitForm,
       resetForm
     };
   }

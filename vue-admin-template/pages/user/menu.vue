@@ -37,20 +37,19 @@
                   <div>
                     <span :class="data.icon"></span>
                     <span>
-                                        {{ data.title }}------
-                                        <span style="color: #409eff">{{ data.index }}</span>
-                                    </span>
+                      {{ data.title }}------<span style="color: #409eff">{{ data.index }}</span>
+                    </span>
                   </div>
                   <span>
-                                    <template v-if="data.child !== null">
-                                        <el-button type="text" size="mini" @click.stop="append(data)">增加</el-button>
-                                    </template>
-                                    <template v-if="data.title !== '首页'">
-                                        <el-button type="text" size="mini" @click.stop="edit(node, data)">编辑</el-button>
-                                        <el-button type="text" size="mini"
-                                                   @click.stop="remove(node, data)">删除</el-button>
-                                    </template>
-                                </span>
+                      <template v-if="data.child !== null">
+                          <el-button type="text" size="mini" @click.stop="append(data)">增加</el-button>
+                      </template>
+                      <template v-if="data.title !== '首页'">
+                          <el-button type="text" size="mini" @click.stop="edit(node, data)">编辑</el-button>
+                          <el-button type="text" size="mini"
+                                     @click.stop="remove(node, data)">删除</el-button>
+                      </template>
+                  </span>
                 </div>
               </el-tree>
             </div>
@@ -161,8 +160,8 @@
 <script>
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
 const {useRouter, useStore, useCache, useTip, useLoading, useConfirm} = hook;
-const {user: userApi, sys: sysApi, useRequest} = api;
-const {useInitTitle, useInitPage, getInfo} = util;
+const {sys: sysApi, useRequestWith} = api;
+const {useInitTitle} = util;
 
 export default {
   components: {
@@ -170,10 +169,9 @@ export default {
   },
   setup(prop, ctx) {
     const {root} = ctx;
-    const {ml_change, ml_data, ml_listsLoading, ml_page, ml_pagetotal, ml_pagesize, ml_currentChange, ml_sizeChange, ml_searchKey, ml_searchRow, ml_reloadLists, ml_getLists} = useInitPage();
 
     onMounted(() => {
-      getMenuList();
+      useGetMenuList();
       getIcons();
     })
 
@@ -243,8 +241,10 @@ export default {
       })
     }
 
-    function addMenuResult(title, index, icon, breadcrumb, real, show, pid) {
-      const {loading, error, data, run} = useRequest(sysApi.sysMenuCreate({
+    const addMenuResult = useRequestWith(sysApi.sysMenuCreate, {manual: true});
+
+    async function useAddMenuResult(title, index, icon, breadcrumb, real, show, pid) {
+      const [data, err] = await addMenuResult.run({
         title: title,
         index: index,
         icon: icon,
@@ -252,24 +252,20 @@ export default {
         real: real,
         show: show,
         pid: pid
-      }));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          useTip().message('success', '新增菜单成功');
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+      });
+      if (err) {
         useTip().message('warning', err);
-      })
-      watch([data, error], ([d, e]) => {
-        getMenuList();
-      })
+      } else {
+        useTip().message('success', '新增菜单成功');
+      }
+
+      useGetMenuList();
     }
 
-    function editMenu(id, title, index, icon, breadcrumb, real, show) {
-      const {loading, error, data, run} = useRequest(sysApi.sysMenuUpdate({
+    const editMenu = useRequestWith(sysApi.sysMenuUpdate, {manual: true});
+
+    async function useEditMenu(id, title, index, icon, breadcrumb, real, show) {
+      const [data, err] = await editMenu.run({
         id: id,
         title: title,
         index: index,
@@ -277,22 +273,15 @@ export default {
         breadcrumb: breadcrumb,
         real: real,
         show: show
-      }));
-      watch(data, (val) => {
-        // if (val.data && val.code < 400) {
-        if (val.code === 200) {
-          useTip().message('success', '更新完成');
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+      });
+      if (err) {
         useTip().message('warning', err);
-      })
-      watch([data, error], ([d, e]) => {
-        addMenu();
-        getMenuList();
-      })
+      } else {
+        useTip().message('success', '更新完成');
+      }
+
+      addMenu();
+      useGetMenuList();
     }
 
     function confirmBtn() {
@@ -323,7 +312,7 @@ export default {
       if (isEdit === "edit") {
         //编辑
         let editId = addMenuData.value.selectId;
-        editMenu(
+        useEditMenu(
             editId,
             title,
             menuPath,
@@ -335,7 +324,7 @@ export default {
       } else if (isEdit === "add") {
         let selectMenu = selectMenuRef.value.value;
         if (selectMenu.length === 0) {
-          addMenuResult(
+          useAddMenuResult(
               title,
               menuPath,
               iconVal,
@@ -348,7 +337,7 @@ export default {
           //添加到次级目录
           let selectData = comebackItem(treeData.value, selectMenu);
           let newPath = selectData.index + "/" + menuPath;
-          addMenuResult(
+          useAddMenuResult(
               title,
               newPath,
               iconVal,
@@ -363,7 +352,7 @@ export default {
         //插入目录
         let selectMenu = insertParData.id;
         let newPath = insertParData.index + "/" + menuPath;
-        addMenuResult(
+        useAddMenuResult(
             title,
             newPath,
             iconVal,
@@ -440,26 +429,22 @@ export default {
     function remove(node, data) {
       let str = '是否删除 "' + data.title + '" 菜单';
       useConfirm().warning('提示', str, function () {
-        rundeleteMenu(data.id);
+        useRundeleteMenu(data.id);
       }, function () {
       });
     }
 
-    function rundeleteMenu(id) {
-      const {loading, error, data, run} = useRequest(sysApi.sysMenuDelete({id: id}));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          useTip().message('success', '删除菜单成功');
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+    const rundeleteMenu = useRequestWith(sysApi.sysMenuDelete, {manual: true});
+
+    async function useRundeleteMenu(id) {
+      const [data, err] = await rundeleteMenu.run({id: id});
+      if (err) {
         useTip().message('warning', err);
-      })
-      watch([data, error], ([d, e]) => {
-        getMenuList();
-      })
+      } else {
+        useTip().message('success', '删除菜单成功');
+      }
+
+      useGetMenuList();
     }
 
     function handleDragStart(node, ev) {
@@ -489,7 +474,7 @@ export default {
         draggingNode.data.index = newPath;
         newList.value = [];
         setMenuSort(treeData.value, false);
-        sortMenu(JSON.stringify(newList.value));
+        useSortMenu(JSON.stringify(newList.value));
       } else if (dropType === "before" || dropType === "after") {
         //获取到拖拽到位置的路径
         let str = dropNode.data.index;
@@ -504,7 +489,7 @@ export default {
         draggingNode.data.index = newPath;
         newList.value = [];
         setMenuSort(treeData.value, false);
-        sortMenu(JSON.stringify(newList.value));
+        useSortMenu(JSON.stringify(newList.value));
       }
     }
 
@@ -552,18 +537,15 @@ export default {
       return draggingNode.data.title.indexOf("三级 3-2-2") === -1;
     }
 
-    function sortMenu(menuData) {
-      const {loading, error, data, run} = useRequest(sysApi.sysMenuSort({menu: menuData}));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          useTip().message('success', '拖拽成功');
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+    const sortMenu = useRequestWith(sysApi.sysMenuSort, {manual: true});
+
+    async function useSortMenu(menuData) {
+      const [data, err] = await sortMenu.run({menu: menuData});
+      if (err) {
         useTip().message('warning', err);
-      })
+      } else {
+        useTip().message('success', '拖拽成功');
+      }
     }
 
     function setMenuSort(treeData, isChild, isNum) {
@@ -598,39 +580,34 @@ export default {
       });
     }
 
-    function getMenuList() {
-      const {loading, error, data, run} = useRequest(sysApi.sysUserMenu());
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          let useData = val.data;
-          treeData.value = val.data;
-
-          root.$nextTick(() => {
-            let newTreeData = [];
-            let treeData = useData;
-            for (let index in treeData) {
-              if (treeData[index].title !== '首页') {
-                let obj = {
-                  value: treeData[index].id,
-                  label: treeData[index].title
-                };
-                newTreeData.push(obj);
-              }
-            }
-            selectMenuRef.value.options = newTreeData;
-          })
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+    const getMenuList = useRequestWith(sysApi.sysUserMenu, {manual: true});
+    async function useGetMenuList() {
+      const [data, err] = await getMenuList.run();
+      if (err) {
         useTip().message('warning', err);
-      })
+      } else {
+        let useData = data;
+        treeData.value = data;
+
+        root.$nextTick(() => {
+          let newTreeData = [];
+          let treeData = useData;
+          for (let index in treeData) {
+            if (treeData[index].title !== '首页') {
+              let obj = {
+                value: treeData[index].id,
+                label: treeData[index].title
+              };
+              newTreeData.push(obj);
+            }
+          }
+          selectMenuRef.value.options = newTreeData;
+        })
+      }
     }
 
     return {
       title,
-      ml_data,
       addMenu,
       treeData,
       defaultProps,

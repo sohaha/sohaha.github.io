@@ -27,12 +27,12 @@
                   <el-button @click="useDeleteLog" type="danger" size="mini" plain>确 定</el-button>
                 </div>
                 <el-button
-                  :disabled="stateDel"
-                  slot="reference"
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  title="删 除"
+                    :disabled="stateDel"
+                    slot="reference"
+                    size="mini"
+                    type="danger"
+                    icon="el-icon-delete"
+                    title="删 除"
                 >删 除
                 </el-button>
               </el-popover>
@@ -56,8 +56,8 @@
 <script>
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
 const {useRouter, useStore, useCache, useTip, useLoading} = hook;
-const {user: userApi, useRequest} = api;
-const {useInitTitle, useInitPage, getInfo} = util;
+const {user: userApi, useRequest, useRequestWith} = api;
+const {useInitTitle} = util;
 
 let timer;
 
@@ -68,45 +68,40 @@ export default {
     const {title} = useInitTitle(ctx);
 
     onMounted(() => {
-      getDate();
+      useGetDate();
     })
 
     onBeforeUnmount(() => {
       clearTimeout(timer);
     })
 
-    function getDate() {
-      const {loading, error, data, run} = useRequest(userApi.logs({
+    const getDate = useRequestWith(userApi.logs, {manual: true});
+
+    async function useGetDate() {
+      const [data, err] = await getDate.run({
         name: current.value,
         type: currentType.value,
         currentLine: currentLine.value,
-      }));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          lists.value = val.data.lists;
-          if (currentLine.value) {
-            content.value = content.value + val.data.content;
-          } else {
-            content.value = val.data.content;
-          }
-          types.value = val.data.types;
-          currentLine.value = val.data.currentLine;
-          useTimeout();
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+      });
+      if (err) {
         useTip().message('warning', err);
-      })
+      } else {
+        lists.value = data.lists;
+        if (currentLine.value) {
+          content.value = content.value + data.content;
+        } else {
+          content.value = data.content;
+        }
+        types.value = data.types;
+        currentLine.value = data.currentLine;
+        useTimeout();
+      }
 
-      watch([data, error], () => {
-        root.$nextTick(() => {
-          if (textareaRef.value) {
-            let textareaDom = textareaRef.value.$el.querySelector('textarea');
-            textareaDom.scrollTop = scrollTop.scrollHeight;
-          }
-        })
+      root.$nextTick(() => {
+        if (textareaRef.value) {
+          let textareaDom = textareaRef.value.$el.querySelector('textarea');
+          textareaDom.scrollTop = scrollTop.scrollHeight;
+        }
       })
     }
 
@@ -133,7 +128,7 @@ export default {
       if (val) {
         current.value = val;
         currentLine.value = 0;
-        getDate();
+        useGetDate();
       }
     })
 
@@ -143,7 +138,7 @@ export default {
         content.value = '';
         lists.value = [];
         stateTip.value = false;
-        getDate();
+        useGetDate();
       }
       if (ban.value && val) {
         ban.value = false;
@@ -165,31 +160,27 @@ export default {
     }
 
     function useReloadDate() {
-      getDate();
+      useGetDate();
     }
 
-    function useDeleteLog() {
-      const {loading, error, data, run} = useRequest(userApi.logsDelete({
+    const deleteLog = useRequestWith(userApi.logsDelete, {manual: true});
+
+    async function useDeleteLog() {
+      const [, err] = await deleteLog.run({
         name: current.value,
         type: currentType.value
-      }));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          current.value = '';
-          content.value = '';
-          useReloadDate();
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+      });
+      if (err) {
         useTip().message('warning', err);
-      })
-      watch([data, error], ([d, e]) => {
-        setTimeout(() => {
-          stateTip.value = false;
-        })
-      })
+      } else {
+        current.value = '';
+        content.value = '';
+        useReloadDate();
+      }
+
+      setTimeout(() => {
+        stateTip.value = false;
+      }, 100)
     }
 
     return {

@@ -55,25 +55,31 @@ VueRun.init(function () {
           t.initSate = true;
         };
 
-        return api.user.current().then(function (e) {
-          if (e.code === 200) {
+        var user = async function () {
+          return api.useRequestWith(api.user.current(), {manual: true}).run()
+        };
+        return user().then(function (res) {
+          var data = res[0];
+          var err = res[1];
+          if (!err && data) {
             if (!config.navServe) {
               return VueRun.httpRequest('./router.json').then(function (router) {
                 if (typeof router === 'string') {
                   router = JSON.parse(router)
                 }
 
-                done(e.data, router);
-                return e;
+                done(data, router);
+                return res;
               });
             }
 
-            done(e.data, e.data.menu);
-          } else {
-            hook.useTip().message('warning', e.msg);
-            t.initSate = true;
+            done(data, data.menu);
+            return res;
           }
-          return e;
+          if (err) {
+            console.log(err);
+            hook.useTip().message('warning', err);
+          }
         }).catch(function (err) {
           console.log(err);
         });
@@ -97,13 +103,12 @@ VueRun.init(function () {
     VueRun.lib('/lib/composition.js'),
     VueRun.lib('/element.js'),
     VueRun.lib('/nprogress/nprogress.js'),
-    '//cdn.jsdelivr.net/npm/zls-manage/echarts/echarts.js',
   ],
   css: [
     VueRun.lib('/element.css'),
     VueRun.lib('/fonts/iconfont/iconfont.css'),
     VueRun.lib('/nprogress/nprogress.css'),
-  ]//.concat(themes.lavender)
+  ]//.concat(themes.diablo)
 });
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {

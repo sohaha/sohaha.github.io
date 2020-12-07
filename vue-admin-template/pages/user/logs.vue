@@ -7,15 +7,15 @@
           <el-form-item>
             <el-select clearable size="mini" v-model="logType" placeholder="请选择状态">
               <el-option
-                v-for="item in logTypes"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                  v-for="item in logTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="info" size="mini" @click="ml_reloadLists" icon="el-icon-refresh">刷新</el-button>
+            <el-button type="info" size="mini" @click="listChange" icon="el-icon-refresh">刷新</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -25,13 +25,13 @@
     </el-tabs>
     <fieldset>
       <legend>{{ tabTitle }}</legend>
-      <div v-loading="ml_listsLoading">
+      <div v-loading="listLoading">
         <el-table
-          empty-text="暂无对应消息"
-          @selection-change="handleSelectionChange"
-          :data="ml_data"
-          style="width: 100%"
-          size="mini"
+            empty-text="暂无对应消息"
+            @selection-change="handleSelectionChange"
+            :data="listData"
+            style="width: 100%"
+            size="mini"
         >
           <el-table-column :selectable="isUnreadMessageTab" type="selection" width="55"></el-table-column>
           <el-table-column prop="create_time" label="日期" width="150"></el-table-column>
@@ -44,9 +44,9 @@
           <el-table-column label="类型">
             <template slot-scope="scope">
               <el-tag
-                size="mini"
-                v-bind="getTagAttrs(scope.row.type)"
-                v-text="getTagAttrs(scope.row.type).title"
+                  size="mini"
+                  v-bind="getTagAttrs(scope.row.type)"
+                  v-text="getTagAttrs(scope.row.type).title"
               ></el-tag>
             </template>
           </el-table-column>
@@ -54,11 +54,11 @@
             <template slot-scope="scope">
               <div class="text-nowrap">
                 <el-button
-                  type="primary"
-                  v-if="isUnreadMessageTab(scope.row)"
-                  title="标记已读"
-                  size="mini"
-                  @click="readSelection(scope.row.id)"
+                    type="primary"
+                    v-if="isUnreadMessageTab(scope.row)"
+                    title="标记已读"
+                    size="mini"
+                    @click="useReadSelection(scope.row.id)"
                 >标记已读
                 </el-button>
                 <span v-else>--</span>
@@ -66,25 +66,25 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="tip-page" v-if="!!ml_pagetotal">
+        <div class="tip-page" v-if="!!listPages.total">
           <div class="panel-left" v-show="showColumnBtn">
             <el-button
-              @click="readSelection()"
-              size="mini"
-              type="primary"
-              icon="icon-inbox"
-              title="标记已读"
+                @click="useReadSelection()"
+                size="mini"
+                type="primary"
+                icon="icon-inbox"
+                title="标记已读"
             ></el-button>
           </div>
           <el-pagination
-            :current-page.sync="ml_page"
-            @size-change="ml_sizeChange"
-            @current-change="ml_currentChange"
-            background
-            layout="prev, pager, next, sizes"
-            :total="ml_pagetotal"
-            :page-size.sync="ml_pagesize"
-          ></el-pagination>
+              :current-page.sync="listPages.curpage"
+              @size-change="listChange"
+              @current-change="listChange"
+              background
+              layout="prev, pager, next, sizes, total"
+              :total="listPages.total"
+              :page-size.sync="listPages.pagesize">
+          </el-pagination>
         </div>
       </div>
     </fieldset>
@@ -93,56 +93,51 @@
 <script>
 const {ref, reactive, computed, onMounted, watch} = vue;
 const {useRouter, useStore, useCache, useTip, useLoading} = hook;
-const {user: userApi, useRequest} = api;
-const {useInitTitle, useInitPage, getInfo} = util;
+const {user: userApi, useRequestWith, useRequestPage} = api;
+const {useInitTitle} = util;
 export default {
   components: {},
   setup(prop, ctx) {
     const {root} = ctx;
     const {title} = useInitTitle(ctx);
-    const {ml_change, ml_data, ml_listsLoading, ml_page, ml_pagetotal, ml_pagesize, ml_currentChange, ml_sizeChange, ml_searchKey, ml_searchRow, ml_reloadLists, ml_getLists} = useInitPage();
-
-    onMounted(() => {
-      ml_reloadLists();
-    })
-
-    watch(ml_change, (val) => {
-      getLists();
-    })
-
-    function getLists() {
-      if (ml_listsLoading.value) {
-        return;
-      }
-      let param = {
-        page: ml_page.value,
-        pagesize: ml_pagesize.value,
-        unread: +(activeName.value === "unreadMessage"),
-        type: logType.value
-      };
-      ml_listsLoading.value = true;
-      const {loading, error, data, run} = useRequest(userApi.sysUserLogs(param));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          let items = val.data.items.map((v) => {
-            v.username = !!v.username ? v.username : "游客";
-            return v;
-          })
-          ml_getLists(items, val.data.page);
-          // ml_getLists(JSON.parse(JSON.stringify(res)), page);
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
-        useTip().message('warning', err);
-      })
-      watch([data, error], () => {
-        ml_listsLoading.value = false;
-      })
-    }
 
     let activeName = ref("unreadMessage");
+    let logType = ref("");
+    let searchKey = ref({unread: +(activeName.value === "unreadMessage"), type: logType.value});
+    const lists = useRequestPage(userApi.sysUserLogs, {key: searchKey}, {
+      dataHandle(e) {
+        e.items = e.items.map((e) => {
+          e.username = !!e.username ? e.username : "游客";
+          return e;
+        })
+
+        return e;
+      }
+    })
+    let lastPage = 0;
+    watch(lists.loading, (l) => {
+      if (!l) {
+        if (lists.error.value) {
+          useTip().message('error', lists.error.value);
+          lists.error.value = null;
+          lists.pages.value.curpage = lastPage;
+          return;
+        }
+        lastPage = lists.pages.value.curpage;
+      }
+    });
+    const listRes = {
+      listData: lists.items,
+      listLoading: lists.loading,
+      listPages: lists.pages,
+      listChange: lists.change,
+    };
+
+    function useGetLists() {
+      searchKey.value = {unread: +(activeName.value === "unreadMessage"), type: logType.value};
+      lists.change();
+    }
+
     const tabs = reactive({
       unreadMessage: "未读消息",
       allMessage: "全部消息"
@@ -153,9 +148,9 @@ export default {
       {label: "警告日志", value: 2, type: "warning"},
       {label: "错误日志", value: 3, type: "danger"}
     ]);
-    let logType = ref("");
+
     watch(logType, (val) => {
-      ml_reloadLists();
+      useGetLists();
     })
 
     const tabTitle = computed(() => {
@@ -179,26 +174,24 @@ export default {
       return {};
     }
 
-    function readSelection(e) {
+    const readSelection = useRequestWith(userApi.updateMessageStatus, {manual: true});
+
+    async function useReadSelection(e) {
       let paramData = {ids: []};
       if (!e) {
         paramData.ids = selectIds.value;
       } else {
         paramData.ids = [e];
       }
-      const {loading, error, data, run} = useRequest(userApi.updateMessageStatus(paramData));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          window["SysGetUnreadMessageCount"] &&
-          window["SysGetUnreadMessageCount"]();
-          ml_reloadLists();
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+
+      const [, err] = await readSelection.run(paramData);
+      if (err) {
         useTip().message('warning', err);
-      })
+      } else {
+        window["SysGetUnreadMessageCount"] &&
+        window["SysGetUnreadMessageCount"]();
+        useGetLists();
+      }
     }
 
     function handleSelectionChange(e) {
@@ -212,26 +205,14 @@ export default {
     }
 
     function handleClick(tab, event) {
-      ml_page.value = 1;
       root.$nextTick(() => {
-        getLists();
+        useGetLists();
       })
     }
 
     return {
       title,
-      ml_change,
-      ml_searchKey,
-      ml_listsLoading,
-      ml_page,
-      ml_data,
-      ml_pagetotal,
-      ml_pagesize,
-      ml_currentChange,
-      ml_sizeChange,
-      ml_searchRow,
-      ml_reloadLists,
-      ml_getLists,
+      ...listRes,
       logType,
       logTypes,
       activeName,
@@ -242,7 +223,7 @@ export default {
       handleSelectionChange,
       isUnreadMessageTab,
       getTagAttrs,
-      readSelection
+      useReadSelection
     };
   }
 };

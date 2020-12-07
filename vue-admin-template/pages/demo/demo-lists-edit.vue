@@ -156,7 +156,7 @@
 const { ref, reactive, computed, onMounted, watch } = vue;
 const { useRouter, useStore, useCache, useTip, useLoading } = hook;
 const { user: userApi, useRequest, useRequestPage, useRequestWith } = api;
-const { useInitTitle, useInitPage, getInfo } = util;
+const { useInitTitle } = util;
 
 let dataFormat = { title: '', date: '', id: 0 };
 

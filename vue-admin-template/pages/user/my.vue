@@ -22,14 +22,12 @@
 <script>
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
 const {useRouter, useStore, useCache, useTip, useLoading} = hook;
-const {user: userApi, useRequest} = api;
-const {useInitTitle, useInitPage, getInfo} = util;
+const {user: userApi, useRequestWith} = api;
+const {useInitTitle} = util;
 
 export default {
   components: {},
   setup(prop, ctx) {
-    const {ml_change, ml_data, ml_listsLoading, ml_page, ml_pagetotal, ml_pagesize, ml_currentChange, ml_sizeChange, ml_searchKey, ml_searchRow, ml_reloadLists, ml_getLists} = useInitPage();
-
     onMounted(() => {
     })
 

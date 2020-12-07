@@ -17,12 +17,10 @@ export const user = {
   demoUpload() {
     return config.baseURL + '/ZlsManage/UserApi/upload.go';
   },
-  current() {
-    return app.request.get('/ZlsManage/UserApi/UseriInfo.go');
+  current(data) {
+    return ['get','/ZlsManage/UserApi/UseriInfo.go', data];
   },
-  userInfo() {
-    return app.request.get('/ZlsManage/UserApi/UseriInfo.go');
-  },
+  userInfo:['get','/ZlsManage/UserApi/UseriInfo.go'],
   login(data) {
     return app.request.post('/ZlsManage/UserApi/GetToken.go', data);
   },

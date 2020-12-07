@@ -17,7 +17,7 @@
         unique-opened
     >
       <template v-for="(v, i) in state.nav">
-        <el-submenu v-if="v.meta.collapse&&v.meta.show !== false" :index="'nav-'+i" :key="'submenu1-'+i">
+        <el-submenu v-if="isChildren(v)&&v.meta.show !== false" :index="'nav-'+i" :key="'submenu1-'+i">
           <template slot="title">
             <i v-if="v.hasOwnProperty('icon')&&!!v.icon" :class="v.icon"></i>
             <i v-else class="icon-flag"></i>
@@ -30,7 +30,7 @@
             <span>{{ vv.name }}</span>
           </el-menu-item>
         </el-submenu>
-        <el-menu-item v-if="!v.meta.collapse&&v.meta.show !== false" :index="v.path" :key="'submenu2-'+i">
+        <el-menu-item v-if="!isChildren(v)&&v.meta.show !== false" :index="v.path" :key="'submenu2-'+i">
           <i v-if="v.hasOwnProperty('icon')&&!!v.icon" :class="v.icon"></i>
           <i v-else class="icon-flag"></i>
           <span slot="title" class="menu_title">{{ v.name }}</span>
@@ -97,9 +97,13 @@ export default {
         {immediate: true}
     );
 
+    const isChildren = (v)=>{
+      return v.meta.collapse&&v['children'];
+    }
     return {
       routePath,
       handleSelect,
+      isChildren,
       navBgColor: ref('#324157'),
       textColor: ref('#b3becd'),
       state

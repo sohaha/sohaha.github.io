@@ -2,24 +2,23 @@ export let vm = {};
 export let request = {};
 export let router = {};
 export let store = {};
-
 export let userData = {};
 export let defaultAvatar = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCABQAFADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD7LooooAKKKKACinRQy3DFYopJmHURqTj64FEsMlu4WWN4mPQSKQT9MigBtFFFABRRRQAUUUUAFaXh3RzruqxWxYpEAXlZeoQdQPcnArNrq/hw6jVbxT99oBt+gYZoA7u0t4rCBYLaJbeFRgJGMD8T1J9zzReWsGowNBdRLcQsMFX5/EHsfcVJRQB5Lr+knQ9VmtNxeNcNG56sh5Gfft+FZ9dT8RWU61bqPvLbjd+JJH6Vy1ABRRRQAUUUUAFXdF1R9G1SC8QFwhIdB/Ep4I+uP1FUq2dC8KXuugSqBbWhP/HxIDhvXaOp+vT3oA9NtbqG+t457eQSwSDcrjuPf0Pt2pt3eQafbSXNzIIoYxlmPU+gA7ntiq+jaPBoVgtpAzuoYuXfqzHqcDgdOgpNb0WDXrIW07PGFYOrx4yrYIzg8EYPQ0AeX6tqT6vqVxeSDaZW+VP7q9APy/WqlbGueFL3QgZXAuLQH/j4iBwv+8O316e9Y9ABRRRQAUUUUAdL4M8NJrEr3d2u6zhYKsfaV+uD7D9TxXovQAAAADAA4AHYAdhWB4DA/wCEYh5A/fSdx610H4j8xQAlFL+I/MUfiPzFACdiCAQRgg8gjuCD1Fed+NPDSaRKl5aLts5m2tGOkTdcD2P6HivRfxH5iuf8eAf8IxNyD++j7j1oA80ooooAKKKKAE/E/maPxP5mlooAT8T+Zo/E/maWigBPxP5mj8T+ZpaKACiiigD/2Q==';
 
-try {
-  userData = JSON.parse(useCache().getCache('appuser', {}));
-} catch (e) {
-}
 
 export function setVm(app) {
   vm = app || this;
 }
 
 export function initStore() {
-  const { useCache } = hook;
+  const cache = hook.useCache();
+  try {
+    userData = JSON.parse(cache.getCache('appuser', {}));
+  } catch (e) {
+  }
   store = new Vuex.Store({
     state: {
-      token: useCache().getCache('apptoken', ''),
+      token: cache.getCache('apptoken', ''),
       user: userData || {},
       groups: [],
       router: [],
@@ -64,20 +63,18 @@ export function initStore() {
     mutations: {
       setToken(state, data) {
         state.token = data;
-        useCache().setCache('apptoken', data);
+        cache.setCache('apptoken', data);
       },
       setUnreadMessageCount(state, count) {
         state.unreadMessageCount = count;
       },
       setUser(state, data) {
         if (data.groups) {
-          // vm.$store.commit('setGroups', data.groups);
-          var store = typeof vm.$store === 'undefined' ? window['$store'] : vm.$store;
           store.commit('setGroups', data.groups);
           delete data.groups;
         }
         state.user = data;
-        useCache().setCache('appuser', JSON.stringify(data));
+        cache.setCache('appuser', JSON.stringify(data));
       },
       setRouter(state, data) {
         state.router = resetRouter(router)(data);
@@ -116,11 +113,9 @@ function forInitRouter(data, parent) {
     if (!e.component && e.url) {
       e.component = VueRun(e.url);
     }
-    // e.meta = { has: e.has }
     if (!e.hasOwnProperty('meta')) e.meta = {};
 
     if (parent && e.path.indexOf('/') !== 0) {
-      // e.path = parent.path + '/' + e.path;
       e.path = (parent.path + '/' + e.path).replace(/\/\//, '/');
     }
     if (e.children) {
@@ -349,12 +344,13 @@ export function requestInit() {
   });
 
   const errHandle = (error) => {
+    let v = vm.$root;
     const { useTip } = hook;
     if (!!error.response) {
       switch (error.response.status) {
         case 401:
-          vm.$store.commit('setToken', '');
-          setTimeout(() => vm.$root.initSate = true);
+          store.commit('setToken', '');
+          setTimeout(() => v.initSate = true);
           return;
       }
       let data = (typeof error.response.data === 'object') ? error.response.data : {
@@ -365,8 +361,7 @@ export function requestInit() {
       // data.msg && useTip().notify('error', data.msg || msg, '温馨提示');
       return Promise.resolve(data);
     } else if (!!error.message && error.message.indexOf('timeout') >= 0) {
-      useTip().notify('error', '网络请求超时: ' + error.config.url, '温馨提示');
-      return Promise.reject(null);
+      return Promise.reject('网络请求超时');
     }
     return Promise.reject(error);
   };
@@ -387,27 +382,27 @@ export function requestInit() {
   });
   window['$request'] = request;
 
-  const get = request.get
+  const get = request.get;
   request.get = (url, data, conf = {}) => {
-    conf['params'] = data
+    conf['params'] = data;
     return get(url, conf)
   }
 
-  const put = request.put
-  request.put = (url, data, conf = {}) => {
-    data = urlEncode(data)
+  const put = request.put;
+  request.put = (url, data, conf = {}, keep) => {
+    data = keep ? data : urlEncode(data);
     return put(url, data, conf)
   }
 
-  const post = request.post
-  request.post = (url, data, conf = {}) => {
-    data = urlEncode(data)
+  const post = request.post;
+  request.post = (url, data, conf = {}, keep) => {
+    data = keep ? data : urlEncode(data);
     return post(url, data, conf)
   }
 
-  const del = request.delete
-  request.delete = (url, data, conf = {}) => {
-    conf['data'] = urlEncode(data);
+  const del = request.delete;
+  request.delete = (url, data, conf = {}, keep) => {
+    conf['data'] = keep ? data : urlEncode(data);
     return del(url, conf)
   }
 

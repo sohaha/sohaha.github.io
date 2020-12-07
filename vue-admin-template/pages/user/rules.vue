@@ -1,5 +1,5 @@
 <template>
-  <div v-loading='ml_listsLoading || loadGroup'>
+  <div v-loading='false || loadGroup'>
     <div class="view-title float-clear">
       <div class="view-title-right">
         <el-form @submit.prevent.stop.native inline class="tip-top">
@@ -38,7 +38,7 @@
     <fieldset>
       <legend>{{ title }}</legend>
       <aside class="rules-table">
-        <el-table :data="ml_data" size="mini" :default-sort="!!gid?{prop: 'sort', order: 'descending'}:{}">
+        <el-table :data="listData" size="mini" :default-sort="!!gid?{prop: 'sort', order: 'descending'}:{}">
           <!-- <el-table-column :sortable="!!gid" show-overflow-tooltip :label="gid?'排序':'#'" width="80" prop="sort">
             <template slot-scope="scope">
               <div v-if="gid" title="数字越大优先级越高">
@@ -86,19 +86,22 @@
               <div v-if="scope.row._isEdit">
                 <el-input v-model="scope.row.remark" placeholder="请填写规则备注" size="mini"></el-input>
               </div>
-              <div v-else class='text-nowrap white-space' :title='scope.row.remark'>{{ scope.row.remark || ' - ' }}</div>
+              <div v-else class='text-nowrap white-space' :title='scope.row.remark'>{{
+                  scope.row.remark || ' - '
+                }}
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="操作" :width="gid?290:212">
             <!-- eslint-disable-next-line vue/no-unused-vars -->
             <template slot="header" slot-scope="scope">
               <el-form @submit.prevent.stop.native inline class="table-header-form" :inline="true">
-                <el-form-item class="form-item-search" :style="ml_searchKey?'width:'+(gid?190:110)+'px':''">
-                  <el-input v-model="ml_searchKey" size="mini" clearable placeholder="输入名称/标识搜索"
+                <el-form-item class="form-item-search" :style="searchKey?'width:'+(gid?190:110)+'px':''">
+                  <el-input v-model="searchKey" size="mini" clearable placeholder="输入名称/标识搜索"
                             suffix-icon="icon-corner-down-left-out" @keyup.enter.native="useSearchRow"
                             @clear="useReloadLists"></el-input>
                 </el-form-item>
-                <el-form-item v-show="!!ml_searchKey">
+                <el-form-item v-show="!!searchKey">
                   <el-button size="mini" icon="icon-search" type @click="useSearchRow">搜索</el-button>
                 </el-form-item>
               </el-form>
@@ -180,8 +183,8 @@
 <script>
 const {ref, reactive, computed, onMounted, watch} = vue;
 const {useRouter, useStore, useCache, useTip, useLoading} = hook;
-const {user: userApi, sys: sysApi, useRequest} = api;
-const {useInitTitle, useInitPage, getInfo} = util;
+const {user: userApi, sys: sysApi, useRequest, useRequestWith} = api;
+const {useInitTitle} = util;
 
 let dataFormat = {
   title: '',
@@ -204,17 +207,10 @@ export default {
   setup(prop, ctx) {
     const {root} = ctx;
     const {title} = useInitTitle(ctx);
-    const {ml_change, ml_data, ml_listsLoading, ml_page, ml_pagetotal, ml_pagesize, ml_currentChange, ml_sizeChange, ml_searchKey, ml_searchRow, ml_reloadLists, ml_getLists} = useInitPage();
 
-    let search = ref(useRouter(ctx).route.query.key || '');
-    watch(() => useRouter(ctx).route.query.key, (watchKey) => {
-      search.value = watchKey || '';
-    })
-
-    let gid = ref(search.value > 0 ? parseInt(search.value) : '');
-    watch(search, (key) => {
-      gid.value = key > 0 ? parseInt(key) : '';
-    })
+    let searchKey = ref('');
+    let listData = ref([]);
+    let gid = ref(parseInt(useRouter(ctx).route.query.key) || '');
 
     let ginfo = ref({user_count: 0});
     let isAddRow = ref(false);
@@ -229,7 +225,15 @@ export default {
     let keepMenuArr = ref([]);
     let showKeepMenuArr = ref([]);
 
-    Menuloading.value = true;
+    const deleteRow = useRequestWith(userApi.deleteRule, {manual: true});
+    const addRow = useRequestWith(userApi.addRule, {manual: true});
+    const editRow = useRequestWith(userApi.editRule, {manual: true});
+    const updateUserRuleStatus = useRequestWith(userApi.updateUserRuleStatus, {manual: true});
+    const getGroup = useRequestWith(userApi.groupInfo, {manual: true});
+    const getRules = useRequestWith(userApi.ruleLists, {manual: true});
+    const updateGroupMenu = useRequestWith(sysApi.sysUpdateGroupMenu, {manual: true});
+    const userMenu = useRequestWith(sysApi.sysUserMenu, {manual: true});
+
     if (gid.value) {
       useGetGroup();
       getMenuList(gid.value)
@@ -270,7 +274,7 @@ export default {
     }
 
     function useChangeSort(v) {
-      let row = (ml_data.value)[tmpIndex.value];
+      let row = (listData.value)[tmpIndex.value];
       useUpdateUserRuleStatus(row.id, row.gstatus, row.sort);
       tmpIndex.value = null;
     }
@@ -279,49 +283,36 @@ export default {
       tmpIndex.value = e.target.dataset.index;
     }
 
-    function useDeleteRow(e) {
-      const {loading, error, data, run} = useRequest(userApi.deleteRule(e.row));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          ml_data.value.splice(e.$index, 1);
-          ml_pagetotal.value--;
-          root.$nextTick(() => {
-            if (ml_data.length <= 0) getLists;
-          })
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+    async function useDeleteRow(e) {
+      const [, err] = await deleteRow.run(e.row);
+      if (err) {
         useTip().message('warning', err);
-      })
+      } else {
+        listData.value.splice(e.$index, 1);
+        root.$nextTick(() => {
+          if (listData.length <= 0) getMenuList();
+        })
+      }
     }
 
-    function useAddRow(e) {
+    async function useAddRow(e) {
       e.row._loading = true;
-      const {loading, error, data, run} = useRequest(userApi.addRule(e.row));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          e.row._isEdit = false;
-          e.row._isAdd = false;
-          e.row._loading = false;
-          isAddRow.value = false;
-          vue.set(ml_data.value, e.$index, Object.assign({}, e.row, val.data))
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+      const [data, err] = await addRow.run(e.row);
+      if (err) {
         useTip().message('warning', err);
-      })
-      watch([data, error], () => {
+      } else {
+        e.row._isEdit = false;
+        e.row._isAdd = false;
         e.row._loading = false;
-      })
+        isAddRow.value = false;
+        vue.set(listData.value, e.$index, Object.assign({}, e.row, data))
+      }
+      e.row._loading = false;
     }
 
     function useAddRowStatus() {
       isAddRow.value = true;
-      ml_data.value.unshift(
+      listData.value.unshift(
           Object.assign(
               {_isEdit: true, _isPopover: false, _isAdd: true},
               dataFormat
@@ -329,26 +320,21 @@ export default {
       );
     }
 
-    function useEditRow(e) {
+    async function useEditRow(e) {
       if (gid.value) return;
       if (e.row._isAdd) {
-        useAddRow(e);
+        await useAddRow(e);
         return;
       }
       if (e.row._isEdit) {
-        const {loading, error, data, run} = useRequest(userApi.editRule(e.row));
-        watch(data, (val) => {
-          if (val.data && val.code < 400) {
-            val = {data: {}};
-            e.row._isEdit = false;
-            vue.set(ml_data.value, e.$index, Object.assign({}, e.row, val.data))
-          } else {
-            useTip().message('warning', val.msg);
-          }
-        })
-        watch(error, (err) => {
+        const [, err] = await editRow.run(e.row);
+        if (err) {
           useTip().message('warning', err);
-        })
+        } else {
+          let val = {data: {}};
+          e.row._isEdit = false;
+          vue.set(listData.value, e.$index, Object.assign({}, e.row, val.data))
+        }
       } else {
         vue.set(tmpData.value, e.$index, Object.assign({}, e.row));
         e.row._isEdit = !e.row._isEdit;
@@ -358,10 +344,10 @@ export default {
     function useQuitRow(e) {
       let index = e.$index;
       if (!e.row._isAdd) {
-        vue.set(ml_data.value, e.$index, Object.assign({}, (tmpData.value)[index]));
+        vue.set(listData.value, e.$index, Object.assign({}, (tmpData.value)[index]));
       } else {
         isAddRow.value = false;
-        ml_data.value.splice(e.$index, 1);
+        listData.value.splice(e.$index, 1);
       }
     }
 
@@ -388,94 +374,74 @@ export default {
       }
     }
 
-    function useUpdateUserRuleStatus(id, status, sort) {
-      const {loading, error, data, run} = useRequest(userApi.updateUserRuleStatus({
+    async function useUpdateUserRuleStatus(id, status, sort) {
+      const [, err] = await updateUserRuleStatus.run({
         gid: gid.value,
         id: id,
         status: status,
         sort: sort
-      }));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          switch (status) {
-            case 1:
-              window['arrayAdd'](ginfo.value.rule_ids, id);
-              window['arrayReduce'](ginfo.value.ban_rule_ids, id);
-              break;
-            case 2:
-              window['arrayReduce'](ginfo.value.rule_ids, id);
-              window['arrayAdd'](ginfo.value.ban_rule_ids, id);
-              break;
-            case 3:
-              window['arrayReduce'](ginfo.value.rule_ids, id);
-              window['arrayReduce'](ginfo.value.ban_rule_ids, id);
-              break;
-          }
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+      });
+      if (err) {
         useTip().message('warning', err);
-      })
-    }
-
-    function useGetGroup() {
-      loadGroup.value = true;
-      const {loading, error, data, run} = useRequest(userApi.groupInfo({id: gid.value}));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          ginfo.value = val.data;
-          useGetRules();
-        } else {
-          useTip().message('warning', val.msg);
+      } else {
+        switch (status) {
+          case 1:
+            window['arrayAdd'](ginfo.value.rule_ids, id);
+            window['arrayReduce'](ginfo.value.ban_rule_ids, id);
+            break;
+          case 2:
+            window['arrayReduce'](ginfo.value.rule_ids, id);
+            window['arrayAdd'](ginfo.value.ban_rule_ids, id);
+            break;
+          case 3:
+            window['arrayReduce'](ginfo.value.rule_ids, id);
+            window['arrayReduce'](ginfo.value.ban_rule_ids, id);
+            break;
         }
-      })
-      watch(error, (err) => {
-        gid.value = 0;
-        useTip().message('warning', err);
-      })
-      watch([data, error], ([]) => {
-        loadGroup.value = false;
-      })
-    }
-
-    function useGetRules() {
-      let param = {};
-      if (ml_searchKey.value) {
-        param['key'] = ml_searchKey.value;
       }
-      ml_listsLoading.value = true;
-      tmpData.value = [];
-      const {loading, error, data, run} = useRequest(userApi.ruleLists(param));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          let res = val.data;
-          res.map((e) => {
-            if (gid.value) {
-              e.gstatus = ruleIds.value.indexOf(e.id) >= 0 ? 1 : banRuleIds.value.indexOf(e.id) >= 0 ? 2 : 3;
-            }
-            e.__loading = false;
-            e._isEdit = false;
-            e._isPopover = false;
-            return e;
-          })
-          ml_data.value = JSON.parse(JSON.stringify(res));
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
-        gid.value = 0;
+    }
+
+    async function useGetGroup() {
+      loadGroup.value = true;
+
+      const [data, err] = await getGroup.run({id: gid.value});
+      if (err) {
         useTip().message('warning', err);
-      })
-      watch([data, error], ([]) => {
-        ml_listsLoading.value = false;
-      })
+        gid.value = 0;
+      } else {
+        ginfo.value = data;
+        useGetRules();
+      }
+      loadGroup.value = false;
+    }
+
+    async function useGetRules() {
+      let param = {};
+      if (searchKey.value) {
+        param['key'] = searchKey.value;
+      }
+      tmpData.value = [];
+
+      const [data, err] = await getRules.run(param);
+      if (err) {
+        useTip().message('warning', err);
+      } else {
+        let res = data;
+        res.map((e) => {
+          if (gid.value) {
+            e.gstatus = ruleIds.value.indexOf(e.id) >= 0 ? 1 : banRuleIds.value.indexOf(e.id) >= 0 ? 2 : 3;
+          }
+          e.__loading = false;
+          e._isEdit = false;
+          e._isPopover = false;
+          return e;
+        })
+        listData.value = JSON.parse(JSON.stringify(res));
+      }
     }
 
     function useReloadLists() {
-      ml_searchKey.value = '';
+      searchKey.value = '';
       loadGroup.value = false;
       useGetRules();
     }
@@ -484,42 +450,28 @@ export default {
       useGetRules();
     }
 
-    function keepRoleMenu(groupid, menu) {
+    async function keepRoleMenu(groupid, menu) {
       let role = gid.value;
       let useKeepMenuArr = menuRef.value.getCheckedKeys().concat(menuRef.value.getHalfCheckedKeys()).join(",");
 
-      const {loading, error, data, run} = useRequest(sysApi.sysUpdateGroupMenu({groupid: role, menu: useKeepMenuArr}));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          useTip().message('success', '保存角色菜单成功');
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+      const [, err] = await updateGroupMenu.run({groupid: role, menu: useKeepMenuArr});
+      if (err) {
         useTip().message('warning', err);
-      })
-      watch([data, error], ([]) => {
-        getMenuList(role)
-      })
+      } else {
+        useTip().message('success', '保存角色菜单成功');
+      }
+      getMenuList(role);
     }
 
-    function getMenuList(roleId) {
-      const {loading, error, data, run} = useRequest(sysApi.sysUserMenu({groupid: roleId}));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          menuData.value = val.data;
-          getShowMenu(val.data);
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+    async function getMenuList(roleId = 0) {
+      const [data, err] = await userMenu.run({groupid: roleId});
+      if (err) {
         useTip().message('warning', err);
-      })
-      watch([data, error], ([]) => {
-        Menuloading.value = false;
-      })
+      } else {
+        menuData.value = data;
+        getShowMenu(data);
+      }
+      Menuloading.value = false;
     }
 
     function getShowMenu(data) {
@@ -541,18 +493,8 @@ export default {
 
     return {
       title,
-      ml_change,
-      ml_searchKey,
-      ml_listsLoading,
-      ml_page,
-      ml_data,
-      ml_pagetotal,
-      ml_pagesize,
-      ml_currentChange,
-      ml_sizeChange,
-      ml_searchRow,
-      ml_reloadLists,
-      ml_getLists,
+      searchKey,
+      listData,
       isAddRow,
       loadGroup,
       gid,

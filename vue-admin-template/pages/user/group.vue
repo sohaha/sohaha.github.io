@@ -6,15 +6,15 @@
           <el-form-item>
             <el-button type="primary" size="mini" @click="useAddRowStatus" icon="el-icon-plus" :disabled="isAddRow">添加
             </el-button>
-            <el-button type="info" size="mini" @click="ml_reloadLists" icon="el-icon-refresh">刷新</el-button>
+            <el-button type="info" size="mini" @click="useGetLists" icon="el-icon-refresh">刷新</el-button>
           </el-form-item>
         </el-form>
       </div>
     </div>
     <fieldset>
       <legend>{{ title }}</legend>
-      <aside v-loading="ml_listsLoading" class="group-table">
-        <el-table :data="ml_data" style="width: 100%" size="mini">
+      <aside v-loading="false" class="group-table">
+        <el-table :data="listData" style="width: 100%" size="mini">
           <el-table-column prop="id" label="ID" width="50"></el-table-column>
           <el-table-column show-overflow-tooltip label="角色名称" min-width="120">
             <template slot-scope="scope">
@@ -78,8 +78,8 @@
 <script>
 const {ref, reactive, computed, onMounted, watch} = vue;
 const {useRouter, useStore, useCache, useTip, useLoading} = hook;
-const {user: userApi, useRequest} = api;
-const {useInitTitle, useInitPage, getInfo} = util;
+const {user: userApi, useRequestWith} = api;
+const {useInitTitle} = util;
 
 let dataFormat = {title: '', date: '', id: 0};
 export default {
@@ -89,50 +89,36 @@ export default {
   setup(prop, ctx) {
     const {root} = ctx;
     const {title} = useInitTitle(ctx);
-    const {ml_change, ml_data, ml_listsLoading, ml_page, ml_pagetotal, ml_pagesize, ml_currentChange, ml_sizeChange, ml_searchKey, ml_searchRow, ml_reloadLists, ml_getLists} = useInitPage();
-    ml_searchKey.value = !useRouter(ctx).route.query.hasOwnProperty('key') ? '' : useRouter(ctx).route.query.key;
-    let searchKey = computed(() => {
-      return !useRouter(ctx).route.query.hasOwnProperty('key') ? '' : useRouter(ctx).route.query.key;
-    })
-    watch(searchKey, (val) => {
-      ml_searchKey.value = val;
-    })
+
+    let listData = ref([]);
+
+    const getLists = useRequestWith(userApi.groupLists, {
+      manual: true, dataHandle(e) {
+        e = e.map((e) => {
+          e._isEdit = false;
+          e._isPopover = false;
+
+          return e;
+        })
+        useStore(ctx).commit('setGroups', e)
+
+        return e;
+      }
+    });
+
+    async function useGetLists() {
+      isAddRow.value = false;
+      const [data, err] = await getLists.run();
+      if (err) {
+        useTip().message('warning', err);
+      } else {
+        listData.value = data;
+      }
+    }
 
     onMounted(() => {
-      ml_reloadLists();
+      useGetLists();
     })
-
-    watch(ml_change, (val) => {
-      getLists();
-    })
-
-    function getLists() {
-      let param = {page: ml_page.value, pagesize: ml_pagesize.value};
-      if (ml_searchKey.value) {
-        param['key'] = ml_searchKey.value;
-      }
-      isAddRow.value = false;
-      ml_listsLoading.value = true;
-      const {loading, error, data, run} = useRequest(userApi.groupLists(param));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          ml_data.value = JSON.parse(JSON.stringify(val.data.map((e) => {
-            e._isEdit = false;
-            e._isPopover = false;
-            return e;
-          })))
-          useStore(ctx).commit('setGroups', ml_data.value)
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
-        useTip().message('warning', err);
-      })
-      watch([data, error], () => {
-        ml_listsLoading.value = false;
-      })
-    }
 
     let tmpData = ref([]);
     let isAddRow = ref(false);
@@ -144,72 +130,63 @@ export default {
 
     function useAddRowStatus() {
       isAddRow.value = true;
-      ml_data.value.unshift(Object.assign({_isEdit: true, _isPopover: false, _isAdd: true}, dataFormat))
+      listData.value.unshift(Object.assign({_isEdit: true, _isPopover: false, _isAdd: true}, dataFormat))
     }
 
     function useQuitRow(e) {
       let index = e.$index;
       if (!e.row._isAdd) {
-        vue.set(ml_data.value, e.$index, Object.assign({}, (tmpData.value)[index]))
+        vue.set(listData.value, e.$index, Object.assign({}, (tmpData.value)[index]))
       } else {
         isAddRow.value = false;
-        ml_data.value.splice(e.$index, 1);
+        listData.value.splice(e.$index, 1);
       }
     }
 
-    function useDeleteRow(e) {
-      const {loading, error, data, run} = useRequest(userApi.deleteGroup({id: e.row}));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          ml_data.value.splice(e.$index, 1);
-          ml_pagetotal.value--;
-          root.$nextTick(() => {
-            if (ml_data.length <= 0) getLists;
-          })
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+    const deleteRow = useRequestWith(userApi.deleteGroup, {manual: true});
+
+    async function useDeleteRow(e) {
+      const [data, err] = await deleteRow.run();
+      if (err) {
         useTip().message('warning', err);
-      })
+      } else {
+        console.log('data', data);
+        listData.value.splice(e.$index, 1);
+        root.$nextTick(() => {
+          if (listData.length <= 0) useGetLists();
+        })
+      }
     }
 
-    function useAddRow(e) {
-      const {loading, error, data, run} = useRequest(userApi.createGroup(e.row));
-      watch(data, (val) => {
-        if (val.data && val.code < 400) {
-          e.row._isEdit = false;
-          e.row._isAdd = false;
-          isAddRow.value = false;
-          vue.set(ml_data.value, e.$index, Object.assign({}, e.row, val.data));
-        } else {
-          useTip().message('warning', val.msg);
-        }
-      })
-      watch(error, (err) => {
+    const addRow = useRequestWith(userApi.createGroup, {manual: true});
+
+    async function useAddRow(e) {
+      const [data, err] = await addRow.run(e.row);
+      if (err) {
         useTip().message('warning', err);
-      })
+      } else {
+        e.row._isEdit = false;
+        e.row._isAdd = false;
+        isAddRow.value = false;
+        vue.set(listData.value, e.$index, Object.assign({}, e.row, data));
+      }
     }
 
-    function useEditRow(e) {
+    const editRow = useRequestWith(userApi.createGroup, {manual: true});
+
+    async function useEditRow(e) {
       if (e.row._isAdd) {
         useAddRow(e);
         return;
       }
       if (e.row._isEdit) {
-        const {loading, error, data, run} = useRequest(userApi.updateGroup(e.row));
-        watch(data, (val) => {
-          if (val.data && val.code < 400) {
-            e.row._isEdit = false;
-            vue.set(ml_data.value, e.$index, Object.assign({}, e.row, val.data));
-          } else {
-            useTip().message('warning', val.msg);
-          }
-        })
-        watch(error, (err) => {
+        const [data, err] = await editRow.run(e.row);
+        if (err) {
           useTip().message('warning', err);
-        })
+        } else {
+          e.row._isEdit = false;
+          vue.set(listData.value, e.$index, Object.assign({}, e.row, data));
+        }
       } else {
         vue.set(tmpData.value, e.$index, Object.assign({}, e.row));
         e.row._isEdit = !e.row._isEdit;
@@ -218,33 +195,22 @@ export default {
 
     function useGetEditBtnAttrs(e) {
       return e.row._isEdit
-        ? {
-          title: '提 交',
-          type: 'primary',
-          icon: 'el-icon-check'
-        }
-        : {
-          title: '编 辑',
-          type: 'info',
-          icon: 'el-icon-edit'
-        };
+          ? {
+            title: '提 交',
+            type: 'primary',
+            icon: 'el-icon-check'
+          }
+          : {
+            title: '编 辑',
+            type: 'info',
+            icon: 'el-icon-edit'
+          };
     }
 
     return {
       title,
-      searchKey,
-      ml_change,
-      ml_searchKey,
-      ml_listsLoading,
-      ml_page,
-      ml_data,
-      ml_pagetotal,
-      ml_pagesize,
-      ml_currentChange,
-      ml_sizeChange,
-      ml_searchRow,
-      ml_reloadLists,
-      ml_getLists,
+      listData,
+      useGetLists,
       useEditRow,
       useDeleteRow,
       viewDialogVisible,
