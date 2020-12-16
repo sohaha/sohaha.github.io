@@ -38,6 +38,7 @@
                center>
       <edit-password @success="editPassSuccess"></edit-password>
     </el-dialog>
+    <el-backtop target=".content-box"></el-backtop>
   </el-container>
 </template>
 <script>
@@ -107,7 +108,7 @@ export default {
               useTip().notify('warning', '请先登录账号', '温馨提示');
               const router = useRouter(ctx);
               // 记录下当前页面 url
-              useCache().setCache('last_url', router.route.fullPath, 100);
+              useCache({},window['sessionStorage']).setCache('last_url', router.route.fullPath, 100);
               router.replace('/login');
               return;
             }

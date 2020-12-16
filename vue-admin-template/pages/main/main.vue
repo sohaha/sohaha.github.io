@@ -121,23 +121,21 @@
               <span>GO程数</span> <span>{{ goSystems.os.numGoroutine || ' -- ' }}</span>
             </li>
             <li>
-              <span>磁盘</span>
-              <span>
+              <span>磁盘</span> <span>
                 容量 {{ goSystems.disk.total || ' -- ' }}&nbsp;&nbsp;
                 空闲 <b :style="parseInt(goSystems.disk.free) < 10 ? 'color: red;':''">{{
-                  goSystems.disk.free || ' -- '
-                }}</b>
+                goSystems.disk.free || ' -- '
+              }}</b>
               </span>
             </li>
             <li>
-              <span>内存</span>
-              <span>
+              <span>内存</span> <span>
                 容量 {{ goSystems.memory.total || ' -- ' }}&nbsp;&nbsp;
                 使用中 {{ goSystems.memory.used || ' -- ' }}&nbsp;&nbsp;
                 可用 {{ goSystems.memory.free || ' -- ' }}&nbsp;&nbsp;
                 使用率 <b :style="goSystems.memory.usage > 90 ? 'color: red;':''">{{
-                  goSystems.memory.usage + '%' || ' -- '
-                }}</b>
+                goSystems.memory.usage + '%' || ' -- '
+              }}</b>
               </span>
             </li>
           </aside>
@@ -147,18 +145,18 @@
   </div>
 </template>
 <script>
-const {useRouter, useStore, useTip} = hook;
-const {ref, reactive, computed, onMounted, watch} = vue;
+const { useRouter, useStore, useTip } = hook;
+const { ref, reactive, computed, onMounted, watch } = vue;
 
 export default {
-  setup(prop, ctx) {
+  setup (prop, ctx) {
     let title = ref('后台中心');
     let error = ref([]);
 
     const hi = computed(() => {
       let now = new Date(),
           hour = now.getHours(),
-          text = '';
+          text;
       switch (true) {
         case hour < 6:
           text = '凌晨好';
@@ -184,52 +182,45 @@ export default {
         default:
           text = '深夜好';
       }
-      return text + '，' + nickname.value
+      return text + '，' + nickname.value;
 
-    })
+    });
 
     const last = computed(() => {
       let last = Object.assign({}, useStore(ctx).state.user.last || {});
       return [last.create_time, last.ip];
-    })
+    });
 
     const systemInfo = computed(() => {
       let system = Object.assign({}, useStore(ctx).state.user.system || {});
       let composer = system['composer'];
       delete system['composer'];
       return [system, composer];
-    })
+    });
 
     const system = computed(() => {
       let system = (systemInfo.value)[0];
       return (JSON.stringify(system) === '{}') ? null : system;
-    })
+    });
 
     const goSystems = computed(() => {
       return Object.assign({}, useStore(ctx).state.user.systems);
-    })
+    });
 
     const composer = computed(() => {
       return (systemInfo.value)[1];
-    })
-
-    const isSys = computed(() => {
-      return useStore(ctx).state.user.type === 'sys';
-    })
+    });
 
     const showError = computed(() => {
       return error.value.length > 0;
-    })
+    });
 
     const nickname = computed(() => {
       return useStore(ctx).getters.nickname;
-    })
+    });
 
-    function DetectionSystems() {
-    }
-
-    function gologs() {
-      useRouter(ctx).replace('/main/user/logs')
+    if (app.hasPermission('systems')) {
+      console.log('拥有标识码: systems');
     }
 
     return {
@@ -241,7 +232,7 @@ export default {
       system,
       composer,
       goSystems
-    }
+    };
   }
 };
 </script>

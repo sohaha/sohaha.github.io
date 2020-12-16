@@ -5,12 +5,40 @@ export let store = {};
 export let userData = {};
 export let defaultAvatar = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCABQAFADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD7LooooAKKKKACinRQy3DFYopJmHURqTj64FEsMlu4WWN4mPQSKQT9MigBtFFFABRRRQAUUUUAFaXh3RzruqxWxYpEAXlZeoQdQPcnArNrq/hw6jVbxT99oBt+gYZoA7u0t4rCBYLaJbeFRgJGMD8T1J9zzReWsGowNBdRLcQsMFX5/EHsfcVJRQB5Lr+knQ9VmtNxeNcNG56sh5Gfft+FZ9dT8RWU61bqPvLbjd+JJH6Vy1ABRRRQAUUUUAFXdF1R9G1SC8QFwhIdB/Ep4I+uP1FUq2dC8KXuugSqBbWhP/HxIDhvXaOp+vT3oA9NtbqG+t457eQSwSDcrjuPf0Pt2pt3eQafbSXNzIIoYxlmPU+gA7ntiq+jaPBoVgtpAzuoYuXfqzHqcDgdOgpNb0WDXrIW07PGFYOrx4yrYIzg8EYPQ0AeX6tqT6vqVxeSDaZW+VP7q9APy/WqlbGueFL3QgZXAuLQH/j4iBwv+8O316e9Y9ABRRRQAUUUUAdL4M8NJrEr3d2u6zhYKsfaV+uD7D9TxXovQAAAADAA4AHYAdhWB4DA/wCEYh5A/fSdx610H4j8xQAlFL+I/MUfiPzFACdiCAQRgg8gjuCD1Fed+NPDSaRKl5aLts5m2tGOkTdcD2P6HivRfxH5iuf8eAf8IxNyD++j7j1oA80ooooAKKKKAE/E/maPxP5mlooAT8T+Zo/E/maWigBPxP5mj8T+ZpaKACiiigD/2Q==';
 
-
-export function setVm(app) {
-  vm = app || this;
+export function hasPermission (key) {
+  let h = false;
+  const t = typeof key;
+  if (t === 'string') {
+    h = store.getters.marks.indexOf(key) > -1;
+  } else if (t === 'bool') {
+    h = t;
+  } else if (t === 'object' && key.length > 0) {
+    h = true;
+    for (const i in key) {
+      h = store.getters.marks.indexOf(key[i]) > -1;
+      if (!h) {
+        break;
+      }
+    }
+  }
+  return h;
 }
 
-export function initStore() {
+export function setVm (app) {
+  vm = app || this;
+  Vue.directive('permission', {
+    inserted: function (el, binding) {
+      let p = binding.value;
+      if (p) {
+        if (hasPermission(p)) {
+          el.parentNode && el.parentNode.removeChild(el);
+        }
+      }
+    }
+  });
+}
+
+export function initStore () {
   const cache = hook.useCache();
   try {
     userData = JSON.parse(cache.getCache('appuser', {}));
@@ -29,46 +57,49 @@ export function initStore() {
       nav: [],
     },
     getters: {
-      userid(state) {
+      userid (state) {
         return state.user.id || 0;
       },
-      isLogin(state) {
+      isLogin (state) {
         return Object.keys(state.user).length > 0 && state.token;
       },
-      getViewTitle(state) {
+      getViewTitle (state) {
         return state.viewTitle;
       },
-      isSuper(state) {
+      isSuper (state) {
         return state.user.is_super || false;
       },
-      avatar(state) {
+      avatar (state) {
         return state.user.avatar || state.defaultData.avatar;
       },
-      nickname(state) {
+      nickname (state) {
         return state.user.nickname || state.user.username;
       },
-      token(state) {
+      token (state) {
         return state.token;
       },
-      groupID(state) {
+      groupID (state) {
         return state.user.group_id || -1;
       },
-      groups(state) {
+      groups (state) {
         return state.groups.length > 0 ? state.groups : [{ name: '-无角色-', id: 0 }];
       },
-      menus(state) {
+      menus (state) {
         return state.user.menus || [];
+      },
+      marks (state) {
+        return state.user.marks || [];
       }
     },
     mutations: {
-      setToken(state, data) {
+      setToken (state, data) {
         state.token = data;
         cache.setCache('apptoken', data);
       },
-      setUnreadMessageCount(state, count) {
+      setUnreadMessageCount (state, count) {
         state.unreadMessageCount = count;
       },
-      setUser(state, data) {
+      setUser (state, data) {
         if (data.groups) {
           store.commit('setGroups', data.groups);
           delete data.groups;
@@ -76,13 +107,13 @@ export function initStore() {
         state.user = data;
         cache.setCache('appuser', JSON.stringify(data));
       },
-      setRouter(state, data) {
+      setRouter (state, data) {
         state.router = resetRouter(router)(data);
       },
-      setViewTitle(state, data) {
+      setViewTitle (state, data) {
         state.viewTitle = data;
       },
-      setGroups(state, data) {
+      setGroups (state, data) {
         state.groups = data;
       }
     },
@@ -104,11 +135,11 @@ export const defaultRouter = [
   }
 ];
 const originalPush = VueRouter.prototype.push;
-VueRouter.prototype.push = function push(location) {
+VueRouter.prototype.push = function push (location) {
   return originalPush.call(this, location).catch(err => err);
 };
 
-function forInitRouter(data, parent) {
+function forInitRouter (data, parent) {
   return data.map(e => {
     if (!e.component && e.url) {
       e.component = VueRun(e.url);
@@ -125,7 +156,7 @@ function forInitRouter(data, parent) {
   });
 }
 
-export function resetRouter(router) {
+export function resetRouter (router) {
   return (routerData, global) => {
     let data = [].concat(defaultRouter);
     data[2].children = [].concat(routerData);
@@ -140,7 +171,7 @@ export function resetRouter(router) {
   };
 };
 
-export function demoMenu() {
+export function demoMenu () {
   return appendRouter2Children;
 }
 
@@ -267,9 +298,15 @@ const appendRouter2Children = [
   }
 ];
 
-export function initRouter() {
+export function initRouter () {
   router = new VueRouter({
     routes: defaultRouter
+  });
+  router.beforeEach(function (to, from, next) {
+    if (to.path !== from.path) {
+      window['NProgress'] && NProgress.start();
+    }
+    next();
   });
   router.beforeResolve(function (to, from, next) {
     var title = config.title;
@@ -277,21 +314,19 @@ export function initRouter() {
       title = to.name + ' - ' + config.title;
     }
     document.title = title;
-    if (to.path !== from.path) {
-      window['NProgress'] && NProgress.start();
-    }
+
     next && next();
     if (config.debug)
       console.log('%c Go ', 'background:#aaa;color:#117F51', from.path, '->', to.path);
   });
-  router.afterEach((to, from) => {
-    window['NProgress'] && NProgress.done();
+  router.afterEach(function (to, from) {
+    window['NProgress'] && NProgress.done(true);
   });
   window['$router'] = router;
   return router;
 }
 
-export function requestInit() {
+export function requestInit () {
   request = axios.create({
     baseURL: config.baseURL + '/',
     timeout: config.timeout,
@@ -385,26 +420,26 @@ export function requestInit() {
   const get = request.get;
   request.get = (url, data, conf = {}) => {
     conf['params'] = data;
-    return get(url, conf)
-  }
+    return get(url, conf);
+  };
 
   const put = request.put;
   request.put = (url, data, conf = {}, keep) => {
     data = keep ? data : urlEncode(data);
-    return put(url, data, conf)
-  }
+    return put(url, data, conf);
+  };
 
   const post = request.post;
   request.post = (url, data, conf = {}, keep) => {
     data = keep ? data : urlEncode(data);
-    return post(url, data, conf)
-  }
+    return post(url, data, conf);
+  };
 
   const del = request.delete;
   request.delete = (url, data, conf = {}, keep) => {
     conf['data'] = keep ? data : urlEncode(data);
-    return del(url, conf)
-  }
+    return del(url, conf);
+  };
 
   return request;
 }

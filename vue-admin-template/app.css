@@ -248,6 +248,7 @@ img {
 
 ::-webkit-scrollbar-thumb {
     background-color: #cccccc;
+  border-radius : 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

@@ -7,10 +7,9 @@
   <title>Loading...</title>
   <link rel="icon" href="data:image/ico;base64,aWNv" />
   <link rel='stylesheet' href='app.css'>
-  <script src='//cdn.jsdelivr.net/npm/vue-run-static@0.0.7/run.js'></script>
 </head>
 <body>
-<!--[if lte IE 10]><script src='//cdn.jsdelivr.net/npm/vue-run-static@0.0.7/lib/browser-tip.js'></script><! [endif]-->
+<!--[if lte IE 10]><script src='//resources.73zls.com/vue-admin/lib/browser-tip.js'></script><! [endif]-->
 <div id='app'>
   <transition name="fade" mode="out-in">
     <div class="loading-group" id="loading" v-if="loading">
@@ -35,6 +34,10 @@
   </transition>
   <router-view></router-view>
 </div>
+<script>
+
+</script>
+<script src='//resources.73zls.com/vue-admin/run.js'></script>
 <script src='config.js'></script>
 </body>
 </html>

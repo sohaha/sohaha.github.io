@@ -131,15 +131,7 @@ export default {
     }
 
     function useClear() {
-      let isSpaV = (str) => {
-        let endStr = '.v', d = str.length - endStr.length;
-        return d >= 0 && str.lastIndexOf(endStr) === d;
-      };
-      for (let key in localStorage) {
-        if (localStorage.hasOwnProperty(key) && isSpaV(key)) {
-          localStorage.removeItem(key);
-        }
-      }
+      VueRun.clearCache();
       useTip().message('success', '清除缓存成功');
     }
 

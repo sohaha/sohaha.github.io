@@ -1,31 +1,31 @@
 var config = {
   title: '管理后台',
-  // baseURL: 'http://yapi.zj.73zls.com/mock/88',
   baseURL: '',
   timeout: 5000,
-  navServe: true,// 是否从服务器端获取菜单，如果是则忽略 router.json 菜单配置
-  debug: false
+  navServe: true,
+  debug: true
 };
 
 VueRun.config({
-  cdn: '//cdn.jsdelivr.net/npm/vue-run-static@0.0.7',
+  cdn: '//resources.73zls.com/vue-admin',
   debug: config.debug,
+  version: 1,
   notExist: function (url) {
-    console.log("不存在", url)
-    hook.useTip().message('warning', "路由文件不存在");
+    console.log('不存在', url);
+    hook.useTip().message('warning', '页面不存在');
   }
 });
 
-const assetsCdn = '//sohaha.73zls.com/vue-admin-template';
+const assetsCdn = '//resources.73zls.com/vue-admin-template';
 const themePrefixPath = assetsCdn + '/themes';
 let themes = [];
 ['lavender', 'green', 'dark', 'diablo'].forEach((theme) => {
-  themes[theme] = [themePrefixPath + '/' + theme + '/theme/index.css', themePrefixPath + '/' + theme + '/app.css']
+  themes[theme] = [themePrefixPath + '/' + theme + '/theme/index.css', themePrefixPath + '/' + theme + '/app.css'];
 });
 
 VueRun.init(function () {
   app.requestInit();
-  Vue.mixin({beforeCreate: hook.setVm});
+  Vue.mixin({ beforeCreate: hook.setVm });
   new Vue({
     router: app.initRouter(),
     store: app.initStore(),
@@ -49,14 +49,14 @@ VueRun.init(function () {
         var done = function (data, router) {
           store.commit('setUser', data);
           // 根据情况动态注入路由
-          if (config.debug) router = (app.demoMenu()).concat(router)
+          if (config.debug) router = (app.demoMenu()).concat(router);
           store.commit('setRouter', router);
 
           t.initSate = true;
         };
 
         var user = async function () {
-          return api.useRequestWith(api.user.current(), {manual: true}).run()
+          return api.useRequestWith(api.user.current(), { manual: true }).run();
         };
         return user().then(function (res) {
           var data = res[0];
@@ -65,7 +65,7 @@ VueRun.init(function () {
             if (!config.navServe) {
               return VueRun.httpRequest('./router.json').then(function (router) {
                 if (typeof router === 'string') {
-                  router = JSON.parse(router)
+                  router = JSON.parse(router);
                 }
 
                 done(data, router);
@@ -97,7 +97,7 @@ VueRun.init(function () {
   js: [
     VueRun.isSupportEs6('new WeakMap()') ? '' : VueRun.lib('/lib/weakmap-polyfill.js'),
     'getOwnPropertySymbols' in Object ? '' : VueRun.lib('/lib/get-own-property-symbols-polyfill.js'),
-    [VueRun.lib('/lib/axios.js'), {async: true}],
+    [VueRun.lib('/lib/axios.js'), { async: true }],
     VueRun.lib('/lib/vue-router.js'),
     VueRun.lib('/lib/vuex.js'),
     VueRun.lib('/lib/composition.js'),
@@ -108,7 +108,7 @@ VueRun.init(function () {
     VueRun.lib('/element.css'),
     VueRun.lib('/fonts/iconfont/iconfont.css'),
     VueRun.lib('/nprogress/nprogress.css'),
-  ]//.concat(themes.diablo)
+  ]//.concat(themes.lavender)
 });
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {

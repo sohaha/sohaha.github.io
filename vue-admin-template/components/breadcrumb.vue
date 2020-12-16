@@ -97,11 +97,11 @@ export default {
 }
 
 .slide-fade-move {
-  transition: all .5s;
+  transition: all .3s;
 }
 
 .slide-fade-enter-active {
-  transition: all .5s ease;
+  transition: all .3s ease;
   position: initial;
 }
 
@@ -110,7 +110,7 @@ export default {
 }
 
 .slide-fade-leave-active {
-  transition: all .5s ease, left 1s linear;
+  transition: all .3s ease, left 1s linear;
   position: fixed;
   left: auto;
   right: 0;

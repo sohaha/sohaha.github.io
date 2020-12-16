@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -26,14 +26,18 @@
   display: block;
 }
 
-.user-view .el-form-item__content .el-select {
+.el-form-item__content .el-select {
   width: 100%;
 }
 
+.el-form-item__content {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 0%;
+  flex: 1 1 0%
+}
 </style>
 <template>
-  <el-form size="mini" class="user-view" v-loading="formState" :model="ruleForm" :rules="rules" ref="ruleFormRef"
-           label-width="80px">
+  <el-form size="mini" class="user-view" v-loading="formState" :model="ruleForm" :rules="rules" ref="ruleFormRef" label-width="80px">
     <el-form-item label="Email" prop="email">
       <el-input v-model="ruleForm.email"></el-input>
     </el-form-item>
@@ -58,9 +62,8 @@
       </el-radio-group>
     </el-form-item>
     <el-form-item label="用户头像" prop="avatar">
-      <el-upload class="avatar-uploader" :action="uploadAvatarUrl" :show-file-list="false"
-                 :headers="uploadAvatarHeaders" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-<!--        <img v-if="ruleForm.avatar" :src="imgHost + ruleForm.avatar" class="avatar">-->
+      <el-upload class="avatar-uploader" :action="uploadAvatarUrl" :show-file-list="false" :headers="uploadAvatarHeaders" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+        <!--        <img v-if="ruleForm.avatar" :src="imgHost + ruleForm.avatar" class="avatar">-->
         <el-image v-if="ruleForm.avatar" fit="fill" class="avatar" :src="ruleForm.avatar||$store.state.defaultData.avatar">
           <div slot="error" class="image-slot">
             <img :src="baseUrl + ruleForm.avatar" alt='用户头像'>
@@ -79,9 +82,9 @@
   </el-form>
 </template>
 <script>
-const {useRouter, useStore, useTip} = hook;
-const {reactive, toRef, ref, watch, computed, onMounted} = vue;
-const {user: userApi, useRequest} = api;
+const { useRouter, useStore, useTip } = hook;
+const { reactive, toRef, ref, watch, computed, onMounted } = vue;
+const { user: userApi, useRequest } = api;
 
 let initRuleForm = {
   id: '',
@@ -93,7 +96,7 @@ let initRuleForm = {
   remark: '',
   email: '',
   group_id: []
-}
+};
 
 export default {
   name: 'userView',
@@ -103,8 +106,8 @@ export default {
       defaulft: {}
     }
   },
-  setup(prop, ctx) {
-    const {root} = ctx;
+  setup (prop, ctx) {
+    const { root } = ctx;
     const ruleFormRef = ref(null);
 
     let ruleForm = ref({
@@ -118,13 +121,13 @@ export default {
       email: '',
       group_id: []
     });
-    let imgHost = ref("")
+    let imgHost = ref('');
 
     let formState = ref(false);
 
     const baseUrl = computed(() => {
       return config.baseURL;
-    })
+    });
 
     const groups = computed(() => {
       return useStore(ctx).getters.groups;
@@ -136,7 +139,7 @@ export default {
 
     const rules = computed(() => {
       let rules = {
-        status: [{required: true, message: '请选择用户状态', trigger: 'change'}],
+        status: [{ required: true, message: '请选择用户状态', trigger: 'change' }],
         remark: [
           {
             min: 0,
@@ -146,7 +149,7 @@ export default {
           }
         ],
         email: [
-          {required: true, message: '请输入Email', trigger: 'blur'},
+          { required: true, message: '请输入Email', trigger: 'blur' },
           {
             type: 'email',
             message: '请输入正确的邮箱地址',
@@ -154,7 +157,7 @@ export default {
           }
         ]
       };
-      rules['group_id'] = [{required: true, message: '请选择用户角色', trigger: 'blur'}];
+      rules['group_id'] = [{ required: true, message: '请选择用户角色', trigger: 'blur' }];
       if (!hasEdit.value) {
         let validatePass = function (rule, value, callback) {
           if (value !== ruleForm.value.password) {
@@ -164,14 +167,14 @@ export default {
           }
         };
         rules['password'] = [
-          {required: true, message: '请输入用户密码', trigger: 'blur'}
+          { required: true, message: '请输入用户密码', trigger: 'blur' }
         ];
         rules['password2'] = [
-          {required: true, message: '请再次输入用户密码', trigger: 'blur'},
-          {validator: validatePass, trigger: 'blur'}
+          { required: true, message: '请再次输入用户密码', trigger: 'blur' },
+          { validator: validatePass, trigger: 'blur' }
         ];
         rules['username'] = [
-          {required: true, message: '请输入用户名', trigger: 'blur'},
+          { required: true, message: '请输入用户名', trigger: 'blur' },
           {
             min: 3,
             max: 25,
@@ -184,12 +187,12 @@ export default {
     });
 
     const uploadAvatarHeaders = computed(() => {
-      return {token: useStore(ctx).getters.token};
+      return { token: useStore(ctx).getters.token };
     });
 
     const uploadAvatarUrl = computed(() => {
       return userApi.uploadAvatar();
-    })
+    });
 
     const hasEdit = computed(() => {
       return !!prop.info.id;
@@ -211,9 +214,9 @@ export default {
 
     watch(() => prop.info, (val) => {
       setData();
-    }, {immediate: true});
+    }, { immediate: true });
 
-    function setData() {
+    function setData () {
       root.$nextTick(() => {
         ruleFormRef.value.clearValidate();
       });
@@ -231,12 +234,12 @@ export default {
       ruleForm.value = JSON.stringify(data) === '{}' ? Object.assign({}, initRuleForm) : Object.assign({}, initRuleForm, data);
     }
 
-    function submitForm() {
+    function submitForm () {
       ruleFormRef.value.validate(function (valid) {
         if (valid) {
           formState.value = true;
           let api = hasEdit.value ? userApi.updateUser : userApi.createUser;
-          const {loading, error, data, run} = useRequest(api(ruleForm.value));
+          const { loading, error, data, run } = useRequest(api(ruleForm.value));
           watch(data, (val) => {
             if (val.data && val.code < 400) {
               let id;
@@ -253,24 +256,24 @@ export default {
               useTip().message('warning', val.msg);
               resetForm();
             }
-          })
+          });
           watch(error, (err) => {
             useTip().message('warning', err);
-          })
+          });
           watch([data, error], ([d, e]) => {
             formState.value = false;
-          })
+          });
         } else {
           return false;
         }
       });
     }
 
-    function resetForm() {
+    function resetForm () {
       setData();
     }
 
-    function handleAvatarSuccess(e, file) {
+    function handleAvatarSuccess (e, file) {
       if (e.code === 200) {
         imgHost.value = e.data.host;
         ruleForm.value.avatar = e.data.path;
@@ -279,7 +282,7 @@ export default {
       }
     }
 
-    function beforeAvatarUpload(file) {
+    function beforeAvatarUpload (file) {
       let isType = file.type === 'image/jpeg' || file.type === 'image/png';
       let isLt2M = file.size / 1024 / 1024 < 2;
 
