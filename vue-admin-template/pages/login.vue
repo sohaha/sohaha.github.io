@@ -82,7 +82,7 @@ export default load({
         try {
           let res = await withLoading(() => userApi.login(data));
           if (res.code === 200) {
-            useStore(ctx).commit('setToken', res.data.tid + '_' + res.data.token);
+            useStore(ctx).commit('setToken', res.data.token);
             await ctx.root.getUserInfo();
             useTip().message('success', '登录成功');
           } else {
