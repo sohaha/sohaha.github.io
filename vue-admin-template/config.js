@@ -16,11 +16,10 @@ VueRun.config({
   }
 });
 
-const assetsCdn = '//resources.73zls.com/vue-admin-template';
-const themePrefixPath = assetsCdn + '/themes';
-let themes = [];
-['lavender', 'green', 'dark', 'diablo'].forEach((theme) => {
-  themes[theme] = [themePrefixPath + '/' + theme + '/theme/index.css', themePrefixPath + '/' + theme + '/app.css'];
+var assetsCdn = '//resources.73zls.com/vue-admin-template';
+var themePrefixPath = assetsCdn + '/themes';
+var themes = ['lavender', 'green', 'dark', 'diablo'].map(function (theme) {
+  return [themePrefixPath + '/' + theme + '/theme/index.css', themePrefixPath + '/' + theme + '/app.css'];
 });
 
 VueRun.init(function () {
@@ -55,7 +54,7 @@ VueRun.init(function () {
           t.initSate = true;
         };
 
-        var user = async function () {
+        var user = function () {
           return api.useRequestWith(api.user.current(), { manual: true }).run();
         };
         return user().then(function (res) {
