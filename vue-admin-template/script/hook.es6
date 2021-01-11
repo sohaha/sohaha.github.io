@@ -145,10 +145,13 @@ export function useLoading() {
         loading.value = true;
         return task();
       })
-      .finally(() => {
-        if (autocomplete) {
-          loading.value = false;
-        }
+      .then(e => {
+        autocomplete && setLoading(false);
+        return e;
+      })
+      .catch(e => {
+        autocomplete && setLoading(false);
+        return e
       });
   };
   return {

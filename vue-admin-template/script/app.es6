@@ -176,12 +176,6 @@ export function demoMenu () {
 }
 
 const appendRouter2Children = [
-  /*{
-   name: ' 示例',
-   path: 'demo',
-   meta: { keepAlive: true },
-   component: VueRun('./pages/demo/index.vue')
-   }*/
   {
     'name': '页面示例',
     'path': 'demo',
