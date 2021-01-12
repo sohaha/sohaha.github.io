@@ -156,109 +156,111 @@ export default {
 
 <style scoped>
 .header-logo {
-  padding: 0 0 0 5px;
-  text-align: center;
-  color: #2c6eb1;
-  font-weight: bold;
-  letter-spacing: 2px;
+  padding : 0 0 0 5px;
+  text-align : center;
+  color : #2C6EB1;
+  font-weight : bold;
+  letter-spacing : 2px;
 }
 
 .is-collapse .header-logo.tap {
-  width: 52px !important;
-  overflow: hidden;
+  width : 52px !important;
+  overflow : hidden;
 }
 
 .header-logo img {
-  height: 42px;
-  vertical-align: middle;
-  padding-bottom: 4px;
+  height : 42px;
+  vertical-align : middle;
+  padding-bottom : 4px;
+  width : 164px;
 }
 
 .is-collapse .header-logo img {
-  max-width: inherit;
+  max-width : inherit;
 }
 
 .header-nav {
-  padding: 0;
-  height: 60px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  overflow: hidden;
-  -ms-flex-direction: row-reverse;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: reverse;
-  flex-direction: row-reverse;
+  padding : 0;
+  height : 60px;
+  display : -webkit-box;
+  display : -ms-flexbox;
+  display : flex;
+  overflow : hidden;
+  -ms-flex-direction : row-reverse;
+  -webkit-box-orient : horizontal;
+  -webkit-box-direction : reverse;
+  flex-direction : row-reverse;
 }
 
 .header-nav > div {
-  width: 60px;
-  text-align: center;
-  padding: 0 10px;
+  width : 60px;
+  text-align : center;
+  padding : 0 10px;
 }
 
 .header-nav > div:hover {
   /*background-color: #eaf1f7;*/
-  background-color: #28344a;
+  background-color : #28344A;
 }
 
 .tip-msg {
-  font-size: 30px;
-  line-height: 20px;
+  font-size : 30px;
+  line-height : 20px;
 }
 
 .el-dropdown-nav {
-  font-size: 30px;
-  line-height: 56px;
+  font-size : 30px;
+  line-height : 56px;
 }
 
 .header-avatar {
-  width: 40px;
-  height: 40px;
-  overflow: hidden;
-  vertical-align: middle;
-  border-radius: 50%;
-  margin: 10px 5px 0 7px;
+  width : 40px;
+  height : 40px;
+  overflow : hidden;
+  vertical-align : middle;
+  border-radius : 50%;
+  margin : 10px 5px 0 7px;
 }
 
 .el-dropdown-menu.el-popper {
-  white-space: nowrap;
-  margin-top: 5px !important;
+  white-space : nowrap;
+  margin-top : 5px !important;
 }
 
 .header-nav .user-menu.el-dropdown {
-  height: 60px;
-  line-height: 25px;
-  display: block;
-  width: 65px;
-  text-align: center;
-  float: right;
-  box-sizing: border-box;
-  overflow: hidden;
+  height : 60px;
+  line-height : 25px;
+  display : block;
+  width : 65px;
+  text-align : center;
+  float : right;
+  box-sizing : border-box;
+  overflow : hidden;
 }
 
 .header-nav .el-icon--right {
-  position: absolute;
-  right: -3px;
-  top: 37px;
-  color: #e3e4e4;
+  position : absolute;
+  right : -3px;
+  top : 37px;
+  color : #E3E4E4;
 }
 
 .header-name {
-  display: block;
-  font-size: 12px;
-  color: #999999;
-  border-top: 1px solid #e4e8eb;
-  margin-top: 5px;
-  padding-top: 2px;
-  line-height: 12px;
+  display : block;
+  font-size : 12px;
+  color : #999999;
+  border-top : 1px solid #E4E8EB;
+  margin-top : 5px;
+  padding-top : 2px;
+  line-height : 12px;
 }
 
 .nav-top-collapse-icon {
-  height: 60px;
-  text-align: center;
-  font-size: 25px;
-  -webkit-animation: opacity 2s infinite;
-  animation: opacity 2s infinite;
+  height : 60px;
+  text-align : center;
+  font-size : 25px;
+  -webkit-animation : opacity 2s infinite;
+  animation : opacity 2s infinite;
 }
+
 </style>
