@@ -118,3 +118,13 @@ export const sys = {
     return app.request.post('/ZlsManage/MenuApi/Sort.go', data);
   },
 }
+
+// wx-会员接口
+export const member = {
+  memberList() {
+    return app.request.get('/Manage/MemberApi/list.go');
+  },
+  memberBanWxUser(data) {
+    return app.request.post('/Manage/MemberApi/BanWxUser.go', data)
+  }
+}
