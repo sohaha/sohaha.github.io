@@ -331,7 +331,6 @@ html {
 
 body, a {
   color : rgb(53, 53, 53);
-  /*background-color: #324157;*/
 }
 
 body, h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, fieldset, textarea {
@@ -363,20 +362,16 @@ img {
   -ms-flex-direction : column;
   flex-direction : column;
   background : #F5F7F9;
-  /*#495060;*/
   position : absolute;
   top : 0;
   right : 0;
   z-index : 100000;
   -webkit-transition : opacity 1s;
   transition : opacity 1s;
-  /*background: -webkit-linear-gradient(to top, #d7dde8, #495060);*/
-  /*background: linear-gradient(to top, #d7dde8, #495060);*/
 }
 
 .loading-group .title {
   color : #495060;
-  /*#fff;*/
   font-weight : bold;
   font-size : 14px;
   margin-top : 50px;
@@ -710,9 +705,6 @@ img {
   margin-bottom : 20px;
   background-color : rgb(255, 255, 255);
   border-radius : 3px;
-  -moz-border-radius : 3px;
-  -webkit-border-radius : 3px;
-  -webkit-box-shadow : 0 2px 12px 0 rgba(0, 0, 0, .1);
   box-shadow : 0 2px 12px 0 rgba(0, 0, 0, .1);
   border : 1px solid #EBEEF5;
   padding : 14px 20px;
@@ -724,7 +716,6 @@ img {
   line-height : 1;
   min-height : 35px;
   position : relative;
-  /* margin-bottom: 10px; */
 }
 
 .view-title.float-clear > span:first-child {
@@ -744,7 +735,6 @@ img {
 .view-title-right {
   float : right;
   min-height : 35px;
-  /* padding-bottom : 10px; */
   overflow : auto;
   white-space : nowrap;
 }
@@ -980,6 +970,12 @@ legend {
 
 /* Mobile phone */
 @media (min-device-width: 320px) and (max-device-width: 640px) {
+  #app .nav_scrollbar {
+    max-height : 100vh;
+    margin-bottom : 0 !important;
+    padding : 0;
+  }
+
   .content-container {
     margin-left : 4px;
   }
