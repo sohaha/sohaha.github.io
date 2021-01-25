@@ -16,7 +16,7 @@ VueRun.config({
   }
 });
 
-var assetsCdn = '//resources.73zls.com/vue-admin-template';
+var assetsCdn = 'https://resources.73zls.com/vue-admin-template';
 var themePrefixPath = assetsCdn + '/themes';
 var themes = ['lavender', 'green', 'dark', 'diablo'].map(function (theme) {
   return [themePrefixPath + '/' + theme + '/theme/index.css', themePrefixPath + '/' + theme + '/app.css'];
