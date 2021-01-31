@@ -1,5 +1,5 @@
 <template>
-	<el-container id="main">
+	<el-container id="main" :class="iMobile ? 'set-mob' : ''">
 		<el-header
 			class="header"
 			height="60px"
@@ -82,7 +82,7 @@ const {
 	useWindowSize,
 	useWindowSizeRealTime,
 } = hook;
-const { initWindowFunc } = util;
+const { initWindowFunc, isMobile } = util;
 const { user: userApi, useRequest } = api;
 
 export default {
@@ -246,6 +246,7 @@ export default {
 		}
 
 		return {
+      iMobile: ref(isMobile()),
 			title,
 			user,
 			logout,
@@ -1069,59 +1070,58 @@ legend {
 	display: none;
 }
 /* Mobile phone */
-@media (min-device-width: 320px) and (max-device-width: 640px) {
-	#app .nav_scrollbar {
-		max-height: 100vh;
-		margin-bottom: 0 !important;
-		padding: 0;
-	}
-
-	.content-container {
-		margin-left: 4px;
-	}
-
-	.aside-nav {
-		display: block;
-		height: 100%;
-		position: fixed;
-		top: 0;
-		left: -200vw;
-		z-index: 666;
-		background: #304156;
-	}
-
-	.aside-nav.open {
-		left: 0;
-	}
-
-	.aside-nav-bg.open {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		background: rgba(0, 0, 0, 0.6);
-		z-index: 660;
-	}
-
-	.tip-page {
-		overflow: auto;
-	}
-
-	.breadcrumb {
-		position: static !important;
-	}
-
-	.float-nav-btn {
-		display: block;
-		position: absolute;
-		bottom: 0;
-		font-size: 20px;
-		z-index: 1;
-		padding: 5px;
-		left: -5px;
-		color: #fff;
-		background-color: #3c495d;
-	}
+#app .set-mob .nav_scrollbar {
+  max-height: 100vh;
+  margin-bottom: 0 !important;
+  padding: 0;
 }
+
+.set-mob .content-container {
+  margin-left: 4px;
+}
+
+.set-mob .aside-nav {
+  display: block;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: -200vw;
+  z-index: 666;
+  background: #304156;
+}
+
+.set-mob .aside-nav.open {
+  left: 0;
+}
+
+.set-mob .aside-nav-bg.open {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 660;
+}
+
+.set-mob .tip-page {
+  overflow: auto;
+}
+
+.set-mob .breadcrumb {
+  position: static !important;
+}
+
+.set-mob .float-nav-btn {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  font-size: 20px;
+  z-index: 1;
+  padding: 5px;
+  left: -5px;
+  color: #fff;
+  background-color: #3c495d;
+}
+/* Mobile phone end */
 </style>
