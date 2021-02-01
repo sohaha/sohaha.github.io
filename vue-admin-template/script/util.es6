@@ -131,20 +131,19 @@ export function getInfo() {
 
 export function isMobile() {
   let ua = navigator.userAgent;
-  if (typeof ua !== 'string') return false
+  if (typeof ua !== 'string') return false;
 
   let mobileRE = /(iphone|android|ipad|huawei|webos|samsung|midp|wap|phone|^ucweb)/i
   let result = mobileRE.test(ua);
 
   if (
       !result &&
-      navigator &&
       navigator.maxTouchPoints > 1 &&
       ua.indexOf('Macintosh') !== -1 &&
       ua.indexOf('Safari') !== -1
   ) {
-    result = true
+    result = true;
   }
 
-  return result
+  return result;
 }
