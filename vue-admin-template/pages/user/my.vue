@@ -7,34 +7,42 @@
         <el-container>
           <el-aside width="auto">
             <el-tabs tab-position="left">
-              <el-tab-pane label="1"></el-tab-pane>
-              <el-tab-pane label="2"></el-tab-pane>
-              <el-tab-pane label="3"></el-tab-pane>
-              <el-tab-pane label="4"></el-tab-pane>
+              <el-tab-pane label="个人资料"></el-tab-pane>
             </el-tabs>
           </el-aside>
-          <el-main>11</el-main>
+          <el-main>
+            <div>
+              <el-image style="width: 200px; height: 200px" :src="avatar" fit="cover"></el-image>
+              <div> {{ nickname }} </div>
+            </div>
+          </el-main>
         </el-container>
       </aside>
     </fieldset>
   </div>
 </template>
 <script>
-const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useTip, useLoading} = hook;
-const {user: userApi, useRequestWith} = api;
-const {useInitTitle} = util;
+const { ref, reactive, computed, onMounted, watch, onBeforeUnmount } = vue;
 
 export default {
   components: {},
-  setup(prop, ctx) {
-    onMounted(() => {
-    })
+  setup (prop, ctx) {
+    const $store = hook.useStore(ctx);
 
-    let title = ref('个人设置(开发中)');
+    let title = ref('个人设置');
+
+    const nickname = computed(() => {
+      return $store.getters.nickname;
+    });
+
+    const avatar = computed(() => {
+      return $store.getters.avatar;
+    });
 
     return {
-      title
+      title,
+      nickname,
+      avatar
     };
   }
 };

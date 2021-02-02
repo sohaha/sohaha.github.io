@@ -72,27 +72,29 @@ export default {
     }
   },
   setup(prop, ctx) {
-    onMounted(() => {// mounted
+    const $store = useStore(ctx);
+
+    onMounted(() => {
       getUnreadMessageCount();
       window['SysGetUnreadMessageCount'] = getUnreadMessageCount;
     })
 
-    onBeforeUnmount(() => {// beforeDestroy
+    onBeforeUnmount(() => {
       setTimeout(() => {
         clearTimeout(MessageCountTime);
       });
     })
 
     const nickname = computed(() => {
-      return useStore(ctx).getters.nickname;
+      return $store.getters.nickname;
     })
 
     const avatar = computed(() => {
-      return useStore(ctx).getters.avatar;
+      return $store.getters.avatar;
     })
 
     const unreadMessageCount = computed(() => {
-      return useStore(ctx).state.unreadMessageCount;
+      return $store.state.unreadMessageCount;
     })
 
     const unreadMessageCountApi = useRequestWith(userApi.unreadMessageCount, {manual: true});
@@ -104,18 +106,17 @@ export default {
       if (err) {
         useTip().message('warning', err);
       } else {
-        if (useStore(ctx).state.unreadMessageCount !== data.count) {
-          useStore(ctx).commit('setUnreadMessageCount', data.count)
+        if ($store.state.unreadMessageCount !== data.count) {
+          $store.commit('setUnreadMessageCount', data.count)
         }
       }
-      if (useStore(ctx).state.token && window['messagesRegularly']) {
+      if ($store.state.token && window['messagesRegularly']) {
         MessageCountTime = setTimeout(getUnreadMessageCount, window['messagesRegularly']);
       }
     }
 
 
     function useClickMenu(command) {
-      // this.logout()
       if (this[command]) {
         this[command]();
       }
@@ -123,7 +124,7 @@ export default {
     }
 
     function useUser() {
-      useRouter(ctx).replace('/main/user/lists?key=' + useStore(ctx).state.user.username + '&v=' + +new Date())
+      useRouter(ctx).replace('/main/user/lists?key=' + $store.state.user.username + '&v=' + +new Date())
     }
 
     function useLogs() {
@@ -132,7 +133,7 @@ export default {
 
     function useClear() {
       VueRun.clearCache();
-      useTip().message('success', '清除缓存成功');
+      location.reload();
     }
 
     function useHandleNav() {
