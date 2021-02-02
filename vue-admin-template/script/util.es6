@@ -147,3 +147,17 @@ export function isMobile() {
 
   return result;
 }
+export function throttle(fn, delay) {
+  let go = true;
+  return () => {
+    if (!go) {
+      return false;
+    }
+
+    go = false;
+    setTimeout(() => {
+      fn();
+      go = true;
+    }, delay);
+  };
+}

@@ -74,6 +74,7 @@
 </template>
 <script>
 const { ref, reactive, computed, onMounted, onUnmounted, watch } = vue;
+const { throttle } = util;
 const {
 	useRouter,
 	useStore,
@@ -175,60 +176,62 @@ export default {
 			});
 		}
 
-		let isCollapse = ref(false);
-		let smallScreenWidth = 640,
-			mob = false;
-		const { width } = useWindowSize();
-		let smallScreen = width.value <= smallScreenWidth;
+    const asideClass = computed(() => {
+      let defClass =
+          'nav-left aside-nav slow-motion ' + (asideNavOpen.value ? 'open' : '');
+      return isCollapse.value
+          ? defClass + ' is-collapse'
+          : defClass + ' not-collapse';
+    });
 
-		clearTimeout(judge);
-		let judge = setTimeout(() => {
-			mob =
-				window
-					.getComputedStyle(document.querySelector('.content-container'))
-					.getPropertyValue('margin-left') !== '0px';
-			if (mob) {
-				isCollapse.value = false;
-			} else {
-				isCollapse.value = smallScreen;
-			}
+    const isWrapBreadcrumb = ref(false),
+        asideNavOpen = ref(false);
 
-			var $box = document.querySelector('.el-main.content-box');
-			var $breadcrumb = document.querySelector('.breadcrumb');
-			var $viewTitleRight = document.querySelector(
-				'.view-title.float-clear>.view-title-right'
-			);
-			if ($breadcrumb && $viewTitleRight) {
-				if (
-					$breadcrumb.offsetWidth + $viewTitleRight.offsetWidth >=
-					$box.offsetWidth - 25
-				) {
-					$viewTitleRight.classList.add('view-title-right__alone');
-				} else {
-					$viewTitleRight.classList.remove('view-title-right__alone');
-				}
-			}
-			judge = false;
-		}, 300);
+    let isCollapse = ref(false);
+		let isMob = ref(isMobile());
 
-		const asideClass = computed(() => {
-			let defClass =
-				'nav-left aside-nav slow-motion ' + (asideNavOpen.value ? 'open' : '');
-			return isCollapse.value
-				? defClass + ' is-collapse'
-				: defClass + ' not-collapse';
-		});
+    function useHandleNav() {
+      if (isMob.value) {
+        asideNavOpen.value = !asideNavOpen.value;
+      } else {
+        isCollapse.value = !isCollapse.value;
+      }
+    }
 
-		const isWrapBreadcrumb = ref(false),
-			asideNavOpen = ref(false);
+		function useNavCollapse () {
+      if (!isMob.value) {
+        let clientWidth = document.documentElement.clientWidth;
+        isCollapse.value = clientWidth <= 850
+      }
+    }
 
-		function useHandleNav() {
-			if (mob) {
-				asideNavOpen.value = !asideNavOpen.value;
-			} else {
-				isCollapse.value = !isCollapse.value;
-			}
-		}
+    function useBreadcrumbWrap() {
+      let wrap = document.querySelector('.el-main.content-box');
+      let breadcrumb = document.querySelector('.breadcrumb');
+      let viewTitleRight = document.querySelector('.view-title.float-clear>.view-title-right');
+      if (breadcrumb && viewTitleRight) {
+        if (breadcrumb.offsetWidth + viewTitleRight.offsetWidth > wrap.offsetWidth - 40) {
+          viewTitleRight.classList.add('view-title-right__alone');
+        } else {
+          viewTitleRight.classList.remove('view-title-right__alone');
+        }
+      }
+    }
+
+    function useReset() {
+      if (!isMob.value) {
+        asideNavOpen.value = false;
+      } else {
+        isCollapse.value = false;
+      }
+    }
+
+    window['onresize'] = throttle(() => {
+      isMob.value = isMobile();
+      useReset();
+      useNavCollapse();
+      useBreadcrumbWrap();
+    }, 100);
 
 		function useClickTopNav(name) {
 			switch (name) {
@@ -246,7 +249,7 @@ export default {
 		}
 
 		return {
-      iMobile: ref(isMobile()),
+      iMobile: isMob,
 			title,
 			user,
 			logout,
