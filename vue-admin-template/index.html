@@ -28,7 +28,7 @@
       </div>
       <div class="title">加载中...</div>
       <div class="sub-title" v-if="!initSate">初次加载会比较慢，请耐心等待</div>
-      <div class="sub-title" style='display: none' v-show='initSate'>请稍作等待，马上完成</div>
+      <div class="sub-title" style='display:none' v-show='initSate'>请稍作等待，马上完成</div>
       <noscript>
         <h3 class="noscript">本页面需要浏览器支持（启用）JavaScript</h3>
       </noscript>
@@ -37,7 +37,7 @@
   <router-view></router-view>
 </div>
 <script>
-
+  var version = 0;
 </script>
 <script src='//resources.73zls.com/vue-admin/run.js'></script>
 <script src='config.js'></script>

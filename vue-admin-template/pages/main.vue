@@ -838,6 +838,7 @@ i[class^='icon-'] + span {
 	min-height: 35px;
 	overflow: auto;
 	white-space: nowrap;
+  max-width: 100%;
 }
 
 .view-title-right.view-title-right__alone {
@@ -980,7 +981,6 @@ i[class^='icon-'] + span {
 .form-create-mini .el-col:last-child > .el-col:first-child {
 	margin-right: 10px;
 }
-
 /* 竖排表单 END */
 
 .list-avatar {
@@ -1072,11 +1072,16 @@ legend {
 .float-nav-btn {
 	display: none;
 }
+
 /* Mobile phone */
 #app .set-mob .nav_scrollbar {
   max-height: 100vh;
   margin-bottom: 0 !important;
   padding: 0;
+}
+
+.set-mob .view-title:empty{
+  min-height: 5px;
 }
 
 .set-mob .content-container {
@@ -1117,12 +1122,12 @@ legend {
 
 .set-mob .float-nav-btn {
   display: block;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   font-size: 20px;
   z-index: 1;
   padding: 5px;
-  left: -5px;
+  left: -2px;
   color: #fff;
   background-color: #3c495d;
 }

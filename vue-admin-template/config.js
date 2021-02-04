@@ -9,7 +9,7 @@ var config = {
 VueRun.config({
   cdn: '//resources.73zls.com/vue-admin',
   debug: config.debug,
-  version: 1,
+  version: version,
   notExist: function (url) {
     console.log('不存在', url);
     hook.useTip().message('warning', '页面不存在');
