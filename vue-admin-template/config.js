@@ -12,7 +12,7 @@ VueRun.config({
   version: version,
   notExist: function (url) {
     console.log('不存在', url);
-    hook.useTip().message('warning', '页面不存在');
+    util.useTip().message('warning', '页面不存在');
   }
 });
 
@@ -24,7 +24,7 @@ var themes = ['lavender', 'green', 'dark', 'diablo'].map(function (theme) {
 
 VueRun.init(function () {
   app.requestInit();
-  Vue.mixin({ beforeCreate: hook.setVm });
+  Vue.mixin({beforeCreate: hook.setVm});
   new Vue({
     router: app.initRouter(),
     store: app.initStore(),
@@ -55,7 +55,7 @@ VueRun.init(function () {
         };
 
         var user = function () {
-          return api.useRequestWith(api.user.current(), { manual: true }).run();
+          return api.useRequestWith(api.user.current(), {manual: true}).run();
         };
         return user().then(function (res) {
           var data = res[0];
@@ -77,7 +77,7 @@ VueRun.init(function () {
           }
           if (err) {
             console.log(err);
-            hook.useTip().message('warning', err);
+            util.useTip().message('warning', err);
           }
         }).catch(function (err) {
           console.log(err);
@@ -96,7 +96,7 @@ VueRun.init(function () {
   js: [
     VueRun.isSupportEs6('new WeakMap()') ? '' : VueRun.lib('/lib/weakmap-polyfill.js'),
     'getOwnPropertySymbols' in Object ? '' : VueRun.lib('/lib/get-own-property-symbols-polyfill.js'),
-    [VueRun.lib('/lib/axios.js'), { async: true }],
+    [VueRun.lib('/lib/axios.js'), {async: true}],
     VueRun.lib('/lib/vue-router.js'),
     VueRun.lib('/lib/vuex.js'),
     VueRun.lib('/lib/composition.js'),

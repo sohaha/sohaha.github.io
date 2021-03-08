@@ -153,8 +153,9 @@
 	</div>
 </template>
 <script>
+const {useTip} = util;
 const { ref, reactive, computed, onMounted, watch } = vue;
-const { useRouter, useStore, useCache, useTip, useLoading } = hook;
+const { useRouter, useStore, useCache,  useLoading } = hook;
 const { user: userApi, useRequest, useRequestPage, useRequestWith } = api;
 const { useInitTitle } = util;
 

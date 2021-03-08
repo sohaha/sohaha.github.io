@@ -1,13 +1,13 @@
 export function useRequestPage(fn, p = {}, o = {}) {
-  return apiUtil.useRequestPage(fn, p, o)
+  return apiUtil.useRequestPage(fn, p, o);
 }
 
 export function useRequestWith(fn, o = {}) {
-  return apiUtil.useRequestWith(fn, o)
+  return apiUtil.useRequestWith(fn, o);
 }
 
 export function useRequest(fn, o = {}) {
-  return apiUtil.useRequest(fn, o)
+  return apiUtil.useRequest(fn, o);
 }
 
 export const user = {
@@ -18,9 +18,9 @@ export const user = {
     return config.baseURL + '/ZlsManage/UserApi/upload.go';
   },
   current(data) {
-    return ['get','/ZlsManage/UserApi/UseriInfo.go', data];
+    return ['get', '/ZlsManage/UserApi/UseriInfo.go', data];
   },
-  userInfo:['get','/ZlsManage/UserApi/UseriInfo.go'],
+  userInfo: ['get', '/ZlsManage/UserApi/UseriInfo.go'],
   login(data) {
     return app.request.post('/ZlsManage/UserApi/GetToken.go', data);
   },
@@ -117,4 +117,10 @@ export const sys = {
   sysMenuSort(data) {
     return app.request.post('/ZlsManage/MenuApi/Sort.go', data);
   },
-}
+  getSetting() {
+    return ['get', '/ZlsManage/SystemApi/Setting.go'];
+  },
+  setSetting(data) {
+    return ['put', '/ZlsManage/SystemApi/Setting.go', data];
+  },
+};

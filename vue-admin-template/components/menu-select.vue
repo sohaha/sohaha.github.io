@@ -7,16 +7,17 @@
 <template>
   <el-select v-model="value" :placeholder="placeholder" size="small" @change="setData(value)" :disabled="isDisabled">
     <el-option
-        size="small"
-        v-for="item in options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
+      size="small"
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
     </el-option>
   </el-select>
 </template>
 <script>
-const {useRouter, useStore, useTip} = hook;
+const {useTip} = util;
+const {useRouter, useStore} = hook;
 const {reactive, toRef, ref, watch, computed, onMounted} = vue;
 const {user: userApi, useRequest} = api;
 

@@ -145,7 +145,8 @@
   </div>
 </template>
 <script>
-const { useRouter, useStore, useTip } = hook;
+const {useTip} = util;
+const { useRouter, useStore } = hook;
 const { ref, reactive, computed, onMounted, watch } = vue;
 
 export default {

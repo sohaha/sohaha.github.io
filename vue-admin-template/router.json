@@ -46,10 +46,20 @@
     },
     "children": [
       {
+        "name": "系统设置",
+        "path": "system/setting",
+        "url": "pages/system/setting.vue",
+        "icon": "icon-settings-",
+        "meta": {
+          "show": true,
+          "has": true
+        }
+      },
+      {
         "name": "程序设置",
         "path": "system/config",
         "url": "pages/system/config.vue",
-        "icon": "icon-settings",
+        "icon": "icon-shield-off",
         "meta": {
           "show": true,
           "has": true

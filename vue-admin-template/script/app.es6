@@ -374,7 +374,7 @@ export function requestInit() {
 
   const errHandle = (error) => {
     let v = vm.$root;
-    const { useTip } = hook;
+    const { useTip } = util;
     if (!!error.response) {
       switch (error.response.status) {
         case 401:

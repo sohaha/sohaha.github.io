@@ -93,9 +93,9 @@
 </template>
 <script>
 const { ref, reactive, computed, onMounted, watch } = vue;
-const { useRouter, useStore, useCache, useTip, useLoading } = hook;
+const { useRouter, useStore, useCache,  useLoading } = hook;
 const { user: userApi, useRequestWith, useRequestPage } = api;
-const { useInitTitle, getInfo } = util;
+const { useInitTitle, getInfo,useTip } = util;
 export default {
   components: {
     userView: VueRun('components/user-view.vue')

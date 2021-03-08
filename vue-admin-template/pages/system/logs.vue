@@ -54,8 +54,9 @@
   </div>
 </template>
 <script>
+const {useTip} = util;
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useTip, useLoading} = hook;
+const {useRouter, useStore, useCache,  useLoading} = hook;
 const {user: userApi, useRequest, useRequestWith} = api;
 const {useInitTitle} = util;
 

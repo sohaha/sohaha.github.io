@@ -11,7 +11,8 @@
         <h2 class="title">{{ ProjectName }}</h2>
         <el-tabs v-model="activeName">
           <el-tab-pane label="账号登录" name="username">
-            <form-create ref='form' @on-submit="formSubmit" @keyup.enter.native='formSubmit' :rule="formRule" :option="formOption"></form-create>
+            <form-create ref='form' @on-submit="formSubmit" @keyup.enter.native='formSubmit' :rule="formRule"
+                         :option="formOption"></form-create>
           </el-tab-pane>
           <el-tab-pane label="扫码登录" name="qr">
             <div class='qr-container'>
@@ -29,31 +30,20 @@
 export default load({
   js: [VueRun.lib('/form-create/form-create.js')]
 }).then(async () => {
-  const {
-    useRouter,
-    useCache,
-    useStore,
-    useLoading,
-    useTip
-  } = hook;
-  const {
-    watch,
-    ref,
-    onMounted,
-  } = vue;
-  const {
-    user: userApi
-  } = api;
+  const {useTip} = util;
+  const {useRouter, useCache, useStore, useLoading,} = hook;
+  const {watch, ref, onMounted,} = vue;
+  const {user: userApi} = api;
   return {
     name: 'login',
-    setup (prop, ctx) {
+    setup(prop, ctx) {
       const {
         loading,
         withLoading
       } = useLoading();
       const {
         getCache
-      } = useCache({},window['sessionStorage']);
+      } = useCache({}, window['sessionStorage']);
       watch(() => [ctx.root.initSate, useStore(ctx).getters.isLogin], ([init, isLogin]) => {
         if (init) {
           if (isLogin) {

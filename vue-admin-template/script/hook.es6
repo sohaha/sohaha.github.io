@@ -1,4 +1,4 @@
-const { ref, toRef, watch, computed, onMounted, onUnmounted, getCurrentInstance } = vue;
+const {ref, toRef, watch, computed, onMounted, onUnmounted, getCurrentInstance} = vue;
 let vm;
 
 export function setVm(root) {
@@ -65,6 +65,7 @@ export function useRouter(ctx) {
     getQuery
   };
 }
+
 function getPath(path, route) {
   if (path.indexOf('/') === 0) {
     return path;
@@ -139,7 +140,7 @@ export function useLoading() {
   const setLoading = value => {
     loading.value = value;
   };
-  const withLoading = (task, { autocomplete = true } = {}) => {
+  const withLoading = (task, {autocomplete = true} = {}) => {
     return Promise.resolve()
       .then(() => {
         loading.value = true;
@@ -151,7 +152,7 @@ export function useLoading() {
       })
       .catch(e => {
         autocomplete && setLoading(false);
-        return e
+        return e;
       });
   };
   return {
@@ -160,69 +161,6 @@ export function useLoading() {
     withLoading
   };
 }
-
-const ele = window['ELEMENT'];
-
-// 显示提示
-export function useTip() {
-  const getOpt = (type, message, duration = 3000) => {
-    if (!message && !type) return;
-    if (typeof type === 'object')
-      return Object.assign({ duration: duration }, type);
-    if (!message) {
-      [type, message] = [message, type];
-    }
-    if (!type) type = 'info';
-    return { message, type, duration };
-  };
-  const message = function (type, tip, duration) {
-    ele.Message(Object.assign({
-      showClose: true,
-      center: true,
-    }, getOpt(type, tip, duration)));
-  };
-  const notify = function (type, tip, title = '温馨提示', duration) {
-    ele.Notification(Object.assign({
-      customClass: 'custom-notify-class',
-      title: title,
-      offset: 58
-    }, getOpt(type, tip, duration)));
-  };
-  return { message, notify };
-}
-
-export function useConfirm() {
-  var defaultCft = {
-    center: true,
-    showCancelButton: true,
-    showConfirmButton: true
-  }
-
-  const warning = function (title, message, confirmFn, cancelFn, opt) {
-    if (typeof opt !== 'object') opt = {};
-    ele.MessageBox(Object.assign(defaultCft, {
-      title: title,
-      message: message,
-      type: 'warning',
-      callback: function (type) {
-        switch (type) {
-          case 'confirm':
-            if (typeof confirmFn === 'function') confirmFn();
-            break;
-          case 'cancel':
-            if (typeof cancelFn === 'function') cancelFn();
-            break;
-          default:
-        }
-      }
-    }, opt))
-  };
-  return { warning };
-}
-
-export const usePageData = (fetchApi, form) => {
-
-};
 
 export function useHttp() {
   return axios;
@@ -253,7 +191,7 @@ export function useWindowSize() {
     window.removeEventListener('resize', update);
   });
 
-  return { width, height };
+  return {width, height};
 }
 
 export function useWindowSizeRealTime() {
@@ -268,5 +206,5 @@ export function useWindowSizeRealTime() {
     window.removeEventListener('resize', update2);
   });
 
-  return { width, height };
+  return {width, height};
 }

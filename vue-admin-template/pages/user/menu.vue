@@ -159,9 +159,9 @@
 </template>
 <script>
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useTip, useLoading, useConfirm} = hook;
+const {useRouter, useStore, useCache, useLoading} = hook;
 const {sys: sysApi, useRequestWith} = api;
-const {useInitTitle} = util;
+const {useInitTitle, useTip, useConfirm} = util;
 
 export default {
   components: {
@@ -173,7 +173,7 @@ export default {
     onMounted(() => {
       useGetMenuList();
       getIcons();
-    })
+    });
 
     let title = ref('菜单管理');
 
@@ -197,10 +197,10 @@ export default {
       addAndEditTips: "增 加"
     });
 
-    let selectMenuRef = ref(null)
-    let breadShowSelectRef = ref(null)
-    let breadClickSelectRef = ref(null)
-    let navigationSelectRef = ref(null)
+    let selectMenuRef = ref(null);
+    let breadShowSelectRef = ref(null);
+    let breadClickSelectRef = ref(null);
+    let navigationSelectRef = ref(null);
 
     function addMenu() {
       clearData();
@@ -238,7 +238,7 @@ export default {
         breadClickSelectRef.value.value = real;
         navigationSelectRef.value.value = show;
         selectMenuRef.value.isDisabled = true;
-      })
+      });
     }
 
     const addMenuResult = useRequestWith(sysApi.sysMenuCreate, {manual: true});
@@ -313,38 +313,38 @@ export default {
         //编辑
         let editId = addMenuData.value.selectId;
         useEditMenu(
-            editId,
-            title,
-            menuPath,
-            iconVal,
-            breadcrumb,
-            real,
-            show
+          editId,
+          title,
+          menuPath,
+          iconVal,
+          breadcrumb,
+          real,
+          show
         );
       } else if (isEdit === "add") {
         let selectMenu = selectMenuRef.value.value;
         if (selectMenu.length === 0) {
           useAddMenuResult(
-              title,
-              menuPath,
-              iconVal,
-              breadcrumb,
-              real,
-              show,
-              0
+            title,
+            menuPath,
+            iconVal,
+            breadcrumb,
+            real,
+            show,
+            0
           );
         } else {
           //添加到次级目录
           let selectData = comebackItem(treeData.value, selectMenu);
           let newPath = selectData.index + "/" + menuPath;
           useAddMenuResult(
-              title,
-              newPath,
-              iconVal,
-              breadcrumb,
-              real,
-              show,
-              selectMenu
+            title,
+            newPath,
+            iconVal,
+            breadcrumb,
+            real,
+            show,
+            selectMenu
           );
         }
       } else {
@@ -353,13 +353,13 @@ export default {
         let selectMenu = insertParData.id;
         let newPath = insertParData.index + "/" + menuPath;
         useAddMenuResult(
-            title,
-            newPath,
-            iconVal,
-            breadcrumb,
-            real,
-            show,
-            selectMenu
+          title,
+          newPath,
+          iconVal,
+          breadcrumb,
+          real,
+          show,
+          selectMenu
         );
       }
       clearData();
@@ -418,13 +418,13 @@ export default {
     let options = [{value: 1, label: "启用"}, {value: 0, label: "禁用"}];
     watch(breadShowSelectRef, (val) => {
       val.options = options;
-    })
+    });
     watch(breadClickSelectRef, (val) => {
       val.options = options;
-    })
+    });
     watch(navigationSelectRef, (val) => {
       val.options = options;
-    })
+    });
 
     function remove(node, data) {
       let str = '是否删除 "' + data.title + '" 菜单';
@@ -503,9 +503,9 @@ export default {
       }
 
       if (
-          draggingNode.data.child &&
-          draggingNode.data.child !== undefined &
-          draggingNode.data.child.length > 0
+        draggingNode.data.child &&
+        draggingNode.data.child !== undefined &
+        draggingNode.data.child.length > 0
       ) {
         //顶层禁止拖拽到二级层限制
         if (type === "inner") {
@@ -561,7 +561,7 @@ export default {
           if (isChild) {
             (newList.value)[isNum].child.push({
               id: treeData[i].id
-            })
+            });
           } else {
             newList.value.push({
               id: treeData[i].id
@@ -574,13 +574,14 @@ export default {
     function getIcons() {
       VueRun.httpRequest(assetsCdn + '/pages/demo/iconfont.json').then(function (e) {
         if (typeof e === 'string') {
-          e = JSON.parse(e)
+          e = JSON.parse(e);
         }
         iconList.value = e.glyphs;
       });
     }
 
     const getMenuList = useRequestWith(sysApi.sysUserMenu, {manual: true});
+
     async function useGetMenuList() {
       const [data, err] = await getMenuList.run();
       if (err) {
@@ -602,7 +603,7 @@ export default {
             }
           }
           selectMenuRef.value.options = newTreeData;
-        })
+        });
       }
     }
 

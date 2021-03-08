@@ -57,7 +57,8 @@
 </template>
 <script>
 let MessageCountTime;
-const {useStore, useRouter, useTip} = hook;
+const {useStore, useRouter} = hook;
+const {useTip} = util;
 const {reactive, ref, watch, computed, onMounted, onBeforeUnmount} = vue;
 const {user: userApi, useRequestWith} = api;
 export default {
@@ -77,25 +78,25 @@ export default {
     onMounted(() => {
       getUnreadMessageCount();
       window['SysGetUnreadMessageCount'] = getUnreadMessageCount;
-    })
+    });
 
     onBeforeUnmount(() => {
       setTimeout(() => {
         clearTimeout(MessageCountTime);
       });
-    })
+    });
 
     const nickname = computed(() => {
       return $store.getters.nickname;
-    })
+    });
 
     const avatar = computed(() => {
       return $store.getters.avatar;
-    })
+    });
 
     const unreadMessageCount = computed(() => {
       return $store.state.unreadMessageCount;
-    })
+    });
 
     const unreadMessageCountApi = useRequestWith(userApi.unreadMessageCount, {manual: true});
 
@@ -107,7 +108,7 @@ export default {
         useTip().message('warning', err);
       } else {
         if ($store.state.unreadMessageCount !== data.count) {
-          $store.commit('setUnreadMessageCount', data.count)
+          $store.commit('setUnreadMessageCount', data.count);
         }
       }
       if ($store.state.token && window['messagesRegularly']) {
@@ -120,15 +121,15 @@ export default {
       if (this[command]) {
         this[command]();
       }
-      ctx.emit('click', command)
+      ctx.emit('click', command);
     }
 
     function useUser() {
-      useRouter(ctx).replace('/main/user/lists?key=' + $store.state.user.username + '&v=' + +new Date())
+      useRouter(ctx).replace('/main/user/lists?key=' + $store.state.user.username + '&v=' + +new Date());
     }
 
     function useLogs() {
-      useRouter(ctx).replace('/main/user/logs?v=' + +new Date())
+      useRouter(ctx).replace('/main/user/logs?v=' + +new Date());
     }
 
     function useClear() {
@@ -137,7 +138,7 @@ export default {
     }
 
     function useHandleNav() {
-      ctx.emit('handle')
+      ctx.emit('handle');
     }
 
     return {
@@ -150,118 +151,118 @@ export default {
       useClear,
       useClickMenu,
       useHandleNav
-    }
+    };
   }
 };
 </script>
 
 <style scoped>
 .header-logo {
-  padding : 0 0 0 5px;
-  text-align : center;
-  color : #2C6EB1;
-  font-weight : bold;
-  letter-spacing : 2px;
+  padding: 0 0 0 5px;
+  text-align: center;
+  color: #2C6EB1;
+  font-weight: bold;
+  letter-spacing: 2px;
 }
 
 .is-collapse .header-logo.tap {
-  width : 52px !important;
-  overflow : hidden;
+  width: 52px !important;
+  overflow: hidden;
 }
 
 .header-logo img {
-  height : 42px;
-  vertical-align : middle;
-  padding-bottom : 4px;
-  width : 164px;
+  height: 42px;
+  vertical-align: middle;
+  padding-bottom: 4px;
+  width: 164px;
 }
 
 .is-collapse .header-logo img {
-  max-width : inherit;
+  max-width: inherit;
 }
 
 .header-nav {
-  padding : 0;
-  height : 60px;
-  display : -webkit-box;
-  display : -ms-flexbox;
-  display : flex;
-  overflow : hidden;
-  -ms-flex-direction : row-reverse;
-  -webkit-box-orient : horizontal;
-  -webkit-box-direction : reverse;
-  flex-direction : row-reverse;
+  padding: 0;
+  height: 60px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  overflow: hidden;
+  -ms-flex-direction: row-reverse;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+  flex-direction: row-reverse;
 }
 
 .header-nav > div {
-  width : 60px;
-  text-align : center;
-  padding : 0 10px;
+  width: 60px;
+  text-align: center;
+  padding: 0 10px;
 }
 
 .header-nav > div:hover {
   /*background-color: #eaf1f7;*/
-  background-color : #28344A;
+  background-color: #28344A;
 }
 
 .tip-msg {
-  font-size : 30px;
-  line-height : 20px;
+  font-size: 30px;
+  line-height: 20px;
 }
 
 .el-dropdown-nav {
-  font-size : 30px;
-  line-height : 56px;
+  font-size: 30px;
+  line-height: 56px;
 }
 
 .header-avatar {
-  width : 40px;
-  height : 40px;
-  overflow : hidden;
-  vertical-align : middle;
-  border-radius : 50%;
-  margin : 10px 5px 0 7px;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  vertical-align: middle;
+  border-radius: 50%;
+  margin: 10px 5px 0 7px;
 }
 
 .el-dropdown-menu.el-popper {
-  white-space : nowrap;
-  margin-top : 5px !important;
+  white-space: nowrap;
+  margin-top: 5px !important;
 }
 
 .header-nav .user-menu.el-dropdown {
-  height : 60px;
-  line-height : 25px;
-  display : block;
-  width : 65px;
-  text-align : center;
-  float : right;
-  box-sizing : border-box;
-  overflow : hidden;
+  height: 60px;
+  line-height: 25px;
+  display: block;
+  width: 65px;
+  text-align: center;
+  float: right;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .header-nav .el-icon--right {
-  position : absolute;
-  right : -3px;
-  top : 37px;
-  color : #E3E4E4;
+  position: absolute;
+  right: -3px;
+  top: 37px;
+  color: #E3E4E4;
 }
 
 .header-name {
-  display : block;
-  font-size : 12px;
-  color : #999999;
-  border-top : 1px solid #E4E8EB;
-  margin-top : 5px;
-  padding-top : 2px;
-  line-height : 12px;
+  display: block;
+  font-size: 12px;
+  color: #999999;
+  border-top: 1px solid #E4E8EB;
+  margin-top: 5px;
+  padding-top: 2px;
+  line-height: 12px;
 }
 
 .nav-top-collapse-icon {
-  height : 60px;
-  text-align : center;
-  font-size : 25px;
-  -webkit-animation : opacity 2s infinite;
-  animation : opacity 2s infinite;
+  height: 60px;
+  text-align: center;
+  font-size: 25px;
+  -webkit-animation: opacity 2s infinite;
+  animation: opacity 2s infinite;
 }
 
 </style>

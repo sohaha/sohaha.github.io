@@ -18,7 +18,8 @@
   </el-form>
 </template>
 <script>
-const {useRouter, useStore, useTip} = hook;
+const {useRouter, useStore} = hook;
+const {useTip} = util;
 const {reactive, toRef, ref, watch, computed, onMounted} = vue;
 const {user: userApi, useRequestWith} = api;
 
@@ -34,11 +35,11 @@ export default {
   setup(prop, ctx) {
     const {root} = ctx;
     const ruleFormRef = ref(null);
-    let ruleForm = ref(Object.assign({}, initRuleForm))
+    let ruleForm = ref(Object.assign({}, initRuleForm));
 
     const userid = computed(() => {
       return useStore(ctx).getters.userid;
-    })
+    });
 
     const rules = computed(() => {
       let validatePass = (rule, value, callback) => {
@@ -60,8 +61,8 @@ export default {
           {required: true, message: '请再次输入密码', trigger: 'blur'},
           {validator: validatePass, trigger: 'blur'},
         ]
-      }
-    })
+      };
+    });
 
     const submitForm = useRequestWith(userApi.editPassword, {manual: true});
 
@@ -79,7 +80,7 @@ export default {
         } else {
           return false;
         }
-      })
+      });
     }
 
     function resetForm() {
@@ -87,7 +88,7 @@ export default {
       root.$nextTick(() => {
         ruleFormRef.value.clearValidate();
         ctx.emit('success');
-      })
+      });
     }
 
 

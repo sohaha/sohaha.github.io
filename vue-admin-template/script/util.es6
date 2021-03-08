@@ -2,7 +2,63 @@ const {ref, toRef, watch, computed, onMounted, onUnmounted, getCurrentInstance, 
 
 export default {};
 
-export const utilTest = 'is test';
+const ele = window['ELEMENT'];
+// 显示提示
+export function useTip() {
+  const getOpt = (type, message, duration = 3000) => {
+    if (!message && !type) return;
+    if (typeof type === 'object')
+      return Object.assign({duration: duration}, type);
+    if (!message) {
+      [type, message] = [message, type];
+    }
+    if (!type) type = 'info';
+    return {message, type, duration};
+  };
+  const message = function (type, tip, duration) {
+    ele.Message(Object.assign({
+      showClose: true,
+      center: true,
+    }, getOpt(type, tip, duration)));
+  };
+  const notify = function (type, tip, title = '温馨提示', duration) {
+    ele.Notification(Object.assign({
+      customClass: 'custom-notify-class',
+      title: title,
+      offset: 58
+    }, getOpt(type, tip, duration)));
+  };
+  return {message, notify};
+}
+
+export function useConfirm() {
+  const defaultCft = {
+    center: true,
+    showCancelButton: true,
+    showConfirmButton: true
+  }
+
+  const warning = function (title, message, confirmFn, cancelFn, opt) {
+    if (typeof opt !== 'object') opt = {};
+    ele.MessageBox(Object.assign(defaultCft, {
+      title: title,
+      message: message,
+      type: 'warning',
+      callback: function (type) {
+        switch (type) {
+          case 'confirm':
+            if (typeof confirmFn === 'function') confirmFn();
+            break;
+          case 'cancel':
+            if (typeof cancelFn === 'function') cancelFn();
+            break;
+          default:
+        }
+      }
+    }, opt))
+  };
+  return { warning };
+}
 
 export function initWindowFunc() {
   window['arrayAdd'] = function (arr, v) {
@@ -24,19 +80,19 @@ export function useInitTitle(ctx) {
   let title = ref(hook.useStore(ctx).state.viewTitle);
   watch(() => hook.useStore(ctx).state.viewTitle, (val) => {
     title.value = val;
-  })
+  });
 
   let SpaTitle = ref('SpaTitle');
   onMounted(() => {
     if (!SpaTitle.value && title.value) {
       SpaTitle.value = title.value + ' - %s';
     }
-  })
+  });
 
   return {
     title,
     SpaTitle
-  }
+  };
 }
 
 export function useMlSearchKeyObserver(ctx, ml_searchKey) {
@@ -44,74 +100,11 @@ export function useMlSearchKeyObserver(ctx, ml_searchKey) {
   ml_searchKey.value = !useRouter(ctx).route.query.hasOwnProperty('key') ? '' : useRouter(ctx).route.query.key;
   let searchKey = computed(() => {
     return !useRouter(ctx).route.query.hasOwnProperty('key') ? '' : useRouter(ctx).route.query.key;
-  })
+  });
 
   watch(searchKey, (val) => {
     ml_searchKey.value = val;
-  })
-}
-
-export function useInitPage() {
-  let ml_listsLoading = ref(false);
-  let ml_searchKey = ref('');
-  let ml_page = ref(1);
-  let ml_data = ref([]);
-  let ml_pagetotal = ref(0);
-  let ml_pagesize = ref(10);
-  let ml_pages = ref({});
-  let ml_change = ref(1);
-
-  watch(ml_page, (val, prevVal) => {
-      ml_change.value++;
-    },
-    {
-      immediate: true
-    }
-  )
-
-  function ml_currentChange(e) {
-    ml_page.value = e;
-  }
-
-  function ml_sizeChange() {
-    ml_searchRow();
-  }
-
-  function ml_reloadLists() {
-    ml_change.value++;
-  }
-
-  function ml_searchRow() {
-    if (ml_page.value !== 1) {
-      ml_page.value = 1;
-    } else {
-      ml_change.value++;
-    }
-  }
-
-  function ml_getLists(data, page) {
-    ml_data.value = data;
-    ml_pagetotal.value = page.total;
-    if (!!page.count && ml_page.value > page.end) {
-      ml_page.value = page.end;
-    }
-  }
-
-  return {
-    ml_listsLoading,
-    ml_searchKey,
-    ml_page,
-    ml_data,
-    ml_pagetotal,
-    ml_pagesize,
-    ml_pages,
-    ml_currentChange,
-    ml_sizeChange,
-    ml_reloadLists,
-    ml_searchRow,
-    ml_getLists,
-    ml_change
-  }
+  });
 }
 
 export function getInfo() {
@@ -123,30 +116,29 @@ export function getInfo() {
     }
     watch(error, (val) => {
       if (val) {
-        hook.useTip().notify('error', '网络繁忙，请稍后再试！', '温馨提示');
+        util.useTip().notify('error', '网络繁忙，请稍后再试！', '温馨提示');
       }
-    })
-  })
+    });
+  });
 }
 
 export function isMobile() {
   let ua = navigator.userAgent;
   if (typeof ua !== 'string') return false;
-
-  let mobileRE = /(iphone|android|ipad|huawei|webos|samsung|midp|wap|phone|^ucweb)/i
+  let mobileRE = /(iphone|android|ipad|huawei|webos|samsung|midp|wap|phone|^ucweb)/i;
   let result = mobileRE.test(ua);
-
   if (
-      !result &&
-      navigator.maxTouchPoints > 1 &&
-      ua.indexOf('Macintosh') !== -1 &&
-      ua.indexOf('Safari') !== -1
+    !result &&
+    navigator.maxTouchPoints > 1 &&
+    ua.indexOf('Macintosh') !== -1 &&
+    ua.indexOf('Safari') !== -1
   ) {
     result = true;
   }
 
   return result;
 }
+
 export function throttle(fn, delay) {
   let go = true;
   return () => {
@@ -159,5 +151,34 @@ export function throttle(fn, delay) {
       fn();
       go = true;
     }, delay);
+  };
+}
+
+export function formCreate(el, rules, opts = {}) {
+  if (!('formCreate' in window)) {
+    throw "需要先引入 form-create.js";
+  }
+
+  const {$f, mount, remove, destroy} = window.formCreate.init(rules, Object.assign({
+    form: {
+      hideRequiredAsterisk: true,
+      labelPosition: 'top',
+      showMessage: true,
+      size: 'mini',
+    },
+    submitBtn: {
+      size: 'mini',
+      loading: false,
+      disabled: false,
+      icon: 'icon-save',
+      innerText: '提 交',
+      width: 'auto',
+    },
+  }, opts));
+  vue.onMounted(() => {
+    mount(document.querySelector(el));
+  });
+  return {
+    $f, remove, destroy
   };
 }

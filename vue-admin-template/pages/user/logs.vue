@@ -92,9 +92,9 @@
 </template>
 <script>
 const {ref, reactive, computed, onMounted, watch} = vue;
-const {useRouter, useStore, useCache, useTip, useLoading} = hook;
+const {useRouter, useStore, useCache,  useLoading} = hook;
 const {user: userApi, useRequestWith, useRequestPage} = api;
-const {useInitTitle} = util;
+const {useInitTitle,useTip} = util;
 export default {
   components: {},
   setup(prop, ctx) {

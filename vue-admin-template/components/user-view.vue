@@ -82,7 +82,8 @@
   </el-form>
 </template>
 <script>
-const { useRouter, useStore, useTip } = hook;
+const {useTip} = util;
+const { useRouter, useStore } = hook;
 const { reactive, toRef, ref, watch, computed, onMounted } = vue;
 const { user: userApi, useRequest } = api;
 

@@ -64,7 +64,7 @@
 </template>
 <script>
 const { ref, reactive, computed, onMounted, watch } = vue;
-const { useTip } = hook;
+const {useTip} = util;
 const { useRequestPage } = api;
 const { useInitTitle } = util;
 export default {

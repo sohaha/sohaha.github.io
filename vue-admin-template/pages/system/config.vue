@@ -4,7 +4,8 @@
     <fieldset>
       <legend>{{ title }}</legend>
       <aside>
-        <el-form size="mini" label-position="top" :rules="rules" ref="formRef" :model="form" label-width="90px">
+        <el-form size="mini" label-position="top" :rules="rules" ref="formRef" :model="form" label-width="90px"
+                 class="form-create-mini">
           <el-form-item label="IP白名单">
             <el-input v-model="form.ipWhitelist" size="mini" placeholder="IP白名单，多个使用;分隔"/>
           </el-form-item>
@@ -16,14 +17,10 @@
               <el-switch @change='useChangeMaintainMode' v-model="form.maintainMode" active-text="维护模式"/>
             </el-tooltip>
           </el-form-item>
-          <el-form-item label="登录模式">
-            <el-tooltip content="开启单用户登录后一个账号不能同时登录多个页面(除了当前管理员其他用户只保留最后一次登录信息)" transition="el-zoom-in-bottom"
-                        placement="top-start">
-              <el-switch v-model="form.loginMode" active-text="单用户登录"/><!--multi-user login多用户登录-->
-            </el-tooltip>
-          </el-form-item>
           <el-form-item>
-            <el-button size="mini" type="primary" @click="useSubmit">提 交</el-button>
+            <div style="text-align: center;">
+              <el-button size="mini" type="primary" @click="useSubmit">提 交</el-button>
+            </div>
           </el-form-item>
         </el-form>
       </aside>
@@ -31,11 +28,11 @@
   </div>
 </template>
 <script>
-
+const {useTip} = util;
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useTip, useLoading, useConfirm} = hook;
+const {useRouter, useStore, useCache, useLoading} = hook;
 const {user: userApi, useRequestWith} = api;
-const {useInitTitle} = util;
+const {useInitTitle,useConfirm} = util;
 
 let initForm = {ipWhitelist: '', maintainMode: null, debug: false};
 
@@ -46,7 +43,7 @@ export default {
 
     onMounted(() => {
       useGetConfig();
-    })
+    });
 
     let formRef = ref(null);
     let form = ref(Object.assign({}, initForm));
@@ -85,7 +82,7 @@ export default {
         } else {
           return false;
         }
-      })
+      });
     }
 
     return {

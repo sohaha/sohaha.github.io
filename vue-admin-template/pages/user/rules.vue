@@ -182,9 +182,9 @@
 </template>
 <script>
 const {ref, reactive, computed, onMounted, watch} = vue;
-const {useRouter, useStore, useCache, useTip, useLoading} = hook;
+const {useRouter, useStore, useCache,  useLoading} = hook;
 const {user: userApi, sys: sysApi, useRequest, useRequestWith} = api;
-const {useInitTitle} = util;
+const {useInitTitle,useTip} = util;
 
 let dataFormat = {
   title: '',
