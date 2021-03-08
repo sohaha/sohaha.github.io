@@ -297,6 +297,12 @@ export function initRouter() {
     routes: defaultRouter
   });
   router.beforeEach(function (to, from, next) {
+    if (to.path === '/main') {
+      router.replace('/main/main').catch((err) => {
+        router.replace('/main/main');
+      });
+    }
+
     if (to.path !== from.path) {
       window['NProgress'] && NProgress.start();
     }
