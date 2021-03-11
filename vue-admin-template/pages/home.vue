@@ -8,7 +8,7 @@
         if (init) {
           let path = '/login';
           if (isLogin) {
-            path = '/main';
+            path = '/main/main';
           }
           useRouter(ctx).push(path);
         }
