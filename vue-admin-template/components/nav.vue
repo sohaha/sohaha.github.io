@@ -1,20 +1,20 @@
 <template>
   <el-scrollbar
-      :native="false"
-      wrap-class="nav_scrollbar"
-      wrap-style
-      view-style
-      view-class="view-box"
+    :native="false"
+    wrap-class="nav_scrollbar"
+    wrap-style
+    view-style
+    view-class="view-box"
   >
     <el-menu
-        :default-active='routePath'
-        :router='true'
-        :collapse="isCollapse"
-        :text-color="textColor"
-        :background-color='navBgColor'
-        @select="handleSelect"
-        active-text-color="#fff"
-        unique-opened
+      :default-active='routePath'
+      :router='true'
+      :collapse="isCollapse"
+      :text-color="textColor"
+      :background-color='navBgColor'
+      @select="handleSelect"
+      active-text-color="#fff"
+      unique-opened
     >
       <template v-for="(v, i) in state.nav">
         <el-submenu v-if="isChildren(v)&&v.meta.show !== false" :index="'nav-'+i" :key="'submenu1-'+i">
@@ -59,15 +59,20 @@ export default {
     })
 
     function activePath(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
+      const grandParentCollapse = Object.prototype.toString.call(arr[1]) === '[object Object]'
+        && Object.prototype.toString.call(arr[1]['meta']['collapse']) !== '[object Undefined]'
+        && !!arr[1]['meta']['collapse'];
+      if (!grandParentCollapse) {
+        return arr[1].path;
+      }
+      for (const val of arr.reverse()) {
         if (
-            i === arr.length - 1
-            && currentPath === arr[i].path
-            && arr[i]['meta']['show']
+          currentPath === val.path
+          && val['meta']['show']
         ) {
-          return arr[i].path;
-        } else if (arr[i]['meta']['show']) {
-          return arr[i].path;
+          return val.path;
+        } else if (val['meta']['show']) {
+          return val.path;
         }
       }
 
@@ -83,22 +88,22 @@ export default {
     }
 
     const routerOk = computed(
-        () => useStore(ctx).state.router.length > 0 && ctx.root.initSate
+      () => useStore(ctx).state.router.length > 0 && ctx.root.initSate
     );
     watch(
-        () => routerOk.value,
-        init => {
-          if (init) {
-            console.log('路由准备好了,可以设置导航了');
+      () => routerOk.value,
+      init => {
+        if (init) {
+          console.log('路由准备好了,可以设置导航了');
 
-            state.nav = useStore(ctx).state.router[2]['children'];
-          }
-        },
-        {immediate: true}
+          state.nav = useStore(ctx).state.router[2]['children'];
+        }
+      },
+      {immediate: true}
     );
 
-    const isChildren = (v)=>{
-      return v.meta.collapse&&v['children'];
+    const isChildren = (v) => {
+      return v.meta.collapse && v['children'];
     }
     return {
       routePath,
