@@ -225,12 +225,14 @@ export default {
       }
     }
 
-    window['onresize'] = throttle(() => {
+   const windowSize = () => {
       isMob.value = isMobile();
       useReset();
       useNavCollapse();
       useBreadcrumbWrap();
-    }, 100);
+    }
+    window['onresize'] = throttle(windowSize, 100);
+    windowSize();
 
     function useClickTopNav(name) {
       switch (name) {
