@@ -22,6 +22,7 @@ var themes = ['lavender', 'green', 'dark', 'diablo'].map(function (theme) {
   return [themePrefixPath + '/' + theme + '/theme/index.css', themePrefixPath + '/' + theme + '/app.css'];
 });
 
+// noinspection JSValidateTypes
 VueRun.init(function () {
   app.requestInit();
   Vue.mixin({beforeCreate: hook.setVm});

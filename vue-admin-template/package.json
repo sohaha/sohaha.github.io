@@ -1,0 +1,10 @@
+{
+  "name": "manage",
+  "version": "1.0.0",
+  "description": "Vue 后台",
+  "main": "config.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
