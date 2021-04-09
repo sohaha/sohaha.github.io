@@ -1,7 +1,8 @@
 <template>
   <el-breadcrumb class="breadcrumb" separator-class="el-icon-arrow-right">
     <transition-group name="slide-fade">
-      <el-breadcrumb-item v-for="(v, i) in breadcrumb" :key="v.path+'/'+v.name" :class="breadcrumbClass(v)" @click.native="go(v)">
+      <el-breadcrumb-item v-for="(v, i) in breadcrumb" :key="v.path+'/'+v.name" :class="breadcrumbClass(v)"
+                          @click.native="go(v)">
         <i class="icon-home" v-if="i===0"></i>{{ v.name }}
       </el-breadcrumb-item>
     </transition-group>
@@ -22,34 +23,36 @@ export default {
 
     const breadcrumb = computed(() => {
       let defaultBreadcrumb = {
-            name: '后台中心',
-            path: '/main/main',
-            meta: {
-              show: true,
-              real: true,
-              breadcrumb: true
-            }
-          },
-          matched = useRouter(ctx)['route']['matched'] || [],
-          breadcrumbArr = [];
-      matched.forEach((v, k) => {
-        if (k !== 0) {
-          breadcrumbArr.push({
-            name: v.name,
-            path: v.path,
-            meta: {
-              show: v.meta.show,// 导航栏显示
-              real: v.meta.real,// 导航栏点击
-              breadcrumb: v.meta.breadcrumb// 面包屑显示
-            }
-          })
+          name: '后台中心',
+          path: '/main/main',
+          meta: {
+            show: true,
+            real: true,
+            breadcrumb: true
+          }
+        },
+        matched = useRouter(ctx)['route']['matched'] || [],
+        breadcrumbArr = [];
+      for (const rr of matched.reverse()) {
+        if (rr.name === '管理中心') {
+          continue;
         }
-      });
+
+        breadcrumbArr.push({
+          name: rr.name,
+          path: rr.path,
+          meta: {
+            show: rr.meta.show,// 导航栏显示
+            real: rr.meta.real,// 导航栏点击
+            breadcrumb: rr.meta.breadcrumb// 面包屑显示
+          }
+        })
+      }
       if (breadcrumbArr[0]['name'] !== defaultBreadcrumb.name) {
         breadcrumbArr.unshift(defaultBreadcrumb);
       }
 
-      useStore(ctx).commit('setViewTitle', breadcrumbArr[breadcrumbArr.length - 1]['name'] || '')
+      useStore(ctx).commit('setViewTitle', breadcrumbArr[breadcrumbArr.length - 1]['name'] || '');
 
       return breadcrumbArr;
     })
