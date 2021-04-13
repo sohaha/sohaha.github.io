@@ -3,6 +3,7 @@ const {ref, toRef, watch, computed, onMounted, onUnmounted, getCurrentInstance, 
 export default {};
 
 const ele = window['ELEMENT'];
+
 // 显示提示
 export function useTip() {
   const getOpt = (type, message, duration = 3000) => {
@@ -57,7 +58,7 @@ export function useConfirm() {
       }
     }, opt))
   };
-  return { warning };
+  return {warning};
 }
 
 export function initWindowFunc() {
@@ -78,6 +79,10 @@ export function initWindowFunc() {
 
 export function useInitTitle(ctx) {
   let title = ref(hook.useStore(ctx).state.viewTitle);
+  watch(title, (v) => {
+    hook.useStore(ctx).commit('setViewTitle', v);
+  });
+
   watch(() => hook.useStore(ctx).state.viewTitle, (val) => {
     title.value = val;
   });

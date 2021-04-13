@@ -32,13 +32,14 @@ export default {
           }
         },
         matched = useRouter(ctx)['route']['matched'] || [],
+        lastTitle = useStore(ctx).getters.getViewTitle,
         breadcrumbArr = [];
-      for (const rr of matched.reverse()) {
+      for (const rr of matched) {
         if (rr.name === '管理中心') {
           continue;
         }
 
-        breadcrumbArr.push({
+        breadcrumbArr.unshift({
           name: rr.name,
           path: rr.path,
           meta: {
@@ -52,7 +53,11 @@ export default {
         breadcrumbArr.unshift(defaultBreadcrumb);
       }
 
-      useStore(ctx).commit('setViewTitle', breadcrumbArr[breadcrumbArr.length - 1]['name'] || '');
+      if (!lastTitle) {
+        useStore(ctx).commit('setViewTitle', breadcrumbArr[breadcrumbArr.length - 1]['name'] || '');
+      } else {
+        breadcrumbArr[breadcrumbArr.length - 1]['name'] = lastTitle;
+      }
 
       return breadcrumbArr;
     })

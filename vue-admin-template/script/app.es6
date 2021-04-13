@@ -314,6 +314,7 @@ export function initRouter() {
       title = to.name + ' - ' + config.title;
     }
     document.title = title;
+    store.commit('setViewTitle', '');
 
     next && next();
     if (config.debug)
