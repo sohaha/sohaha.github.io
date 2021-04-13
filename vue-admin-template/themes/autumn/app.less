@@ -1,0 +1,133 @@
+@headerHeight : 45px;
+@notCollapseWidth : 200px;
+@color : #2E2E2F;
+#main {
+  background : @color;
+
+  & > .header {
+    background : #FFFFFF;
+    color : @color;
+    padding : 0;
+    height : @headerHeight !important;
+    line-height : @headerHeight;
+  }
+
+  & .header-logo {
+    background : @color;
+    width : @notCollapseWidth !important;
+    transition : all .2s linear 0s !important;
+  }
+
+  & .header-logo img {
+    height : 40px;
+    padding-bottom : 2px;
+  }
+
+  & .header-nav {
+    box-shadow : 1px 1px 2px #DDDDDD;
+    height : @headerHeight !important;
+  }
+
+  & .header-nav {
+    & > div {
+      width : 40px;
+      &:hover {
+        background : @color;
+        color : #FFFFFF;
+      }
+    }
+    & .el-dropdown {
+      height : @headerHeight !important;
+      width : @headerHeight - 5px;
+
+      & > div {
+        height : @headerHeight - 5px !important;
+      }
+    }
+
+    .header-avatar {
+      width : 30px;
+      height : 30px;
+      margin : 8px 5px 0px;
+    }
+
+    .el-icon--right {
+      top : 32px;
+    }
+  }
+  .nav-left {
+    @textColor : #C0C4CC;
+    &.not-collapse {
+      width : @notCollapseWidth !important;
+    }
+    .el-menu-item i, .el-submenu__title i {
+      color : @textColor !important;
+    }
+    .el-menu-item, .el-submenu__title {
+      transition : none;
+      color : @textColor !important;
+      &.is-active {
+        background : #909399 !important;
+        border-radius : 100px 0 0 100px;
+        margin : 10px 0 10px;
+        box-sizing : border-box;
+        height : 40px;
+        line-height : 40px;
+        color : #FFFFFF !important;
+      }
+      &:hover {
+        color : #FFFFFF !important;
+      }
+    }
+  }
+  & .content-container {
+    border-radius : 0;
+    margin-right : 0;
+    height : calc(100vh - 45px);
+  }
+
+  & .breadcrumb__link .el-breadcrumb__inner {
+    color : #1D1D1E;
+  }
+  // 收缩菜单
+  & .is-collapse {
+    .header-logo {
+      width : 74px !important;
+      padding-left : 0;
+    }
+
+    .header-logo::before {
+      content : '\e7a5';
+      position : absolute;
+      font-family : 'font_family', serif !important;
+      font-size : 40px;
+      text-align : center;
+      width : 74px;
+      color : #FFFFFF;
+    }
+
+    .header-logo img {
+      visibility : hidden;
+    }
+  }
+
+  // 手机模式
+  &.set-mob {
+    .header-logo {
+      width : 180px !important;
+    }
+    .content-container {
+      margin-left : 0;
+    }
+    .aside-nav {
+      background-color : @color;
+    }
+    .float-nav-btn {
+      background-color : @color;
+    }
+  }
+}
+
+.el-menu--popup {
+  background-color : @color !important;
+}

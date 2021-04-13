@@ -1,0 +1,110 @@
+#main {
+  background: #2E2E2F;
+}
+#main > .header {
+  background: #FFFFFF;
+  color: #2E2E2F;
+  padding: 0;
+  height: 45px !important;
+  line-height: 45px;
+}
+#main .header-logo {
+  background: #2E2E2F;
+  width: 200px !important;
+  transition: all 0.2s linear 0s !important;
+}
+#main .header-logo img {
+  height: 40px;
+  padding-bottom: 2px;
+}
+#main .header-nav {
+  box-shadow: 1px 1px 2px #DDDDDD;
+  height: 45px !important;
+}
+#main .header-nav > div {
+  width: 40px;
+}
+#main .header-nav > div:hover {
+  background: #2E2E2F;
+  color: #FFFFFF;
+}
+#main .header-nav .el-dropdown {
+  height: 45px !important;
+  width: 40px;
+}
+#main .header-nav .el-dropdown > div {
+  height: 40px !important;
+}
+#main .header-nav .header-avatar {
+  width: 30px;
+  height: 30px;
+  margin: 8px 5px 0px;
+}
+#main .header-nav .el-icon--right {
+  top: 32px;
+}
+#main .nav-left.not-collapse {
+  width: 200px !important;
+}
+#main .nav-left .el-menu-item i,
+#main .nav-left .el-submenu__title i {
+  color: #C0C4CC !important;
+}
+#main .nav-left .el-menu-item,
+#main .nav-left .el-submenu__title {
+  transition: none;
+  color: #C0C4CC !important;
+}
+#main .nav-left .el-menu-item.is-active,
+#main .nav-left .el-submenu__title.is-active {
+  background: #909399 !important;
+  border-radius: 100px 0 0 100px;
+  margin: 10px 0 10px;
+  box-sizing: border-box;
+  height: 40px;
+  line-height: 40px;
+  color: #FFFFFF !important;
+}
+#main .nav-left .el-menu-item:hover,
+#main .nav-left .el-submenu__title:hover {
+  color: #FFFFFF !important;
+}
+#main .content-container {
+  border-radius: 0;
+  margin-right: 0;
+  height: calc(100vh - 45px);
+}
+#main .breadcrumb__link .el-breadcrumb__inner {
+  color: #1D1D1E;
+}
+#main .is-collapse .header-logo {
+  width: 74px !important;
+  padding-left: 0;
+}
+#main .is-collapse .header-logo::before {
+  content: '\e7a5';
+  position: absolute;
+  font-family: 'font_family', serif !important;
+  font-size: 40px;
+  text-align: center;
+  width: 74px;
+  color: #FFFFFF;
+}
+#main .is-collapse .header-logo img {
+  visibility: hidden;
+}
+#main.set-mob .header-logo {
+  width: 180px !important;
+}
+#main.set-mob .content-container {
+  margin-left: 0;
+}
+#main.set-mob .aside-nav {
+  background-color: #2E2E2F;
+}
+#main.set-mob .float-nav-btn {
+  background-color: #2E2E2F;
+}
+.el-menu--popup {
+  background-color: #2E2E2F !important;
+}

@@ -16,16 +16,14 @@ VueRun.config({
   }
 });
 
-var assetsCdn = 'https://resources.73zls.com/vue-admin-template';
-var themePrefixPath = assetsCdn + '/themes';
-var themes = ['lavender', 'green', 'dark', 'diablo'].map(function (theme) {
-  return [themePrefixPath + '/' + theme + '/theme/index.css', themePrefixPath + '/' + theme + '/app.css'];
-});
+var assetsCdn = '.';
+// var assetsCdn = 'https://resources.73zls.com/vue-admin-template';
+var themeName = 'autumn'; // ['lavender', 'green', 'dark', 'diablo']
 
 // noinspection JSValidateTypes
 VueRun.init(function () {
   app.requestInit();
-  Vue.mixin({beforeCreate: hook.setVm});
+  Vue.mixin({ beforeCreate: hook.setVm });
   new Vue({
     router: app.initRouter(),
     store: app.initStore(),
@@ -56,7 +54,7 @@ VueRun.init(function () {
         };
 
         var user = function () {
-          return api.useRequestWith(api.user.current(), {manual: true}).run();
+          return api.useRequestWith(api.user.current(), { manual: true }).run();
         };
         return user().then(function (res) {
           var data = res[0];
@@ -97,7 +95,7 @@ VueRun.init(function () {
   js: [
     VueRun.isSupportEs6('new WeakMap()') ? '' : VueRun.lib('/lib/weakmap-polyfill.js'),
     'getOwnPropertySymbols' in Object ? '' : VueRun.lib('/lib/get-own-property-symbols-polyfill.js'),
-    [VueRun.lib('/lib/axios.js'), {async: true}],
+    [VueRun.lib('/lib/axios.js'), { async: true }],
     VueRun.lib('/lib/vue-router.js'),
     VueRun.lib('/lib/vuex.js'),
     VueRun.lib('/lib/composition.js'),
@@ -108,7 +106,10 @@ VueRun.init(function () {
     VueRun.lib('/element.css'),
     VueRun.lib('/fonts/iconfont/iconfont.css'),
     VueRun.lib('/nprogress/nprogress.css'),
-  ]//.concat(themes.lavender)
+  ].concat((function () {
+    var u = assetsCdn + '/themes/' + themeName;
+    return themeName ? [u + '/ui.css',u + '/app.css'] : [];
+  })())
 });
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
