@@ -1,27 +1,27 @@
 <template>
-  <el-container id="login">
+  <el-container class="h-screen">
     <div class="starry-warpper">
       <div class="stars"></div>
       <div class="stars2"></div>
       <div class="stars3"></div>
     </div>
-    <el-main>
-      <div class='maskLayer'></div>
-      <div class="main">
-        <h2 class="title">{{ ProjectName }}</h2>
-        <el-tabs v-model="activeName">
-          <el-tab-pane label="账号登录" name="username">
-            <form-create ref='form' @on-submit="formSubmit" @keyup.enter.native='formSubmit' :rule="formRule"
-                         :option="formOption"></form-create>
-          </el-tab-pane>
-          <el-tab-pane label="扫码登录" name="qr">
-            <div class='qr-container'>
-              敬请期待
+    <div class='w-full flex justify-center self-center'>
+      <div class="w-80 sm:w-auto opacity-80 shadow">
+        <div class="flex max-w-md mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 sm:max-w-4xl">
+          <div class="hidden bg-cover sm:block sm:w-1/2 bg-gradient-to-br to-gray-800 from-primary">
+            <img src="https://picsum.photos/id/1042/300/300" class='opacity-60 min-w-full w-80 h-full'>
+          </div>
+          <div class="px-6 py-8 sm:px-8 w-80">
+            <h2 class="text-2xl font-semibold text-center text-gray-700 dark:text-white">{{ ProjectName }}</h2>
+            <p class="my-4 text-xl text-center text-gray-600 dark:text-gray-200">欢迎回来！</p>
+            <form-create ref='form' @on-submit="formSubmit" @keyup.enter.native='formSubmit' :rule="formRule" :option="formOption"></form-create>
+            <div class="hidden flex items-center justify-between mt-4">
+              <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span> <a href="#" class="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline">其他登录方式</a> <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
             </div>
-          </el-tab-pane>
-        </el-tabs>
+          </div>
+        </div>
       </div>
-    </el-main>
+    </div>
   </el-container>
 </template>
 
@@ -30,13 +30,13 @@
 export default load({
   js: [VueRun.lib('/form-create/form-create.js')]
 }).then(async () => {
-  const {useTip} = util;
-  const {useRouter, useCache, useStore, useLoading,} = hook;
-  const {watch, ref, onMounted,} = vue;
-  const {user: userApi} = api;
+  const { useTip } = util;
+  const { useRouter, useCache, useStore, useLoading, } = hook;
+  const { watch, ref, onMounted, } = vue;
+  const { user: userApi } = api;
   return {
     name: 'login',
-    setup(prop, ctx) {
+    setup (prop, ctx) {
       const {
         loading,
         withLoading
@@ -59,9 +59,13 @@ export default load({
 
       let form = ref(null);
       let formOption = {
+        form: {
+          hideRequiredAsterisk: false,
+          labelPosition: 'top',
+        },
         submitBtn: {
           icon: '',
-          innerText: '提  交',
+          innerText: '登 录',
         },
       };
       const formSubmit = async (data) => {
@@ -86,6 +90,7 @@ export default load({
         type: 'input',
         field: 'user',
         value: '',
+        title: '',
         props: {
           prefixIcon: 'icon-person',
           placeholder: '用户名...',
@@ -99,6 +104,7 @@ export default load({
         }]
       },
         {
+          title: '',
           type: 'input',
           field: 'pass',
           value: '',
@@ -157,58 +163,6 @@ export default load({
 </script>
 
 <style scoped>
-#login {
-  background-color: #000000;
-  height: 100%;
-  height: 100vh;
-}
-
-#login .main {
-  width: 360px;
-  left: 0;
-  right: 0;
-  position: absolute;
-  margin: auto;
-  bottom: 0;
-  top: 0;
-  height: 312px;
-}
-
-#login .el-form-item.btn button {
-  width: 100%;
-}
-
-#login .title {
-  font-size: 30px;
-  margin: -80px auto 30px;
-  text-align: center;
-  color: #ffffff;
-}
-
-#login .el-input.is-disabled .el-input__inner {
-  background: none;
-}
-
-#login .el-tabs.el-tabs--top {
-  background: rgb(255, 255, 255);
-  padding: 10px 20px 20px 20px;
-  border-radius: 5px;
-  box-shadow: 2px 2px 30px #bdbdbd, -2px -1px 10px #bdbdbd;
-}
-
-.qr-container {
-  padding: 20px;
-  text-align: center;
-}
-
-[type='password'] {
-  background-image: none !important;
-}
-
-.el-select {
-  width: 100%;
-}
-
 .starry-warpper {
   width: 100%;
   height: 100%;
@@ -664,7 +618,7 @@ export default load({
 }
 
 .starry-warpper .stars3,
-#body .starry-warpper .stars3:after {
+.starry-warpper .stars3:after {
   width: 3px;
   height: 3px;
   background: transparent;
@@ -708,18 +662,6 @@ export default load({
   top: 2000px;
 }
 
-@-webkit-keyframes y {
-  0% {
-    -webkit-transform: translateY(0);
-    transform: translateY(0);
-  }
-
-  to {
-    -webkit-transform: translateY(-2000px);
-    transform: translateY(-2000px);
-  }
-}
-
 @keyframes y {
   0% {
     -webkit-transform: translateY(0);
@@ -730,14 +672,5 @@ export default load({
     -webkit-transform: translateY(-2000px);
     transform: translateY(-2000px);
   }
-}
-
-.maskLayer {
-  width: 100%;
-  height: 70%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  opacity: 0.5;
 }
 </style>

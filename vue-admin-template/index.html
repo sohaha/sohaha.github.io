@@ -9,9 +9,12 @@
   <title>Loading...</title>
   <link rel="icon" href="data:image/ico;base64,aWNv" />
   <link rel='stylesheet' href='app.css'>
+  <script>
+    document.documentElement.hidden = true;
+    /*@cc_on document.write("<script src='//resources.73zls.com/lib/browser-tip.js'><\/script>") @*/
+  </script>
 </head>
 <body>
-<!--[if lte IE 10]><script src='//resources.73zls.com/vue-admin/lib/browser-tip.js'></script><! [endif]-->
 <div id='app'>
   <transition name="fade" mode="out-in">
     <div class="loading-group" id="loading" v-if="loading">
@@ -38,7 +41,18 @@
 </div>
 <script>
   var version = 0;
+  var tailwindConfig = {
+    mode: 'silent',
+    theme: {
+      extend: {
+        colors: {
+          'primary': '#243c5a',
+        }
+      }
+    }
+  }
 </script>
+<script src='//resources.73zls.com/lib/tailwind/tailwind.umd.js'></script>
 <script src='//resources.73zls.com/vue-admin/run.js'></script>
 <script src='config.js'></script>
 </body>
