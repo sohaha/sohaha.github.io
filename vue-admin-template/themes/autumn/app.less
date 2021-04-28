@@ -19,8 +19,9 @@
   }
 
   & .header-logo img {
-    height : 40px;
-    padding-bottom : 2px;
+    height : 38px;
+    padding-bottom : 0;
+    margin-top : 4px;
   }
 
   & .header-nav {
@@ -30,7 +31,7 @@
 
   & .header-nav {
     & > div {
-      width : 40px;
+      // width : 40px;
       &:hover {
         background : @color;
         color : #FFFFFF;
@@ -69,7 +70,7 @@
       &.is-active {
         background : #909399 !important;
         border-radius : 100px 0 0 100px;
-        margin : 10px 0 10px;
+        margin : 10px 10px 10px 0;
         box-sizing : border-box;
         height : 40px;
         line-height : 40px;
@@ -103,11 +104,19 @@
       font-size : 40px;
       text-align : center;
       width : 74px;
+      left : 0;
       color : #FFFFFF;
     }
 
     .header-logo img {
       visibility : hidden;
+    }
+    &.nav-left {
+      .el-menu-item, .el-submenu__title {
+        &.is-active {
+          margin-right : 0;
+        }
+      }
     }
   }
 
