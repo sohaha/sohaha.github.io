@@ -9,7 +9,7 @@
       <div class="w-80 sm:w-auto opacity-80 shadow">
         <div class="flex max-w-md mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 sm:max-w-4xl">
           <div class="hidden bg-cover sm:block sm:w-1/2 bg-gradient-to-br to-gray-800 from-primary">
-            <img src="https://picsum.photos/id/1042/300/300" class='opacity-60 min-w-full w-80 h-full'>
+            <img src="https://i.picsum.photos/id/1042/300/300.jpg?hmac=ZsXTC7SJEqoeBaG83Ec52Q65QRGZ0gf4sNZj7r8UkHc" class='opacity-60 min-w-full w-80 h-full'>
           </div>
           <div class="px-6 py-8 sm:px-8 w-80">
             <h2 class="text-2xl font-semibold text-center text-gray-700 dark:text-white">{{ ProjectName }}</h2>

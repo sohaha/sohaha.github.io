@@ -1,5 +1,5 @@
 var config = {
-  title: '管理后台',
+  title: '内容管理后台',
   baseURL: '',
   timeout: 5000,
   navServe: true,
@@ -7,7 +7,7 @@ var config = {
 };
 
 VueRun.config({
-  cdn: '//resources.73zls.com/vue-admin',
+  cdn: 'https://resources.73zls.com/vue-admin',
   debug: config.debug,
   version: version,
   notExist: function (url) {
@@ -16,9 +16,8 @@ VueRun.config({
   }
 });
 
-var assetsCdn = '.';
-// var assetsCdn = 'https://resources.73zls.com/vue-admin-template';
-var themeName = 'autumn'; // ['lavender', 'green', 'dark', 'diablo']
+var assetsCdn = '.'; // 'https://resources.73zls.com/vue-admin-template';
+var themeName = 'autumn'; // ['autumn','lavender', 'green', 'dark', 'diablo']
 
 // noinspection JSValidateTypes
 VueRun.init(function () {

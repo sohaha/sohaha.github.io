@@ -175,6 +175,7 @@ export default {
   vertical-align: middle;
   padding-bottom: 4px;
   width: 164px;
+  display: inline-block;
 }
 
 .is-collapse .header-logo img {
