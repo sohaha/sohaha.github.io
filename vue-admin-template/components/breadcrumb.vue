@@ -49,6 +49,7 @@ export default {
           }
         })
       }
+      if (breadcrumbArr.length === 0) return [];
       if (breadcrumbArr[0]['name'] !== defaultBreadcrumb.name) {
         breadcrumbArr.unshift(defaultBreadcrumb);
       }

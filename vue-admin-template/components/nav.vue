@@ -1,38 +1,19 @@
 <template>
-  <el-scrollbar
-    :native="false"
-    wrap-class="nav_scrollbar"
-    wrap-style
-    view-style
-    view-class="view-box"
-  >
-    <el-menu
-      :default-active='routePath'
-      :router='true'
-      :collapse="isCollapse"
-      :text-color="textColor"
-      :background-color='navBgColor'
-      @select="handleSelect"
-      active-text-color="#fff"
-      unique-opened
-    >
+  <el-scrollbar :native="false" wrap-class="nav_scrollbar" wrap-style view-style view-class="view-box">
+    <el-menu :default-active='routePath' :router='true' :collapse="isCollapse" :text-color="textColor" :background-color='navBgColor' @select="handleSelect" active-text-color="#fff" unique-opened>
       <template v-for="(v, i) in state.nav">
         <el-submenu v-if="isChildren(v)&&v.meta.show !== false" :index="'nav-'+i" :key="'submenu1-'+i">
           <template slot="title">
-            <i v-if="v.hasOwnProperty('icon')&&!!v.icon" :class="v.icon"></i>
-            <i v-else class="icon-flag"></i>
+            <i v-if="v.hasOwnProperty('icon')&&!!v.icon" :class="v.icon"></i> <i v-else class="icon-flag"></i>
             <span slot="title" class="menu_title">{{ v.name }}</span>
           </template>
-          <el-menu-item v-for="(vv, ii) in v['children']" :index="vv.path" :key="'menuitem-'+ii"
-                        v-show="vv.meta.show !== false">
-            <i v-if="vv.hasOwnProperty('icon')&&!!vv.icon" :class="vv.icon"></i>
-            <i v-else class="icon-flag"></i>
+          <el-menu-item v-for="(vv, ii) in v['children']" :index="vv.path" :key="'menuitem-'+ii" v-show="vv.meta.show !== false">
+            <i v-if="vv.hasOwnProperty('icon')&&!!vv.icon" :class="vv.icon"></i> <i v-else class="icon-flag"></i>
             <span>{{ vv.name }}</span>
           </el-menu-item>
         </el-submenu>
         <el-menu-item v-if="!isChildren(v)&&v.meta.show !== false" :index="v.path" :key="'submenu2-'+i">
-          <i v-if="v.hasOwnProperty('icon')&&!!v.icon" :class="v.icon"></i>
-          <i v-else class="icon-flag"></i>
+          <i v-if="v.hasOwnProperty('icon')&&!!v.icon" :class="v.icon"></i> <i v-else class="icon-flag"></i>
           <span slot="title" class="menu_title">{{ v.name }}</span>
         </el-menu-item>
       </template>
@@ -40,8 +21,8 @@
   </el-scrollbar>
 </template>
 <script>
-const {useRouter, useStore} = hook;
-const {reactive, toRef, ref, watch, computed} = vue;
+const { useRouter, useStore } = hook;
+const { reactive, toRef, ref, watch, computed } = vue;
 
 export default {
   name: 'navView',
@@ -49,21 +30,21 @@ export default {
     isCollapse: Boolean,
     default: false
   },
-  setup(prop, ctx) {
+  setup (prop, ctx) {
     const state = reactive({
       nav: []
     });
 
     const currentPath = computed(() => {
       return useRouter(ctx).route.path;
-    })
+    });
 
-    function activePath(arr) {
+    function activePath (arr) {
       const grandParentCollapse = Object.prototype.toString.call(arr[1]) === '[object Object]'
         && Object.prototype.toString.call(arr[1]['meta']['collapse']) !== '[object Undefined]'
         && !!arr[1]['meta']['collapse'];
       if (!grandParentCollapse) {
-        return arr[1].path;
+        return arr[1] ? arr[1].path : '';
       }
       for (const val of arr.reverse()) {
         if (
@@ -83,7 +64,7 @@ export default {
       return activePath(useRouter(ctx)['route']['matched']);
     });
 
-    function handleSelect(e) {
+    function handleSelect (e) {
       console.log(e);
     }
 
@@ -99,12 +80,12 @@ export default {
           state.nav = useStore(ctx).state.router[2]['children'];
         }
       },
-      {immediate: true}
+      { immediate: true }
     );
 
     const isChildren = (v) => {
       return v.meta.collapse && v['children'];
-    }
+    };
     return {
       routePath,
       handleSelect,
