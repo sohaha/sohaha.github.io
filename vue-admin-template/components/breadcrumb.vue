@@ -39,7 +39,7 @@ export default {
           continue;
         }
 
-        breadcrumbArr.unshift({
+        breadcrumbArr.push({
           name: rr.name,
           path: rr.path,
           meta: {

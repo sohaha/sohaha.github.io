@@ -39,14 +39,16 @@ export default {
       return useRouter(ctx).route.path;
     });
 
-    function activePath (arr) {
+    function activePath(arr) {
       const grandParentCollapse = Object.prototype.toString.call(arr[1]) === '[object Object]'
         && Object.prototype.toString.call(arr[1]['meta']['collapse']) !== '[object Undefined]'
         && !!arr[1]['meta']['collapse'];
       if (!grandParentCollapse) {
         return arr[1] ? arr[1].path : '';
       }
-      for (const val of arr.reverse()) {
+
+      for (let i = arr.length - 1; i >= 0; i--) {
+        const val = arr[i];
         if (
           currentPath === val.path
           && val['meta']['show']
