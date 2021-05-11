@@ -1,16 +1,14 @@
 <template>
-  <!--<div class="header">
-    <el-button @click='logout'>退出登录</el-button>
-  </div>-->
   <el-container :class='isCollapse?"is-collapse":"not-collapse"'>
     <el-aside width="auto" class="header-logo tap" @click.native.prevent="useHandleNav">
       <img src="./static/images/logo.svg" alt="Logo">
     </el-aside>
-    <el-aside v-if="isCollapse" width="30px" class="nav-top-collapse-icon">
-      <i @click.prevent="handleNav" class="icon-arrowhead-right-outl tap"></i>
-      <!--      <i v-else @click.prevent="handleNav" class="icon-arrowhead-left-outli tap"></i>-->
-    </el-aside>
-    <el-main class="header-nav">
+    <el-main class="header-nav relative">
+      <div id='navIcon' class="tap absolute left-0 !hover:(bg-transparent text-[inherit])" @click.prevent="useHandleNav">
+        <el-badge class="tip-msg">
+          <i class="icon-menu-arrow" :class='isCollapse?"rotate-180":""'></i>
+        </el-badge>
+      </div>
       <div class="tap">
         <el-dropdown trigger="click" class="user-menu" @command="useClickMenu">
           <div>
@@ -57,10 +55,10 @@
 </template>
 <script>
 let MessageCountTime;
-const {useStore, useRouter} = hook;
-const {useTip} = util;
-const {reactive, ref, watch, computed, onMounted, onBeforeUnmount} = vue;
-const {user: userApi, useRequestWith} = api;
+const { useStore, useRouter } = hook;
+const { useTip } = util;
+const { reactive, ref, watch, computed, onMounted, onBeforeUnmount } = vue;
+const { user: userApi, useRequestWith } = api;
 export default {
   name: 'headerView',
   props: {
@@ -72,7 +70,7 @@ export default {
       default: false
     }
   },
-  setup(prop, ctx) {
+  setup (prop, ctx) {
     const $store = useStore(ctx);
 
     onMounted(() => {
@@ -98,9 +96,9 @@ export default {
       return $store.state.unreadMessageCount;
     });
 
-    const unreadMessageCountApi = useRequestWith(userApi.unreadMessageCount, {manual: true});
+    const unreadMessageCountApi = useRequestWith(userApi.unreadMessageCount, { manual: true });
 
-    async function getUnreadMessageCount() {
+    async function getUnreadMessageCount () {
       clearTimeout(MessageCountTime);
 
       const [data, err] = await unreadMessageCountApi.run();
@@ -116,28 +114,27 @@ export default {
       }
     }
 
-
-    function useClickMenu(command) {
+    function useClickMenu (command) {
       if (this[command]) {
         this[command]();
       }
       ctx.emit('click', command);
     }
 
-    function useUser() {
+    function useUser () {
       useRouter(ctx).replace('/main/user/lists?key=' + $store.state.user.username + '&v=' + +new Date());
     }
 
-    function useLogs() {
+    function useLogs () {
       useRouter(ctx).replace('/main/user/logs?v=' + +new Date());
     }
 
-    function useClear() {
+    function useClear () {
       VueRun.clearCache();
       location.reload();
     }
 
-    function useHandleNav() {
+    function useHandleNav () {
       ctx.emit('handle');
     }
 
@@ -160,7 +157,7 @@ export default {
 .header-logo {
   padding: 0 0 0 5px;
   text-align: center;
-  color: #2C6EB1;
+  color: #2c6eb1;
   font-weight: bold;
   letter-spacing: 2px;
 }
@@ -203,7 +200,7 @@ export default {
 
 .header-nav > div:hover {
   /*background-color: #eaf1f7;*/
-  background-color: #28344A;
+  background-color: #28344a;
 }
 
 .tip-msg {
@@ -245,25 +242,17 @@ export default {
   position: absolute;
   right: -3px;
   top: 37px;
-  color: #E3E4E4;
+  color: #e3e4e4;
 }
 
 .header-name {
   display: block;
   font-size: 12px;
   color: #999999;
-  border-top: 1px solid #E4E8EB;
+  border-top: 1px solid #e4e8eb;
   margin-top: 5px;
   padding-top: 2px;
   line-height: 12px;
-}
-
-.nav-top-collapse-icon {
-  height: 60px;
-  text-align: center;
-  font-size: 25px;
-  -webkit-animation: opacity 2s infinite;
-  animation: opacity 2s infinite;
 }
 
 </style>
