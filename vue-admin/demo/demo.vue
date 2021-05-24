@@ -34,10 +34,11 @@
 </template>
 <script>
 export default load({js: ['//cdn.jsdelivr.net/npm/zls-manage/qriously/qriously.js']}).then(async () => {
+  const {useTip} = util;
   const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-  const {useRouter, useStore, useCache, useTip, useLoading, useConfirm} = hook;
+  const {useRouter, useStore, useCache, useLoading} = hook;
   const {user: userApi, useRequest} = api;
-  const {useInitTitle, useInitPage} = util;
+  const {useInitTitle,useConfirm} = util;
 
   return {
     components: {

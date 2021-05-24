@@ -5,7 +5,7 @@
       <legend>富文本示例</legend>
       <aside>
         <tinymce ref="editorRef" v-model="content" :config="tinymceConfig"
-                            @init="initDone"
+                 @init="initDone"
                  :images-upload-handler="imagesUploadHandler"></tinymce>
         <br>
         <div class="panel" v-show="tinymceHasInit">
@@ -17,17 +17,18 @@
     <div class="panel">
       更多自定义配置请参考
       <a
-          href="https://www.tiny.cloud/docs/advanced/events/#init"
-          target="_blank"
+        href="https://www.tiny.cloud/docs/advanced/events/#init"
+        target="_blank"
       >tinymce 文档</a>。
     </div>
   </div>
 </template>
 <script>
+const {useTip} = util;
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useTip, useLoading, useConfirm} = hook;
+const {useRouter, useStore, useCache, useLoading} = hook;
 const {user: userApi, useRequest} = api;
-const {useInitTitle, useInitPage} = util;
+const {useInitTitle,useConfirm} = util;
 
 export default {
   name: 'Demo-View',
@@ -46,12 +47,12 @@ export default {
       console.log("编辑器初始化完成");
       tinymceHasInit.value = true;
       setContent(
-          '<p>我是一个<span style="color: #2880b9;">富文本</span><span style="background-color: #bdc3c7; color: #ffffff;">编辑器</span></p>'
+        '<p>我是一个<span style="color: #2880b9;">富文本</span><span style="background-color: #bdc3c7; color: #ffffff;">编辑器</span></p>'
       );
     }
 
     function setContent(e) {
-      editorRef.value.setContent(e)
+      editorRef.value.setContent(e);
     }
 
     function useImagesUploadHandler(blobInfo, succFun, failFun) {
@@ -72,7 +73,7 @@ export default {
           return;
         }
         succFun(json.location);
-      }
+      };
       formData = new FormData();
       formData.append('file', file, file.name);
       xhr.send(formData);

@@ -19,10 +19,11 @@
 <script>
 // 优先载入需要 js
 export default load({js: [VueRun.lib('/form-create/form-create.js')]}).then(async () => {
+  const {useTip} = util;
   const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-  const {useRouter, useStore, useCache, useTip, useLoading, useConfirm} = hook;
+  const {useRouter, useStore, useCache, useLoading} = hook;
   const {user: userApi, useRequest} = api;
-  const {useInitTitle, useInitPage} = util;
+  const {useInitTitle,useConfirm} = util;
 
   let initRuleForm = {title: "", select: "", status: "1"}; // 表单初始数据
 

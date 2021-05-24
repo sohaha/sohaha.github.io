@@ -39,10 +39,11 @@
   </div>
 </template>
 <script>
+const {useTip} = util;
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useTip, useLoading, useConfirm} = hook;
+const {useRouter, useStore, useCache, useLoading} = hook;
 const {user: userApi, useRequest} = api;
-const {useInitTitle, useInitPage} = util;
+const {useInitTitle,useConfirm} = util;
 
 let initRuleForm = {title: "", select: "", status: "1"}; // 表单初始数据
 
