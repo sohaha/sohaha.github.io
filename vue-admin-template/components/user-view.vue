@@ -201,12 +201,12 @@ export default {
 
     const hasEditPass = computed(() => {
       // return !hasEdit.value || useStore(ctx).getters.isSuper;
-      return useStore(ctx).getters.groupID === 1 || useStore(ctx).getters.isSuper;
+      return useStore(ctx).getters.groupID.indexOf(1) > -1 || useStore(ctx).getters.isSuper;
     });
 
     const hasGroup = computed(() => {
       // return !hasEdit.value || useStore(ctx).getters.isSuper;
-      return useStore(ctx).getters.groupID === 1 || useStore(ctx).getters.isSuper;
+      return useStore(ctx).getters.groupID.indexOf(1) > -1 || useStore(ctx).getters.isSuper;
     });
 
     const btnText = computed(() => {
