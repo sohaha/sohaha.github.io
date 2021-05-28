@@ -103,7 +103,7 @@ export default {
   setup (prop, ctx) {
     const { title } = useInitTitle(ctx);
     const $store = useStore(ctx);
-    let listKey = ref('');
+    let listKey = ref(useRouter(ctx).route.query.key || '');
     const lists = useRequestPage(userApi.list, { page: 1, pagesize: 10, key: listKey }, {
       dataHandle (e) {
         e.items = e.items.map((e) => {
@@ -187,6 +187,11 @@ export default {
         getInfo();
       }
     }
+
+    watch(() => useRouter(ctx).route.fullPath, () => {
+      listKey.value = useRouter(ctx).route.query.key || '';
+      lists.change();
+    });
 
     return {
       title,
