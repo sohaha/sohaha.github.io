@@ -12,115 +12,115 @@ export function useRequest(fn, o = {}) {
 
 export const user = {
   demo(data) {
-    return app.request.get('/ZlsManage/UserApi/demo.go?');
+    return app.request.get('/Manage/UserApi/demo.go?');
   },
   demoUpload() {
-    return config.baseURL + '/ZlsManage/UserApi/upload.go';
+    return config.baseURL + '/Manage/UserApi/upload.go';
   },
   current(data) {
-    return ['get', '/ZlsManage/UserApi/UseriInfo.go', data];
+    return ['get', '/Manage/UserApi/UseriInfo.go', data];
   },
-  userInfo: ['get', '/ZlsManage/UserApi/UseriInfo.go'],
+  userInfo: ['get', '/Manage/UserApi/UseriInfo.go'],
   login(data) {
-    return app.request.post('/ZlsManage/UserApi/GetToken.go', data);
+    return app.request.post('/Manage/UserApi/GetToken.go', data);
   },
   logout() {
-    return app.request.post('/ZlsManage/UserApi/ClearToken.go');
+    return app.request.post('/Manage/UserApi/ClearToken.go');
   },
   list(data) {
-    return app.request.get('/ZlsManage/UserManageApi/UserLists.go', data);
+    return app.request.get('/Manage/UserManageApi/UserLists.go', data);
   },
   uploadAvatar() {
-    return config.baseURL + '/ZlsManage/UserApi/UploadAvatar.go';
+    return config.baseURL + '/Manage/UserApi/UploadAvatar.go';
   },
   updateUser(data) {
-    return app.request.put('/ZlsManage/UserApi/Update.go', data);
+    return app.request.put('/Manage/UserApi/Update.go', data);
   },
   createUser(data) {
-    return app.request.post('/ZlsManage/UserManageApi/User.go', data);
+    return app.request.post('/Manage/UserManageApi/User.go', data);
   },
   deleteUser(data) {
-    return app.request.delete('/ZlsManage/UserManageApi/User.go', data);
+    return app.request.delete('/Manage/UserManageApi/User.go', data);
   },
   unreadMessageCount() {
-    return app.request.get('/ZlsManage/UserApi/UnreadMessageCount.go');
+    return app.request.get('/Manage/UserApi/UnreadMessageCount.go');
   },
   updateMessageStatus(data) {
-    return app.request.put('/ZlsManage/UserApi/MessageStatus.go', data);
+    return app.request.put('/Manage/UserApi/MessageStatus.go', data);
   },
   sysUserLogs(data) {
-    return app.request.get('/ZlsManage/UserApi/Logs.go', data);
+    return app.request.get('/Manage/UserApi/Logs.go', data);
   },
   editPassword(data) {
-    return app.request.put('/ZlsManage/UserApi/EditPassword.go', data);
+    return app.request.put('/Manage/UserApi/EditPassword.go', data);
   },
   logs(data) {
-    return app.request.get('/ZlsManage/SystemApi/SystemLogs.go', data);
+    return app.request.get('/Manage/SystemApi/SystemLogs.go', data);
   },
   logsDelete(data) {
-    return app.request.delete('/ZlsManage/SystemApi/SystemLogs.go', data);
+    return app.request.delete('/Manage/SystemApi/SystemLogs.go', data);
   },
   getSystemConfig(data) {
-    return app.request.get('/ZlsManage/SystemApi/SystemConfig.go', data);
+    return app.request.get('/Manage/SystemApi/SystemConfig.go', data);
   },
   setSystemConfig(data) {
-    return app.request.put('/ZlsManage/SystemApi/SystemConfig.go', data);
+    return app.request.put('/Manage/SystemApi/SystemConfig.go', data);
   },
   groupLists(data) {
-    return app.request.get('/ZlsManage/UserManageApi/Groups.go', data);
+    return app.request.get('/Manage/UserManageApi/Groups.go', data);
   },
   createGroup(data) {
-    return app.request.post('/ZlsManage/UserManageApi/Groups.go', data);
+    return app.request.post('/Manage/UserManageApi/Groups.go', data);
   },
   updateGroup(data) {
-    return app.request.put('/ZlsManage/UserManageApi/Groups.go', data);
+    return app.request.put('/Manage/UserManageApi/Groups.go', data);
   },
   deleteGroup(data) {
-    return app.request.delete('/ZlsManage/UserManageApi/Groups.go', data);
+    return app.request.delete('/Manage/UserManageApi/Groups.go', data);
   },
   groupInfo(data) {
-    return app.request.get('/ZlsManage/UserManageApi/GroupInfo.go', data);
+    return app.request.get('/Manage/UserManageApi/GroupInfo.go', data);
   },
   ruleLists(data) {
-    return app.request.get('/ZlsManage/UserManageApi/Rules.go', data);
+    return app.request.get('/Manage/UserManageApi/Rules.go', data);
   },
   addRule(data) {
-    return app.request.post('/ZlsManage/UserManageApi/Rules.go', data);
+    return app.request.post('/Manage/UserManageApi/Rules.go', data);
   },
   editRule(data) {
-    return app.request.put('/ZlsManage/UserManageApi/Rules.go', data);
+    return app.request.put('/Manage/UserManageApi/Rules.go', data);
   },
   updateUserRuleStatus(data) {
-    return app.request.put('/ZlsManage/UserManageApi/UpdateUserRuleStatus.go', data);
+    return app.request.put('/Manage/UserManageApi/UpdateUserRuleStatus.go', data);
   },
   deleteRule(data) {
-    return app.request.delete('/ZlsManage/UserManageApi/Rules.go', data);
+    return app.request.delete('/Manage/UserManageApi/Rules.go', data);
   }
 };
 
 export const sys = {
   sysUpdateGroupMenu(data) {
-    return app.request.post('/ZlsManage/MenuApi/UpdateGroupMenu.go', data);
+    return app.request.post('/Manage/MenuApi/UpdateGroupMenu.go', data);
   },
   sysUserMenu(data) {
-    return app.request.post('/ZlsManage/MenuApi/UserMenu.go', data);
+    return app.request.post('/Manage/MenuApi/UserMenu.go', data);
   },
   sysMenuCreate(data) {
-    return app.request.post('/ZlsManage/MenuApi/Create.go', data);
+    return app.request.post('/Manage/MenuApi/Create.go', data);
   },
   sysMenuDelete(data) {
-    return app.request.post('/ZlsManage/MenuApi/Delete.go', data);
+    return app.request.post('/Manage/MenuApi/Delete.go', data);
   },
   sysMenuUpdate(data) {
-    return app.request.post('/ZlsManage/MenuApi/Update.go', data);
+    return app.request.post('/Manage/MenuApi/Update.go', data);
   },
   sysMenuSort(data) {
-    return app.request.post('/ZlsManage/MenuApi/Sort.go', data);
+    return app.request.post('/Manage/MenuApi/Sort.go', data);
   },
   getSetting() {
-    return ['get', '/ZlsManage/SystemApi/Setting.go'];
+    return ['get', '/Manage/SystemApi/Setting.go'];
   },
   setSetting(data) {
-    return ['put', '/ZlsManage/SystemApi/Setting.go', data];
+    return ['put', '/Manage/SystemApi/Setting.go', data];
   },
 };
