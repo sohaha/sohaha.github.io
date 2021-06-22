@@ -3,7 +3,7 @@ var config = {
   baseURL: '',
   timeout: 5000,
   navServe: true,
-  debug: true
+  debug: false
 };
 
 VueRun.config({
