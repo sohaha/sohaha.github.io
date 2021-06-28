@@ -112,7 +112,7 @@ VueRun.init(function () {
 });
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    if (location.protocol === 'https:') navigator.serviceWorker.register('/sw.js');
+    if (location.protocol === 'https:') navigator.serviceWorker.register('./sw.js');
   });
   var refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', function () {

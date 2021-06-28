@@ -36,6 +36,10 @@ svg[hidden] {
   display: none;
 }
 
+svg{
+  display:inline-block !important;
+}
+
 .iconfont, [class^='icon-'], [class*=' icon-'] {
   font-family: 'font_family', serif !important;
   font-size: inherit;
