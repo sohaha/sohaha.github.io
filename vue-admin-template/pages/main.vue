@@ -83,9 +83,7 @@ export default {
         cRouter = getRouter(router, cPath) || {};
       if (
         JSON.stringify(cRouter) !== '{}' &&
-        cRouter.hasOwnProperty('component') &&
-        cRouter.hasOwnProperty('meta') &&
-        cRouter.meta.has === true
+        cRouter.hasOwnProperty('component')
       ) {
         return cRouter.component;
       } else {
