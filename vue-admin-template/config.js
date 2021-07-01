@@ -1,5 +1,5 @@
 var config = {
-  title: '内容管理后台',
+  title: '管理后台',
   baseURL: '',
   timeout: 5000,
   navServe: true,
@@ -52,10 +52,19 @@ VueRun.init(function () {
           t.initSate = true;
         };
 
-        var user = function () {
-          return api.useRequestWith(api.user.current(), { manual: true }).run();
-        };
-        return user().then(function (res) {
+        var f = [api.useRequestWith(api.user.current(), false).run()];
+        if (api.user.apis) {
+          f.push(api.useRequest(api.user.apis, false).run());
+        }
+        return Promise.all(f).then(function (val) {
+          var res = val[0], a = val[1];
+          if (a[0] && !a[1] && a[0]['code'] === 200) {
+            var apiData = a[0]['data'];
+            for (var k in apiData) {
+              if (apiData.hasOwnProperty(k))
+                api[k] = apiData[k];
+            }
+          }
           var data = res[0];
           var err = res[1];
           if (!err && data) {
@@ -107,7 +116,7 @@ VueRun.init(function () {
     VueRun.lib('/nprogress/nprogress.css'),
   ].concat((function () {
     var u = assetsCdn + '/themes/' + themeName;
-    return themeName ? [u + '/ui.css',u + '/app.css'] : [];
+    return themeName ? [u + '/ui.css', u + '/app.css'] : [];
   })())
 });
 if ('serviceWorker' in navigator) {

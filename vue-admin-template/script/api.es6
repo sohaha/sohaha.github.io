@@ -20,6 +20,7 @@ export const user = {
   current(data) {
     return ['get', '/Manage/UserApi/UseriInfo.go', data];
   },
+  apis: ['get', '/Manage/Apis.go'],
   userInfo: ['get', '/Manage/UserApi/UseriInfo.go'],
   login(data) {
     return app.request.post('/Manage/UserApi/GetToken.go', data);
