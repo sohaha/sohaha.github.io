@@ -8,14 +8,18 @@ const getOptions = (o) => {
   if (typeof o === 'object') {
     return o
   }
-  if (o) {
+  if (o === undefined || !!o) {
     return {}
   }
   return {manual: true}
 }
 
 const runApi = (e) => {
-  const [m, u, d, o, k] = e;
+  let [m, u, d, o, k] = e;
+  if (typeof e[0] === 'object') {
+    [m, u, d, o, k] = e[0];
+    d = e[1]
+  }
   return app.request[m.toLowerCase()](u, d, o, k);
 }
 

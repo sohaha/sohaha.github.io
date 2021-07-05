@@ -24,16 +24,17 @@
   </div>
 </template>
 <script>
-const {useTip} = util;
 const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useLoading} = hook;
-const {user: userApi, useRequest} = api;
-const {useInitTitle,useConfirm} = util;
+
+import {useInitTitle} from '@/script/util.es6';
+import {user as userApi} from '@/script/api.es6';
+
+import Tinymce from '@/components/tinymce.vue';
 
 export default {
   name: 'Demo-View',
   components: {
-    tinymce: VueRun('components/tinymce.vue')
+    Tinymce
   },
   setup(prop, ctx) {
     const {title} = useInitTitle(ctx);

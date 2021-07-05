@@ -36,6 +36,11 @@ VueRun.init(function () {
     mounted: function () {
       this.getUserInfo();
     },
+    computed: {
+      title: function () {
+        return this.$store.state.viewTitle
+      }
+    },
     methods: {
       getUserInfo: function () {
         var t = this, store = hook.useStore();
