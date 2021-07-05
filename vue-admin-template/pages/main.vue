@@ -4,7 +4,7 @@
       <header-top aria-label="顶部导航" :is-collapse="isCollapse" @handle="useHandleNav" @click="useClickTopNav" :logout='logout'></header-top>
     </el-header>
     <el-container class="content">
-      <div class="aside-nav-bg slow-motion" :class="!!asideNavOpen ? 'open' : ''" @click.self="asideNavOpen = !asideNavOpen"></div>
+      <div class="aside-nav-bg" :class="!!asideNavOpen ? 'open' : ''" @click.self="asideNavOpen = !asideNavOpen"></div>
       <el-aside :class="asideClass">
         <nav-left :is-collapse='isCollapse'></nav-left>
       </el-aside>
@@ -83,7 +83,8 @@ export default {
         cRouter = getRouter(router, cPath) || {};
       if (
         JSON.stringify(cRouter) !== '{}' &&
-        cRouter.hasOwnProperty('component')
+        cRouter.hasOwnProperty('component') &&
+        cRouter.hasOwnProperty('meta')
       ) {
         return cRouter.component;
       } else {
@@ -137,7 +138,7 @@ export default {
 
     const asideClass = computed(() => {
       let defClass =
-        'nav-left aside-nav slow-motion' + (asideNavOpen.value ? ' open  warpper-bg' : '');
+        'nav-left aside-nav' + (asideNavOpen.value ? ' open  warpper-bg' : '');
       return isCollapse.value
         ? defClass + ' is-collapse'
         : defClass + ' not-collapse';
@@ -261,16 +262,25 @@ export default {
   }
 }
 
-.nav-left.is-collapse {
-  width: 74px !important;
-}
-
 .nav-left.is-collapse .el-menu.el-menu--inline {
   display: none;
 }
 
+.nav-left {
+  will-change: auto;
+}
+
+.nav-left.is-collapse {
+  width: 74px !important;
+}
+
 .nav-left.not-collapse {
   width: 220px !important;
+}
+
+.aside-nav-bg{
+  -webkit-transition: all .2s linear 0s !important;
+  transition: all .2s linear 0s !important;
 }
 
 .mask-layer {
@@ -905,11 +915,6 @@ legend {
   font-size: 13px;
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .1);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .1);
-}
-
-.slow-motion {
-  -webkit-transition: all .2s linear 0s !important;
-  transition: all .2s linear 0s !important;
 }
 
 .wrap-breadcrumb.breadcrumb {

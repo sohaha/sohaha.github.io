@@ -4,6 +4,10 @@
 //@color: #2E2E2F;
 @color: darken(#62667F, 20%);
 @logoSize: 38px;
+.slow-motion() {
+  transition: all 0.1s cubic-bezier(0.67, 1.24, 1, 1.01) !important
+}
+
 .navTextColor() {
   i {
     color: #FFFFFF !important;
@@ -23,9 +27,11 @@
 #login-main {
   --tw-shadow: 0 0 15px 3px rgb(255 252 252);
 }
-#navIcon{
+
+#navIcon {
   display: inline-block;
 }
+
 #main {
   background-color: @color;
   background-size: 200px;
@@ -41,7 +47,7 @@
     overflow: hidden;
     height: @headerHeight !important;
     width: @notCollapseWidth !important;
-    transition: all .2s linear 0s !important;
+    .slow-motion();
   }
 
   & .header-logo img {
@@ -87,6 +93,7 @@
 
   .nav-left {
     @textColor: #C0C4CC;
+    .slow-motion();
 
     &.not-collapse {
       width: @notCollapseWidth !important;
