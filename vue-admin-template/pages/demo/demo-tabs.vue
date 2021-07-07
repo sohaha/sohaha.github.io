@@ -10,17 +10,11 @@
   </div>
 </template>
 <script>
-const {useTip} = util;
-const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useLoading} = hook;
-const {user: userApi, useRequest} = api;
-const {useInitTitle,useConfirm} = util;
+const {ref, computed} = vue;
 
 export default {
   components: {},
   setup(prop, ctx) {
-    const {title} = useInitTitle(ctx);
-
     let activeName = ref('key3');
     let tabs = ref({
       key1: "标签页1",
@@ -33,7 +27,7 @@ export default {
     }
 
     return {
-      title,
+      title: computed(() => ctx.root.title),
       activeName,
       tabs,
       useHandleClick

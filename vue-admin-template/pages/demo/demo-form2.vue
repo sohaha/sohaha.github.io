@@ -19,20 +19,12 @@
 <script>
 // 优先载入需要 js
 export default load({js: [VueRun.lib('/form-create/form-create.js')]}).then(async () => {
-  const {useTip} = util;
-  const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-  const {useRouter, useStore, useCache, useLoading} = hook;
-  const {user: userApi, useRequest} = api;
-  const {useInitTitle,useConfirm} = util;
-
-  let initRuleForm = {title: "", select: "", status: "1"}; // 表单初始数据
+  const {ref, computed} = vue;
 
   return {
     name: 'demoForm2',
     components: {},
     setup(prop, ctx) {
-      const {title} = useInitTitle(ctx);
-
       let formApi = ref({});
       let formRule = ref([
         {
@@ -140,7 +132,7 @@ export default load({js: [VueRun.lib('/form-create/form-create.js')]}).then(asyn
       }
 
       return {
-        title,
+        title: computed(() => ctx.root.title),
         useAddForm,
         formRule,
         formOption,

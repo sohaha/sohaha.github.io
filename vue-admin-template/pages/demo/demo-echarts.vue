@@ -20,19 +20,11 @@ export default load({
   js: [['//cdn.jsdelivr.net/npm/zls-manage/echarts/echarts.js', '//cdn.jsdelivr.net/npm/zls-manage/echarts/v-charts.js']],
   css: ['//cdn.jsdelivr.net/npm/zls-manage/echarts/v-charts.css']
 }).then(async () => {
-  const {useTip} = util;
-  const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-  const {useRouter, useStore, useCache, useLoading} = hook;
-  const {user: userApi, useRequest} = api;
-  const {useInitTitle,useConfirm} = util;
+  const {ref, computed} = vue;
 
   return {
-    components: {
-      demo: VueRun('components/demo.vue')
-    },
+    components: {},
     setup(prop, ctx) {
-      const {title} = useInitTitle(ctx);
-
       let chartDataHistogram = ref({
         columns: ['日期', '访问用户', '下单用户', '下单率'],
         rows: [
@@ -62,11 +54,11 @@ export default load({
       });
 
       function useDemoClick() {
-        title.value = "示例" + +new Date();
+        ctx.root.setTitle("示例" + +new Date());
       }
 
       return {
-        title,
+        title: computed(() => ctx.root.title),
         useDemoClick,
         chartDataHistogram,
         chartDatPaieInitOptions,

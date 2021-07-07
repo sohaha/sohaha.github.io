@@ -24,9 +24,8 @@
   </div>
 </template>
 <script>
-const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
+const {ref, computed} = vue;
 
-import {useInitTitle} from '@/script/util.es6';
 import {user as userApi} from '@/script/api.es6';
 
 import Tinymce from '@/components/tinymce.vue';
@@ -37,8 +36,6 @@ export default {
     Tinymce
   },
   setup(prop, ctx) {
-    const {title} = useInitTitle(ctx);
-
     let editorRef = ref(null);
     let content = ref('');
     let tinymceConfig = ref({});
@@ -81,7 +78,7 @@ export default {
     }
 
     return {
-      title,
+      title: computed(() => ctx.root.title),
       tinymceConfig,
       initDone,
       content,

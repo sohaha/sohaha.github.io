@@ -42,6 +42,9 @@ VueRun.init(function () {
       }
     },
     methods: {
+      setTitle: function (title) {
+        this.$store.commit('setViewTitle', title);
+      },
       getUserInfo: function () {
         var t = this, store = hook.useStore();
         if (!store.state.token) {

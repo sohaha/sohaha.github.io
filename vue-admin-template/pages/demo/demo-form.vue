@@ -39,11 +39,7 @@
   </div>
 </template>
 <script>
-const {useTip} = util;
-const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useLoading} = hook;
-const {user: userApi, useRequest} = api;
-const {useInitTitle,useConfirm} = util;
+const {ref, computed} = vue;
 
 let initRuleForm = {title: "", select: "", status: "1"}; // 表单初始数据
 
@@ -51,7 +47,6 @@ export default {
   components: {},
   setup(prop, ctx) {
     const {root} = ctx;
-    const {title} = useInitTitle(ctx);
 
     let ruleFormRef = ref(null);
     let formState = ref(false);
@@ -87,7 +82,7 @@ export default {
     }
 
     return {
-      title,
+      title: computed(() => ctx.root.title),
       formState,
       ruleForm,
       rules,

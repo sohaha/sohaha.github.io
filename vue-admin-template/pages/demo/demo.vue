@@ -34,7 +34,7 @@
   </div>
 </template>
 <script>
-const {ref, reactive, computed, onMounted, watch} = vue;
+const {ref, computed} = vue;
 
 import Demo from '@/components/demo.vue';
 
@@ -44,13 +44,12 @@ export default load({js: ['//cdn.jsdelivr.net/npm/zls-manage/qriously/qriously.j
       Demo
     },
     setup(prop, ctx) {
-      const title = ref(ctx.root.title)
       function useDemoClick() {
-        title.value = "示例" + +new Date();
+        ctx.root.setTitle("示例" + +new Date());
       }
 
       return {
-        title,
+        title: computed(() => ctx.root.title),
         useDemoClick
       };
     }

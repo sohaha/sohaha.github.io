@@ -157,18 +157,15 @@
   </div>
 </template>
 <script>
-const {ref, reactive, computed, onMounted, watch} = vue;
+const {ref, computed, watch} = vue;
 import {useRequestPage, useRequestWith} from '@/script/api-util.es6';
-import {useInitTitle, useTip} from '@/script/util.es6';
+import {useTip} from '@/script/util.es6';
 
 let dataFormat = {title: '', date: '', id: 0};
 
 export default {
   components: {},
   setup(prop, ctx) {
-    const {root} = ctx;
-    const {title} = useInitTitle(ctx);
-
     // 请求列表
     const lists = useRequestPage(
       () =>
@@ -380,7 +377,7 @@ export default {
     // 选中删除结束
 
     return {
-      title,
+      title: computed(() => ctx.root.title),
       ...listRes,
       ...editRes,
       ...selectRes,

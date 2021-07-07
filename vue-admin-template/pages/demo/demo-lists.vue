@@ -65,7 +65,7 @@
   </div>
 </template>
 <script>
-const {ref, reactive, computed, onMounted, watch} = vue;
+const {ref, watch} = vue;
 import {useRequestPage} from '@/script/api-util.es6';
 import {useTip} from '@/script/util.es6';
 
