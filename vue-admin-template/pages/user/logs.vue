@@ -7,10 +7,10 @@
           <el-form-item>
             <el-select clearable size="mini" v-model="logType" placeholder="请选择状态">
               <el-option
-                  v-for="item in logTypes"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                v-for="item in logTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -27,11 +27,11 @@
       <legend>{{ tabTitle }}</legend>
       <div v-loading="listLoading">
         <el-table
-            empty-text="暂无对应消息"
-            @selection-change="handleSelectionChange"
-            :data="listData"
-            style="width: 100%"
-            size="mini"
+          empty-text="暂无对应消息"
+          @selection-change="handleSelectionChange"
+          :data="listData"
+          style="width: 100%"
+          size="mini"
         >
           <el-table-column :selectable="isUnreadMessageTab" type="selection" width="55"></el-table-column>
           <el-table-column prop="create_time" label="日期" width="150"></el-table-column>
@@ -44,9 +44,9 @@
           <el-table-column label="类型">
             <template slot-scope="scope">
               <el-tag
-                  size="mini"
-                  v-bind="getTagAttrs(scope.row.type)"
-                  v-text="getTagAttrs(scope.row.type).title"
+                size="mini"
+                v-bind="getTagAttrs(scope.row.type)"
+                v-text="getTagAttrs(scope.row.type).title"
               ></el-tag>
             </template>
           </el-table-column>
@@ -54,11 +54,11 @@
             <template slot-scope="scope">
               <div class="text-nowrap">
                 <el-button
-                    type="primary"
-                    v-if="isUnreadMessageTab(scope.row)"
-                    title="标记已读"
-                    size="mini"
-                    @click="useReadSelection(scope.row.id)"
+                  type="primary"
+                  v-if="isUnreadMessageTab(scope.row)"
+                  title="标记已读"
+                  size="mini"
+                  @click="useReadSelection(scope.row.id)"
                 >标记已读
                 </el-button>
                 <span v-else>--</span>
@@ -69,21 +69,21 @@
         <div class="tip-page" v-if="!!listPages.total">
           <div class="panel-left" v-show="showColumnBtn">
             <el-button
-                @click="useReadSelection()"
-                size="mini"
-                type="primary"
-                icon="icon-inbox"
-                title="标记已读"
+              @click="useReadSelection()"
+              size="mini"
+              type="primary"
+              icon="icon-inbox"
+              title="标记已读"
             ></el-button>
           </div>
           <el-pagination
-              :current-page.sync="listPages.curpage"
-              @size-change="listChange"
-              @current-change="listChange"
-              background
-              layout="prev, pager, next, sizes, total"
-              :total="listPages.total"
-              :page-size.sync="listPages.pagesize">
+            :current-page.sync="listPages.curpage"
+            @size-change="listChange"
+            @current-change="listChange"
+            background
+            layout="prev, pager, next, sizes, total"
+            :total="listPages.total"
+            :page-size.sync="listPages.pagesize">
           </el-pagination>
         </div>
       </div>
@@ -91,15 +91,15 @@
   </div>
 </template>
 <script>
-const {ref, reactive, computed, onMounted, watch} = vue;
-const {useRouter, useStore, useCache,  useLoading} = hook;
-const {user: userApi, useRequestWith, useRequestPage} = api;
-const {useInitTitle,useTip} = util;
+const {ref, reactive, computed, watch} = vue;
+
+import {useTip} from '@/script/util.es6';
+import {user as userApi, useRequestWith, useRequestPage} from '@/script/api.es6';
+
 export default {
   components: {},
   setup(prop, ctx) {
     const {root} = ctx;
-    const {title} = useInitTitle(ctx);
 
     let activeName = ref("unreadMessage");
     let logType = ref("");
@@ -211,7 +211,7 @@ export default {
     }
 
     return {
-      title,
+      title: computed(() => ctx.root.title),
       ...listRes,
       logType,
       logTypes,

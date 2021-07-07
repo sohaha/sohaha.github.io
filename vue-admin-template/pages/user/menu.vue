@@ -158,10 +158,10 @@
   </div>
 </template>
 <script>
-const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useLoading} = hook;
-const {sys: sysApi, useRequestWith} = api;
-const {useInitTitle, useTip, useConfirm} = util;
+const {ref, onMounted, watch} = vue;
+
+import {useTip, useConfirm} from '@/script/util.es6';
+import {sys as sysApi, useRequestWith} from '@/script/api.es6';
 
 export default {
   components: {

@@ -13,7 +13,7 @@
           <el-main>
             <div>
               <el-image style="width: 200px; height: 200px" :src="avatar" fit="cover"></el-image>
-              <div> {{ nickname }} </div>
+              <div> {{ nickname }}</div>
             </div>
           </el-main>
         </el-container>
@@ -22,11 +22,11 @@
   </div>
 </template>
 <script>
-const { ref, reactive, computed, onMounted, watch, onBeforeUnmount } = vue;
+const {ref, computed} = vue;
 
 export default {
   components: {},
-  setup (prop, ctx) {
+  setup(prop, ctx) {
     const $store = hook.useStore(ctx);
 
     let title = ref('个人设置');

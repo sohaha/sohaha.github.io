@@ -28,19 +28,16 @@
   </div>
 </template>
 <script>
-const {useTip} = util;
-const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache, useLoading} = hook;
-const {user: userApi, useRequestWith} = api;
-const {useInitTitle,useConfirm} = util;
+const {ref, computed, onMounted} = vue;
+
+import {useTip, useConfirm} from '@/script/util.es6';
+import {user as userApi, useRequestWith} from '@/script/api.es6';
 
 let initForm = {ipWhitelist: '', maintainMode: null, debug: false};
 
 export default {
   components: {},
   setup(prop, ctx) {
-    const {title} = useInitTitle(ctx);
-
     onMounted(() => {
       useGetConfig();
     });
@@ -86,7 +83,7 @@ export default {
     }
 
     return {
-      title,
+      title: computed(() => ctx.root.title),
       rules,
       form,
       formRef,

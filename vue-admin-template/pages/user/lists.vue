@@ -5,7 +5,8 @@
       <div class="view-title-right float-clear">
         <el-form @submit.prevent.stop.native inline class="tip-top">
           <el-form-item>
-            <el-input clearable @keyup.enter.stop.prevent.native="listChange" v-model="listKey" placeholder="用户昵称" size="mini">
+            <el-input clearable @keyup.enter.stop.prevent.native="listChange" v-model="listKey" placeholder="用户昵称"
+                      size="mini">
               <el-button @click="listChange" type="success" slot="append" size="mini" icon="el-icon-search"></el-button>
             </el-input>
           </el-form-item>
@@ -74,7 +75,8 @@
                     <el-button size="mini" @click="scope.row.popover = false" type="info" plain>取 消</el-button>
                     <el-button type="danger" size="mini" @click="useDeleteRow(scope)" plain>确 定</el-button>
                   </div>
-                  <el-button :disabled="isMe(scope.row.username)" slot="reference" size="mini" type="danger" icon="el-icon-delete" title="删除用户">删 除
+                  <el-button :disabled="isMe(scope.row.username)" slot="reference" size="mini" type="danger"
+                             icon="el-icon-delete" title="删除用户">删 除
                   </el-button>
                 </el-popover>
               </div>
@@ -82,30 +84,36 @@
           </el-table-column>
         </el-table>
         <div class="tip-page" v-if="!!listPages.total">
-          <el-pagination :current-page.sync="listPages.curpage" @size-change="listChange" @current-change="listChange" background layout="prev, pager, next, sizes, total" :total="listPages.total" :page-size.sync="listPages.pagesize"></el-pagination>
+          <el-pagination :current-page.sync="listPages.curpage" @size-change="listChange" @current-change="listChange"
+                         background layout="prev, pager, next, sizes, total" :total="listPages.total"
+                         :page-size.sync="listPages.pagesize"></el-pagination>
         </div>
       </aside>
     </fieldset>
-    <el-dialog class="dialog-view" :title="viewDialogtitle" :visible.sync="viewDialogVisible" :close-on-press-escape="false" :close-on-click-modal="false" center>
+    <el-dialog class="dialog-view" :title="viewDialogtitle" :visible.sync="viewDialogVisible"
+               :close-on-press-escape="false" :close-on-click-modal="false" center>
       <user-view :info="info" @submit="useUserSubmitSucceed"></user-view>
     </el-dialog>
   </div>
 </template>
 <script>
-const { ref, reactive, computed, onMounted, watch } = vue;
-const { useRouter, useStore, useCache,  useLoading } = hook;
-const { user: userApi, useRequestWith, useRequestPage } = api;
-const { useInitTitle, getInfo,useTip } = util;
+const {ref, reactive, computed, onMounted, watch} = vue;
+
+import {useRouter, useStore} from '@/script/hook.es6';
+import {getInfo, useTip} from '@/script/util.es6';
+import {user as userApi, useRequestWith, useRequestPage} from '@/script/api.es6';
+
+import UserView from '@/components/user-view.vue';
+
 export default {
   components: {
-    userView: VueRun('components/user-view.vue')
+    UserView
   },
-  setup (prop, ctx) {
-    const { title } = useInitTitle(ctx);
+  setup(prop, ctx) {
     const $store = useStore(ctx);
     let listKey = ref(useRouter(ctx).route.query.key || '');
-    const lists = useRequestPage(userApi.list, { page: 1, pagesize: 10, key: listKey }, {
-      dataHandle (e) {
+    const lists = useRequestPage(userApi.list, {page: 1, pagesize: 10, key: listKey}, {
+      dataHandle(e) {
         e.items = e.items.map((e) => {
           e.group_name = [];
           for (let k in e.groups) {
@@ -150,24 +158,24 @@ export default {
       return !!info.value.id ? '编辑用户' : '添加用户';
     });
 
-    function isMe (name) {
+    function isMe(name) {
       return name === $store.state.user.username;
     }
 
-    function useCreate () {
+    function useCreate() {
       viewDialogVisible.value = true;
       info.value = {};
     }
 
-    function useEditRow (e) {
+    function useEditRow(e) {
       info.value = e.row;
       viewDialogVisible.value = !viewDialogVisible.value;
     }
 
-    const deleteRow = useRequestWith(userApi.deleteUser, { manual: true });
+    const deleteRow = useRequestWith(userApi.deleteUser, {manual: true});
 
-    async function useDeleteRow (v) {
-      const [, err] = await deleteRow.run({ id: v.row.id });
+    async function useDeleteRow(v) {
+      const [, err] = await deleteRow.run({id: v.row.id});
       if (err) {
         useTip().message('warning', err);
       } else {
@@ -180,7 +188,7 @@ export default {
       v.row.popover = false;
     }
 
-    function useUserSubmitSucceed (id) {
+    function useUserSubmitSucceed(id) {
       viewDialogVisible.value = false;
       lists.change();
       if (+id === +$store.state.user.id) {
@@ -194,7 +202,7 @@ export default {
     });
 
     return {
-      title,
+      title: computed(() => ctx.root.title),
       listKey,
       ...listRes,
       baseUrl,

@@ -150,15 +150,15 @@
       <legend>菜单设置</legend>
       <aside :aria-label="title">
         <el-tree
-            ref="menuRef"
-            v-loading="Menuloading"
-            :data="menuData"
-            show-checkbox
-            node-key="id"
-            :default-expanded-keys="[]"
-            :default-checked-keys="showKeepMenuArr"
-            :props="{ children: 'child',label: 'title'}"
-            :default-expand-all="true"
+          ref="menuRef"
+          v-loading="Menuloading"
+          :data="menuData"
+          show-checkbox
+          node-key="id"
+          :default-expanded-keys="[]"
+          :default-checked-keys="showKeepMenuArr"
+          :props="{ children: 'child',label: 'title'}"
+          :default-expand-all="true"
         >
           <div class="custom-tree-node" slot-scope="{ node, data }">
             ({{ data.id }})
@@ -168,10 +168,10 @@
         </el-tree>
         <div class="btn-box">
           <el-button
-              type="primary"
-              size="mini"
-              icon="el-icon-check"
-              @click="keepRoleMenu"
+            type="primary"
+            size="mini"
+            icon="el-icon-check"
+            @click="keepRoleMenu"
           >保 存
           </el-button
           >
@@ -181,10 +181,11 @@
   </div>
 </template>
 <script>
-const {ref, reactive, computed, onMounted, watch} = vue;
-const {useRouter, useStore, useCache,  useLoading} = hook;
-const {user: userApi, sys: sysApi, useRequest, useRequestWith} = api;
-const {useInitTitle,useTip} = util;
+const {ref, computed, watch} = vue;
+
+import {useRouter, useStore} from '@/script/hook.es6';
+import {useTip} from '@/script/util.es6';
+import {user as userApi, sys as sysApi, useRequestWith} from '@/script/api.es6';
 
 let dataFormat = {
   title: '',
@@ -206,7 +207,7 @@ export default {
   components: {},
   setup(prop, ctx) {
     const {root} = ctx;
-    const {title} = useInitTitle(ctx);
+    const title = computed(() => ctx.root.title);
 
     let searchKey = ref('');
     let listData = ref([]);
@@ -242,13 +243,13 @@ export default {
       getMenuList()
     }
     // menuData.value = useStore(ctx).getters.menus;
-    title.value = gid.value ? '角色权限' : '权限设置';
+    ctx.root.setTitle(gid.value ? '角色权限' : '权限设置');
     watch(gid, (val) => {
       if (val) {
-        title.value = '角色权限';
+        ctx.root.setTitle('角色权限');
         useGetGroup();
       } else {
-        title.value = '权限设置';
+        ctx.root.setTitle('权限设置');
       }
       getMenuList(val)
     })
@@ -313,10 +314,10 @@ export default {
     function useAddRowStatus() {
       isAddRow.value = true;
       listData.value.unshift(
-          Object.assign(
-              {_isEdit: true, _isPopover: false, _isAdd: true},
-              dataFormat
-          )
+        Object.assign(
+          {_isEdit: true, _isPopover: false, _isAdd: true},
+          dataFormat
+        )
       );
     }
 
@@ -353,16 +354,16 @@ export default {
 
     function useGetEditBtnAttrs(e) {
       return e.row._isEdit
-          ? {
-            title: '提 交',
-            type: 'primary',
-            icon: 'el-icon-check'
-          }
-          : {
-            title: '编 辑',
-            type: 'info',
-            icon: 'el-icon-edit'
-          };
+        ? {
+          title: '提 交',
+          type: 'primary',
+          icon: 'el-icon-check'
+        }
+        : {
+          title: '编 辑',
+          type: 'info',
+          icon: 'el-icon-edit'
+        };
     }
 
     function useClickChangeStatus(e, l) {

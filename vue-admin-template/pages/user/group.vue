@@ -76,20 +76,17 @@
   </div>
 </template>
 <script>
+const {ref, computed, onMounted} = vue;
 
-const {ref, reactive, computed, onMounted, watch} = vue;
-const {useRouter, useStore, useCache,  useLoading} = hook;
-const {user: userApi, useRequestWith} = api;
-const {useInitTitle,useTip} = util;
+import {useRouter, useStore} from '@/script/hook.es6';
+import {useTip} from '@/script/util.es6';
+import {user as userApi, useRequestWith} from '@/script/api.es6';
 
 let dataFormat = {title: '', date: '', id: 0};
 export default {
-  components: {
-    userView: VueRun('components/user-view.vue')
-  },
+  components: {},
   setup(prop, ctx) {
     const {root} = ctx;
-    const {title} = useInitTitle(ctx);
 
     let listData = ref([]);
 
@@ -196,20 +193,20 @@ export default {
 
     function useGetEditBtnAttrs(e) {
       return e.row._isEdit
-          ? {
-            title: '提 交',
-            type: 'primary',
-            icon: 'el-icon-check'
-          }
-          : {
-            title: '编 辑',
-            type: 'info',
-            icon: 'el-icon-edit'
-          };
+        ? {
+          title: '提 交',
+          type: 'primary',
+          icon: 'el-icon-check'
+        }
+        : {
+          title: '编 辑',
+          type: 'info',
+          icon: 'el-icon-edit'
+        };
     }
 
     return {
-      title,
+      title: computed(() => ctx.root.title),
       listData,
       useGetLists,
       useEditRow,

@@ -10,12 +10,12 @@
   </div>
 </template>
 <script>
+const {computed} = vue;
+
 export default load({js: [VueRun.lib('/form-create/form-create.js')]}).then(async () => {
   return {
     components: {},
     setup(prop, ctx) {
-      const {title} = util.useInitTitle(ctx);
-
       let rules = [
         {
           type: 'input',
@@ -119,7 +119,7 @@ export default load({js: [VueRun.lib('/form-create/form-create.js')]}).then(asyn
       })();
 
       return {
-        title,
+        title: computed(() => ctx.root.title),
         getSetting
       };
     }

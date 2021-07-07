@@ -27,12 +27,12 @@
                   <el-button @click="useDeleteLog" type="danger" size="mini" plain>确 定</el-button>
                 </div>
                 <el-button
-                    :disabled="stateDel"
-                    slot="reference"
-                    size="mini"
-                    type="danger"
-                    icon="el-icon-delete"
-                    title="删 除"
+                  :disabled="stateDel"
+                  slot="reference"
+                  size="mini"
+                  type="danger"
+                  icon="el-icon-delete"
+                  title="删 除"
                 >删 除
                 </el-button>
               </el-popover>
@@ -54,11 +54,11 @@
   </div>
 </template>
 <script>
-const {useTip} = util;
-const {ref, reactive, computed, onMounted, watch, onBeforeUnmount} = vue;
-const {useRouter, useStore, useCache,  useLoading} = hook;
-const {user: userApi, useRequest, useRequestWith} = api;
-const {useInitTitle} = util;
+const {ref, computed, onMounted, watch, onBeforeUnmount} = vue;
+
+import {useTip} from '@/script/util.es6';
+
+import {user as userApi, useRequestWith} from '@/script/api.es6';
 
 let timer;
 
@@ -66,7 +66,6 @@ export default {
   components: {},
   setup(prop, ctx) {
     const {root} = ctx;
-    const {title} = useInitTitle(ctx);
 
     onMounted(() => {
       useGetDate();
@@ -185,7 +184,7 @@ export default {
     }
 
     return {
-      title,
+      title: computed(() => ctx.root.title),
       currentType,
       types,
       ban,
