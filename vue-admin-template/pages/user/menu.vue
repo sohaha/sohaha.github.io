@@ -158,21 +158,23 @@
   </div>
 </template>
 <script>
-const {ref, onMounted, watch} = vue;
+const {ref, onMounted, watch, computed} = vue;
 
 import {useTip, useConfirm} from '@/script/util.es6';
 import {sys as sysApi, useRequestWith} from '@/script/api.es6';
 
+import menuSelect from '@/components/menu-select.vue';
+
 export default {
   components: {
-    menuSelect: VueRun('components/menu-select.vue')
+    menuSelect
   },
   setup(prop, ctx) {
     const {root} = ctx;
 
     onMounted(() => {
-      useGetMenuList();
-      getIcons();
+      // useGetMenuList();
+      // getIcons();
     });
 
     let title = ref('菜单管理');
@@ -201,6 +203,19 @@ export default {
     let breadShowSelectRef = ref(null);
     let breadClickSelectRef = ref(null);
     let navigationSelectRef = ref(null);
+
+    const refReady = computed(() => {
+      return selectMenuRef.value !== null
+        && breadShowSelectRef.value !== null
+        && breadClickSelectRef.value !== null
+        && navigationSelectRef.value !== null
+    })
+    watch(() => refReady.value, (bool) => {
+      if (!!bool) {
+        useGetMenuList();
+        getIcons();
+      }
+    })
 
     function addMenu() {
       clearData();
