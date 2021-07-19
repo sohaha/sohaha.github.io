@@ -23,7 +23,7 @@
 #main .header-logo {
   overflow: hidden;
   height: 45px !important;
-  width: 180px !important;
+  width: 196px !important;
   transition: all 0.1s cubic-bezier(0.67, 1.24, 1, 1.01) !important;
 }
 #main .header-logo img {
@@ -59,7 +59,7 @@
   transition: all 0.1s cubic-bezier(0.67, 1.24, 1, 1.01) !important;
 }
 #main .nav-left.not-collapse {
-  width: 180px !important;
+  width: 196px !important;
 }
 #main .nav-left .el-menu-item i,
 #main .nav-left .el-submenu__title i {
