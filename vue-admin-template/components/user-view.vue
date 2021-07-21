@@ -55,7 +55,7 @@
         <el-option v-for="(v,k) in groups" :key="k" :label="v.name" :value="v.id"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="用户状态" prop="status">
+    <el-form-item label="用户状态" prop="status" v-if="hasEditPass">
       <el-radio-group v-model="ruleForm.status">
         <el-radio label="1">开启</el-radio>
         <el-radio label="2">禁止</el-radio>
