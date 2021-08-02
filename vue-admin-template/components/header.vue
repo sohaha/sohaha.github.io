@@ -1,13 +1,16 @@
 <template>
   <el-container :class='isCollapse?"is-collapse":"not-collapse"'>
-    <el-aside width="auto" class="header-logo tap" @click.native.prevent="useHandleNav">
+    <el-aside v-if="themeLeftNav" width="auto" class="header-logo tap" @click.native.prevent="useHandleNav">
       <img src="./static/images/logo.svg" alt="Logo">
     </el-aside>
     <el-main class="header-nav relative">
-      <div id='navIcon' class="tap absolute left-0 !hover:(bg-transparent text-[inherit])" @click.prevent="useHandleNav">
+      <div id='navIcon' v-if="themeLeftNav" class="tap absolute left-0 !hover:(bg-transparent text-[inherit])" @click.prevent="useHandleNav">
         <el-badge class="tip-msg">
           <i class="icon-menu-arrow" :class='isCollapse?"rotate-180":""'></i>
         </el-badge>
+      </div>
+      <div v-else class="absolute left-0 !w-auto">
+        <slot/>
       </div>
       <div class="tap">
         <el-dropdown trigger="click" class="user-menu" @command="useClickMenu">
@@ -59,12 +62,12 @@ const { useStore, useRouter } = hook;
 const { useTip } = util;
 const { reactive, ref, watch, computed, onMounted, onBeforeUnmount } = vue;
 const { user: userApi, useRequestWith } = api;
+
 export default {
   name: 'headerView',
   props: {
     logout: Function,
-    default: () => {
-    },
+    default: () => {},
     isCollapse: {
       type: Boolean,
       default: false
@@ -147,7 +150,8 @@ export default {
       useLogs,
       useClear,
       useClickMenu,
-      useHandleNav
+      useHandleNav,
+      themeLeftNav:$store.getters.themeLeftNav,
     };
   }
 };

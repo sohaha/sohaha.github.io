@@ -145,9 +145,9 @@
   </div>
 </template>
 <script>
+const {useTip} = util;
+const { useRouter, useStore } = hook;
 const { ref, reactive, computed, onMounted, watch } = vue;
-
-import {useStore} from '@/script/hook.es6'
 
 export default {
   setup (prop, ctx) {

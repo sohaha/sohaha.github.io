@@ -16,8 +16,11 @@ VueRun.config({
   }
 });
 
-var assetsCdn = '.'; // 'https://resources.73zls.com/vue-admin-template';
-var themeName = 'autumn'; // ['autumn','lavender', 'green', 'dark', 'diablo']
+var assetsCdn = '.'; // 'https://sohaha.73zls.com/vue-admin-template';
+var themeConf = {
+  name: '', // ['autumn','lavender', 'green', 'dark', 'diablo']
+  nav:'top',
+};
 
 // noinspection JSValidateTypes
 VueRun.init(function () {
@@ -123,8 +126,8 @@ VueRun.init(function () {
     VueRun.lib('/fonts/iconfont/iconfont.css'),
     VueRun.lib('/nprogress/nprogress.css'),
   ].concat((function () {
-    var u = assetsCdn + '/themes/' + themeName;
-    return themeName ? [u + '/ui.css', u + '/app.css'] : [];
+    var u = assetsCdn + '/themes/' + themeConf.name;
+    return themeConf.name ? [u + '/ui.css', u + '/app.css'] : [];
   })())
 });
 if ('serviceWorker' in navigator) {

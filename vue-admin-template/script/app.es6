@@ -53,10 +53,14 @@ export function initStore() {
       breadcrumb: [],
       viewTitle: '',
       unreadMessageCount: 0,
-      defaultData: { avatar: defaultAvatar },
+      defaultData: {avatar: defaultAvatar},
       nav: [],
+      theme: window['themeConf'] || {}
     },
     getters: {
+      themeLeftNav(state) {
+        return state.theme.nav === 'left';
+      },
       userid(state) {
         return state.user.id || 0;
       },
@@ -82,7 +86,7 @@ export function initStore() {
         return state.user.group_id || -1;
       },
       groups(state) {
-        return state.groups.length > 0 ? state.groups : [{ name: '-无角色-', id: 0 }];
+        return state.groups.length > 0 ? state.groups : [{name: '-无角色-', id: 0}];
       },
       menus(state) {
         return state.user.menus || [];
@@ -124,8 +128,8 @@ export function initStore() {
 }
 
 export const defaultRouter = [
-  { name: '首页', path: '/', component: VueRun('./pages/home.vue') },
-  { name: '登录', path: '/login', component: VueRun('./pages/login.vue') },
+  {name: '首页', path: '/', component: VueRun('./pages/home.vue')},
+  {name: '登录', path: '/login', component: VueRun('./pages/login.vue')},
   {
     name: '管理中心', path: '/main', component: VueRun('./pages/main.vue'),
     children: []
@@ -333,7 +337,7 @@ export function requestInit() {
     timeout: config.timeout,
     headers: {
       'X-Requested-With': 'xmlhttprequest',
-      'post': { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }
+      'post': {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'}
     }
   });
   const urlEncode = arg => {
@@ -381,7 +385,7 @@ export function requestInit() {
 
   const errHandle = (error) => {
     let v = vm.$root;
-    const { useTip } = util;
+    const {useTip} = util;
     if (!!error.response) {
       switch (error.response.status) {
         case 401:
@@ -409,7 +413,7 @@ export function requestInit() {
     if (isJSON && (r.data.code >= 200 && r.data.code < 300)) {
       return r.data;
     }
-    let err = { response: r };
+    let err = {response: r};
     if (r.status === 200 && isJSON && r.data.code !== 200) {
       err.response.status = r.data.code;
     }

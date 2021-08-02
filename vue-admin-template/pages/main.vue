@@ -1,16 +1,20 @@
 <template>
   <el-container id="main" class='warpper-bg' :class="iMobile ? 'set-mob' : ''">
     <el-header class="header" height="60px">
-      <header-top aria-label="顶部导航" :is-collapse="isCollapse" @handle="useHandleNav" @click="useClickTopNav" :logout='logout'></header-top>
+      <header-top aria-label="顶部导航" :is-collapse="isCollapse" @handle="useHandleNav" @click="useClickTopNav"
+                  :logout='logout'>
+      </header-top>
     </el-header>
     <el-container class="content">
-      <div class="aside-nav-bg" :class="!!asideNavOpen ? 'open' : ''" @click.self="asideNavOpen = !asideNavOpen"></div>
-      <el-aside :class="asideClass">
+      <div class="aside-nav-bg" :class="!!asideNavOpen ? 'open' : ''"
+           @click.self="asideNavOpen = !asideNavOpen"></div>
+      <el-aside v-if="themeLeftNav || iMobile" :class="asideClass">
         <nav-left :is-collapse='isCollapse'></nav-left>
       </el-aside>
       <el-container class="content-container">
-        <div @click="asideNavOpen = !asideNavOpen" class='float-nav-btn rotate-180 opacity-75'><i class='icon-menu-arrow'></i></div>
-        <el-main ref="content-box" class="content-box content-view-main" aria-label="页面内容">
+        <div @click="asideNavOpen = !asideNavOpen" class='float-nav-btn rotate-180 opacity-75'><i
+          class='icon-menu-arrow'></i></div>
+        <el-main :class="{'mx-auto container':!themeLeftNav}" ref="content-box" class="content-box content-view-main" aria-label="页面内容">
           <nav-breadcrumb :class="{'wrap-breadcrumb': isWrapBreadcrumb}"></nav-breadcrumb>
           <transition name="fade" mode="out-in">
             <keep-alive>
@@ -23,15 +27,17 @@
         </el-main>
       </el-container>
     </el-container>
-    <el-dialog :show-close="false" class="dialog-view" :title="editPassViewDialogtitle" :visible.sync="editPassViewDialogVisible" :close-on-press-escape="false" :close-on-click-modal="false" center>
+    <el-dialog :show-close="false" class="dialog-view" :title="editPassViewDialogtitle"
+               :visible.sync="editPassViewDialogVisible" :close-on-press-escape="false" :close-on-click-modal="false"
+               center>
       <edit-password @success="editPassSuccess"></edit-password>
     </el-dialog>
     <el-backtop target=".content-box"></el-backtop>
   </el-container>
 </template>
 <script>
-const { ref, reactive, computed, onMounted, onUnmounted, watch } = vue;
-const { throttle, useTip } = util;
+const {ref, reactive, computed, onMounted, onUnmounted, watch} = vue;
+const {throttle, useTip} = util;
 const {
   useRouter,
   useStore,
@@ -39,8 +45,8 @@ const {
   useWindowSize,
   useWindowSizeRealTime,
 } = hook;
-const { initWindowFunc, isMobile } = util;
-const { user: userApi, useRequest } = api;
+const {initWindowFunc, isMobile} = util;
+const {user: userApi, useRequest} = api;
 
 export default {
   components: {
@@ -50,7 +56,7 @@ export default {
     editPassword: VueRun('components/edit-password.vue'),
   },
   name: 'mainView',
-  setup (prop, ctx) {
+  setup(prop, ctx) {
     initWindowFunc();
     let title = ref('');
 
@@ -58,7 +64,7 @@ export default {
     const user = computed(() => store.state.user);
     const routeMeta = computed(() => ctx.root.$route.meta);
 
-    function getRouter (router, cPath) {
+    function getRouter(router, cPath) {
       for (let i in router) {
         if (!router.hasOwnProperty(i)) continue;
         if (
@@ -116,11 +122,11 @@ export default {
           ctx.root.loading = false;
         }
       },
-      { immediate: true }
+      {immediate: true}
     );
 
-    function logout () {
-      const { data } = useRequest(userApi.logout);
+    function logout() {
+      const {data} = useRequest(userApi.logout);
       watch(data, (val) => {
         if (val.data && val.code < 400) {
           logoutState = true;
@@ -144,7 +150,7 @@ export default {
         : defClass + ' not-collapse';
     });
 
-    function useHandleNav () {
+    function useHandleNav() {
       if (isMob.value) {
         asideNavOpen.value = !asideNavOpen.value;
       } else {
@@ -152,14 +158,14 @@ export default {
       }
     }
 
-    function useNavCollapse () {
+    function useNavCollapse() {
       if (!isMob.value) {
         let clientWidth = document.documentElement.clientWidth;
         isCollapse.value = clientWidth <= 850;
       }
     }
 
-    function useBreadcrumbWrap () {
+    function useBreadcrumbWrap() {
       let wrap = document.querySelector('.el-main.content-box');
       let breadcrumb = document.querySelector('.breadcrumb');
       let viewTitleRight = document.querySelector('.view-title.float-clear>.view-title-right');
@@ -172,7 +178,7 @@ export default {
       }
     }
 
-    function useReset () {
+    function useReset() {
       if (!isMob.value) {
         asideNavOpen.value = false;
       } else {
@@ -189,7 +195,7 @@ export default {
     window['onresize'] = throttle(windowSize, 100);
     windowSize();
 
-    function useClickTopNav (name) {
+    function useClickTopNav(name) {
       switch (name) {
         case 'useEditPassword':
           editPassViewDialogVisible.value = true;
@@ -201,7 +207,7 @@ export default {
     const editPassViewDialogtitle = ref('修改密码'),
       editPassViewDialogVisible = ref(false);
 
-    function editPassSuccess () {
+    function editPassSuccess() {
       editPassViewDialogVisible.value = false;
     }
 
@@ -217,6 +223,7 @@ export default {
       setCollapse: () => {
         isCollapse.value = !isCollapse.value;
       },
+      themeLeftNav:store.getters.themeLeftNav,
       useHandleNav,
       useClickTopNav,
       childView,
@@ -278,7 +285,7 @@ export default {
   width: 220px !important;
 }
 
-.aside-nav-bg{
+.aside-nav-bg {
   -webkit-transition: all .2s linear 0s !important;
   transition: all .2s linear 0s !important;
 }
