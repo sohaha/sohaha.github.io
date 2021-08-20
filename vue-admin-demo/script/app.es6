@@ -59,7 +59,7 @@ export function initStore() {
     },
     getters: {
       themeLeftNav(state) {
-        return state.theme.nav === 'left';
+        return state.theme.nav !== 'top';
       },
       userid(state) {
         return state.user.id || 0;
