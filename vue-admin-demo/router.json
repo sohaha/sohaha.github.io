@@ -1,0 +1,129 @@
+[
+  {
+    "name": "后台示例",
+    "path": "/main/main",
+    "url": "pages/demo/demo.vue",
+    "icon": "icon-home",
+    "meta": {
+      "breadcrumb": false,
+      "real": true,
+      "show": true,
+      "has": true
+    },
+    "children": []
+  },
+  {
+    "name": "页面示例",
+    "path": "demo",
+    "url": "",
+    "icon": "icon-folder",
+    "meta": {
+        "keepAlive": true,
+        "show": true,
+        "has": true,
+        "collapse": true
+    },
+    "children": [
+        {
+            "name": "默认示例",
+            "path": "demo",
+            "url": "./pages/demo/demo.vue",
+            "icon": "icon-settings-",
+            "meta": {
+                "show": true,
+                "has": true
+            }
+        },
+        {
+            "name": "列表示例",
+            "path": "demo-lists",
+            "url": "./pages/demo/demo-lists.vue",
+            "icon": "icon-list",
+            "meta": {
+                "show": true,
+                "has": true
+            }
+        },
+        {
+            "name": "列表编辑",
+            "path": "demo-lists-edit",
+            "url": "./pages/demo/demo-lists-edit.vue",
+            "icon": "icon-edit",
+            "meta": {
+                "show": true,
+                "has": true
+            }
+        },
+        {
+            "name": "表单示例",
+            "path": "demo-form",
+            "url": "./pages/demo/demo-form.vue",
+            "icon": "icon-checkmark-square-",
+            "meta": {
+                "show": true,
+                "has": true
+            }
+        },
+        {
+            "name": "动态表单",
+            "path": "demo-form2",
+            "url": "./pages/demo/demo-form2.vue",
+            "icon": "icon-layout",
+            "meta": {
+                "show": true,
+                "has": true
+            }
+        },
+        {
+            "name": "标签示例",
+            "path": "demo-tabs",
+            "url": "./pages/demo/demo-tabs.vue",
+            "icon": "icon-pricetags",
+            "meta": {
+                "show": true,
+                "has": true
+            }
+        },
+        {
+            "name": "图标示例",
+            "path": "demo-icon",
+            "url": "./pages/demo/demo-icon.vue",
+            "icon": "icon-award",
+            "meta": {
+                "show": true,
+                "has": true
+            }
+        },
+        {
+            "name": "Markdown",
+            "path": "demo-markdown",
+            "url": "./pages/demo/demo-markdown.vue",
+            "icon": "icon-file-remove",
+            "meta": {
+                "show": true,
+                "has": true
+            }
+        },
+        {
+            "name": "可视化图表",
+            "path": "demo-echarts",
+            "url": "./pages/demo/demo-echarts.vue",
+            "icon": "icon-pie-chart-",
+            "meta": {
+                "show": true,
+                "has": true
+            }
+        },
+        {
+            "name": "富文本示例",
+            "path": "demo-content",
+            "url": "./pages/demo/demo-content.vue",
+            "icon": "icon-file-text",
+            "meta": {
+                "show": true,
+                "has": true
+            }
+        }
+    ]
+}
+]

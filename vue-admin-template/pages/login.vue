@@ -7,16 +7,16 @@
     </div>
     <div class='w-full flex justify-center self-center'>
       <div class="w-80 sm:w-auto opacity-80 shadow">
-        <div id='login-main' class="flex max-w-md mx-auto overflow-hidden bg-white shadow-lg dark:bg-gray-800 sm:max-w-4xl">
+        <div id='login-main' class="flex max-w-md mx-auto overflow-hidden bg-white shadow-lg sm:max-w-4xl">
           <div class="warpper-bg rotate-180 hidden bg-cover sm:block from-primary">
             <img src="https://images.unsplash.com/photo-1534888102055-69b44581d509?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=320&h=316&q=60" class='opacity-60 min-w-full w-80 h-full'>
           </div>
           <div class="px-6 py-8 sm:px-8 w-80">
-            <h2 class="text-2xl font-semibold text-center text-gray-700 dark:text-white">{{ ProjectName }}</h2>
-            <p class="my-4 text-xl text-center text-gray-600 dark:text-gray-200">欢迎回来！</p>
+            <h2 class="text-2xl font-semibold text-center text-gray-700">{{ ProjectName }}</h2>
+            <p class="my-4 text-xl text-center text-gray-600">欢迎回来！</p>
             <form-create ref='form' @on-submit="formSubmit" @keyup.enter.native='formSubmit' :rule="formRule" :option="formOption"></form-create>
             <div class="hidden flex items-center justify-between mt-4">
-              <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span> <a href="#" class="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline">其他登录方式</a> <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
+              <span class="w-1/5 border-b md:w-1/4"></span> <a href="#" class="text-xs text-gray-500 uppercase hover:underline">其他登录方式</a> <span class="w-1/5 border-b md:w-1/4"></span>
             </div>
           </div>
         </div>
