@@ -1,5 +1,6 @@
 <template>
-  <div class="bg-[#f5f7f9] h-screen w-screen"><nav-top ></nav-top>
+  <div class="bg-[#f5f7f9] h-screen w-screen overflow-auto">
+    <nav-top></nav-top>
     <div class="el-main content-box content-view-main container m-auto">
       <nav-breadcrumb
         :class="{ 'wrap-breadcrumb': isWrapBreadcrumb }"
@@ -19,7 +20,7 @@ const { useRouter, useStore, useCache, useWindowSize, useWindowSizeRealTime } =
   hook;
 export default {
   components: {
-    navTop: VueRun('components/demo-nav.vue'),
+    navTop: VueRun("components/demo-nav.vue"),
     navBreadcrumb: VueRun("components/breadcrumb.vue"),
   },
   setup(prop, ctx) {

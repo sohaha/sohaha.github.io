@@ -1,6 +1,6 @@
 [
   {
-    "name": "后台示例",
+    "name": "示例模板",
     "path": "/main/main",
     "url": "pages/demo/demo.vue",
     "icon": "icon-home",
@@ -24,16 +24,6 @@
         "collapse": true
     },
     "children": [
-        {
-            "name": "默认示例",
-            "path": "demo",
-            "url": "./pages/demo/demo.vue",
-            "icon": "icon-settings-",
-            "meta": {
-                "show": true,
-                "has": true
-            }
-        },
         {
             "name": "列表示例",
             "path": "demo-lists",

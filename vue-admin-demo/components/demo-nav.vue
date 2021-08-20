@@ -1,48 +1,58 @@
 <template>
-  <el-menu
-    mode="horizontal"
-    :default-active="routePath"
-    :router="true"
-    :collapse="isCollapse"
-    :text-color="textColor"
-    :background-color="navBgColor"
-    @select="handleSelect"
-    active-text-color="#fff"
-    unique-opened
-  >
-    <template v-for="(v, i) in state.nav">
-      <el-submenu
-        v-if="isChildren(v) && navShow(v)"
-        :index="'nav-' + i"
-        :key="'submenu1-' + i"
-      >
-        <template slot="title">
+  <div class="relative flex">
+    <el-menu
+      mode="horizontal"
+      :default-active="routePath"
+      :router="true"
+      :collapse="isCollapse"
+      :text-color="textColor"
+      :background-color="navBgColor"
+      @select="handleSelect"
+      active-text-color="#fff"
+      unique-opened
+      class="flex-1 overflow-hidden h-[60px]"
+    >
+      <template v-for="(v, i) in state.nav">
+        <el-submenu
+          v-if="isChildren(v) && navShow(v)"
+          :index="'nav-' + i"
+          :key="'submenu1-' + i"
+        >
+          <template slot="title">
+            <i v-if="v.hasOwnProperty('icon') && !!v.icon" :class="v.icon"></i>
+            <i v-else class="icon-flag"></i>
+            <span slot="title" class="menu_title">{{ v.name }}</span>
+          </template>
+          <el-menu-item
+            v-for="(vv, ii) in v['children']"
+            :index="vv.path"
+            :key="'menuitem-' + ii"
+            v-show="vv.meta.show !== false"
+          >
+            <i
+              v-if="vv.hasOwnProperty('icon') && !!vv.icon"
+              :class="vv.icon"
+            ></i>
+            <i v-else class="icon-flag"></i>
+            <span>{{ vv.name }}</span>
+          </el-menu-item>
+        </el-submenu>
+        <el-menu-item
+          v-if="!isChildren(v) && navShow(v)"
+          :index="v.path"
+          :key="'submenu2-' + i"
+        >
           <i v-if="v.hasOwnProperty('icon') && !!v.icon" :class="v.icon"></i>
           <i v-else class="icon-flag"></i>
           <span slot="title" class="menu_title">{{ v.name }}</span>
-        </template>
-        <el-menu-item
-          v-for="(vv, ii) in v['children']"
-          :index="vv.path"
-          :key="'menuitem-' + ii"
-          v-show="vv.meta.show !== false"
-        >
-          <i v-if="vv.hasOwnProperty('icon') && !!vv.icon" :class="vv.icon"></i>
-          <i v-else class="icon-flag"></i>
-          <span>{{ vv.name }}</span>
         </el-menu-item>
-      </el-submenu>
-      <el-menu-item
-        v-if="!isChildren(v) && navShow(v)"
-        :index="v.path"
-        :key="'submenu2-' + i"
-      >
-        <i v-if="v.hasOwnProperty('icon') && !!v.icon" :class="v.icon"></i>
-        <i v-else class="icon-flag"></i>
-        <span slot="title" class="menu_title">{{ v.name }}</span>
-      </el-menu-item>
-    </template>
-  </el-menu>
+      </template>
+    </el-menu>
+    <div class="bg-[#324157] h-[60px] flex items-center text-gray-50 pr-10">
+      <div class="mr-5">查看源代码</div>
+      <div>复制代码</div>
+    </div>
+  </div>
 </template>
 <script>
 const { useRouter, useStore } = hook;
