@@ -1,7 +1,7 @@
 <template>
   <el-scrollbar :native="false" wrap-class="nav_scrollbar" wrap-style view-style view-class="view-box">
-    <el-menu :default-active='routePath' :router='true' :collapse="isCollapse" :text-color="textColor"
-             :background-color='navBgColor' @select="handleSelect" active-text-color="#fff" unique-opened>
+    <el-menu :default-active='routePath' :router='true' :collapse="isCollapse" :mode="mode" @select="handleSelect"
+             :background-color='backgroundColor' :text-color="textColor" :active-text-color="activeTextColor" unique-opened>
       <template v-for="(v, i) in state.nav">
         <el-submenu v-if="isChildren(v)&&navShow(v)" :index="'nav-'+i" :key="'submenu1-'+i">
           <template slot="title">
@@ -30,7 +30,8 @@ export default {
   name: 'navView',
   props: {
     isCollapse: Boolean,
-    default: false
+    default: false,
+    mode: 'vertical'
   },
   setup(prop, ctx) {
     const state = reactive({
@@ -38,6 +39,24 @@ export default {
     });
 
     const navfunc = {
+      backgroundColor: computed(() => {
+        if (ctx.root.navColor.hasOwnProperty('backgroundColor') && !!ctx.root.navColor.backgroundColor) {
+          return ctx.root.navColor.backgroundColor;
+        }
+        return '#324157';
+      }),
+      textColor: computed(() => {
+        if (ctx.root.navColor.hasOwnProperty('backgroundColor') && !!ctx.root.navColor.backgroundColor) {
+          return ctx.root.navColor.textColor;
+        }
+        return '#b3becd';
+      }),
+      activeTextColor: computed(() => {
+        if (ctx.root.navColor.hasOwnProperty('backgroundColor') && !!ctx.root.navColor.backgroundColor) {
+          return ctx.root.navColor.activeTextColor;
+        }
+        return '#fff';
+      }),
       hasSystems: computed(() => {
         return app.hasPermission('systems');
       }),
@@ -111,8 +130,8 @@ export default {
       routePath,
       handleSelect,
       isChildren,
-      navBgColor: ref('#324157'),
-      textColor: ref('#b3becd'),
+      // navBgColor: ref('#324157'),
+      // textColor: ref('#b3becd'),
       state,
       ...navfunc
     };
@@ -125,22 +144,42 @@ export default {
   border: 0 !important;
 }
 
-.nav-left {
+.nav-top {
+  padding-right: 110px !important;
+}
+
+.nav-top:hover {
+  background-color: transparent !important;
+}
+
+.nav-top, .nav-top .el-scrollbar {
+  height: 100%;
+}
+
+.nav-top .nav_scrollbar {
+  padding: 0;
+}
+
+.nav-top .is-vertical {
+  display: none;
+}
+
+.nav-left, .nav-top {
   overflow: hidden;
   -webkit-transition: width 0.35s cubic-bezier(0.55, 1.03, 0.54, 1.33);
   transition: width 0.35s cubic-bezier(0.55, 1.03, 0.54, 1.33);
 }
 
-.nav-left .menu_title {
+.nav-left .menu_title, .nav-top .menu_title {
   font-size: 16px;
   margin-left: 10px;
 }
 
-.nav-left .el-scrollbar__wrap {
+.nav-left .el-scrollbar__wrap, .nav-top .el-scrollbar__wrap {
   overflow-x: hidden;
 }
 
-.nav-left .el-menu {
+.nav-left .el-menu, .nav-top .el-menu {
   background: none !important;
 }
 
@@ -154,7 +193,7 @@ export default {
   margin-right: 0;
 }
 
-.nav-left .el-menu-item:focus {
+.nav-left .el-menu-item:focus, .nav-top .el-menu-item:focus {
   background: none;
 }
 

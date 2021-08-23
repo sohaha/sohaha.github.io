@@ -17,15 +17,16 @@ VueRun.config({
 });
 
 var assetsCdn = '.'; // 'https://sohaha.73zls.com/vue-admin-template';
+var navColorConf = window.navColorConf ? window.navColorConf : {};
 var themeConf = {
   name: '', // ['autumn','lavender', 'green', 'dark', 'diablo']
-  nav:'top',
+  nav: 'top',
 };
 
 // noinspection JSValidateTypes
 VueRun.init(function () {
   app.requestInit();
-  Vue.mixin({ beforeCreate: hook.setVm });
+  Vue.mixin({beforeCreate: hook.setVm});
   new Vue({
     router: app.initRouter(),
     store: app.initStore(),
@@ -42,6 +43,16 @@ VueRun.init(function () {
     computed: {
       title: function () {
         return this.$store.state.viewTitle
+      },
+      navColor: function () {
+        if (themeConf.name) {
+          if (navColorConf.hasOwnProperty(themeConf.name)) {
+            if (navColorConf[themeConf.name].hasOwnProperty(themeConf.nav)) {
+              return navColorConf[themeConf.name][themeConf.nav];
+            }
+          }
+        }
+        return {};
       }
     },
     methods: {
@@ -114,13 +125,16 @@ VueRun.init(function () {
   js: [
     VueRun.isSupportEs6('new WeakMap()') ? '' : VueRun.lib('/lib/weakmap-polyfill.js'),
     'getOwnPropertySymbols' in Object ? '' : VueRun.lib('/lib/get-own-property-symbols-polyfill.js'),
-    [VueRun.lib('/lib/axios.js'), { async: true }],
+    [VueRun.lib('/lib/axios.js'), {async: true}],
     VueRun.lib('/lib/vue-router.js'),
     VueRun.lib('/lib/vuex.js'),
     VueRun.lib('/lib/composition.js'),
     VueRun.lib('/element.js'),
     VueRun.lib('/nprogress/nprogress.js'),
-  ],
+  ].concat((function () {
+    var u = assetsCdn + '/themes/' + themeConf.name;
+    return themeConf.name ? [u + '/ui.js'] : [];
+  })()),
   css: [
     VueRun.lib('/element.css'),
     VueRun.lib('/fonts/iconfont/iconfont.css'),

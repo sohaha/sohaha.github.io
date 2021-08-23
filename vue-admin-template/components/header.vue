@@ -9,8 +9,8 @@
           <i class="icon-menu-arrow" :class='isCollapse?"rotate-180":""'></i>
         </el-badge>
       </div>
-      <div v-else class="absolute left-0 !w-auto">
-        <slot/>
+      <div v-else class="absolute left-0 !w-auto nav-top">
+        <nav-top mode="horizontal"></nav-top>
       </div>
       <div class="tap">
         <el-dropdown trigger="click" class="user-menu" @command="useClickMenu">
@@ -64,6 +64,9 @@ const { reactive, ref, watch, computed, onMounted, onBeforeUnmount } = vue;
 const { user: userApi, useRequestWith } = api;
 
 export default {
+  components: {
+    navTop: VueRun('components/nav.vue'),
+  },
   name: 'headerView',
   props: {
     logout: Function,

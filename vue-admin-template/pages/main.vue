@@ -595,11 +595,16 @@ img {
 
 /* color #2c6eb1 */
 .el-submenu.is-active .el-submenu__title, .el-submenu.is-active .el-submenu__title i {
-  color: #ffffff !important;
+  /*color: #ffffff;*/
 }
 
 .el-menu-item i, .el-submenu__title i {
   color: #b3becd;
+}
+
+.el-menu-item.is-active i,
+.el-submenu.is-active i {
+  color: inherit;
 }
 
 .btns-operating > .el-button + .el-button {
