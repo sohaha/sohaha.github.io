@@ -37,7 +37,8 @@
 </template>
 <script>
 const {ref, reactive, computed, onMounted, onUnmounted, watch} = vue;
-const {throttle, useTip} = util;
+
+import {throttle, useTip, initWindowFunc, isMobile} from '@/script/util.es6'
 const {
   useRouter,
   useStore,
@@ -45,7 +46,6 @@ const {
   useWindowSize,
   useWindowSizeRealTime,
 } = hook;
-const {initWindowFunc, isMobile} = util;
 const {user: userApi, useRequest} = api;
 
 export default {

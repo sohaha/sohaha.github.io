@@ -68,7 +68,7 @@ VueRun.init(function () {
         var done = function (data, router) {
           store.commit('setUser', data);
           // 根据情况动态注入路由
-          if (config.debug) router = (app.demoMenu()).concat(router);
+          if (config.debug) router = (router).concat(app.demoMenu());
           store.commit('setRouter', router);
 
           t.initSate = true;

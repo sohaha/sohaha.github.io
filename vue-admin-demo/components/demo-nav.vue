@@ -49,14 +49,49 @@
       </template>
     </el-menu>
     <div class="bg-[#324157] h-[60px] flex items-center text-gray-50 pr-10">
-      <div class="mr-5">查看源代码</div>
-      <div>复制代码</div>
+      <div class="mr-5 cursor-pointer" @click="viewCode">查看源代码</div>
+      <div class="cursor-pointer" @click="copyCode">复制代码</div>
     </div>
+
+    <el-dialog
+      title="源代码"
+      :visible.sync="dialogCodeVisible"
+      width="80%">
+      <el-input
+        type="textarea"
+        :rows="20"
+        placeholder=""
+        v-model="codeText">
+      </el-input>
+      <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="dialogCodeVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-const { useRouter, useStore } = hook;
-const { reactive, toRef, ref, watch, computed } = vue;
+const {useRouter, useStore} = hook;
+const {useTip} = util;
+const {reactive, toRef, ref, watch, computed} = vue;
+
+const httpReq = (url) => {
+  return new Promise((resolve) => {
+    let r = new XMLHttpRequest;
+    r.open('GET', url);
+    r.responseType = 'text';
+    r.setRequestHeader('Cache-Control', 'no-cache');
+    r.onreadystatechange = function () {
+      if (r.readyState === 4) {
+        if (r.status >= 200 && r.status < 300) {
+          resolve(r.responseText);
+        } else {
+          resolve('');
+        }
+      }
+    };
+    r.send();
+  })
+}
 
 export default {
   name: "navView",
@@ -84,6 +119,48 @@ export default {
 
         return nav.meta.show !== false;
       },
+      demoNav: computed(() => {
+        const {router: {2: {children: {1: {children: demoNav}}}}} = useStore(ctx).state;
+        if (Object.prototype.toString.call(demoNav) === '[object Array]') {
+          return demoNav;
+        }
+        return [];
+      }),
+      demoNavUrl: computed(() => {
+        const {path} = useRouter(ctx).route;
+        let url = '';
+        navfunc.demoNav.value.forEach((val) => {
+          if (val.path === path) {
+            url = val.url;
+          }
+        });
+        if (url.startsWith('./')) {
+          url = url.slice('./'.length)
+        }
+        if (url.startsWith('/')) {
+          url = url.slice('/'.length)
+        }
+        if (!!url) {
+          url = '/vue-admin-demo/' + url;
+        }
+
+        return url;
+      }),
+      async viewCode() {
+        dialogCode.codeText.value = await httpReq(navfunc.demoNavUrl.value);
+        dialogCode.dialogCodeVisible.value = true;
+      },
+      async copyCode() {
+        let clipboard = navigator.clipboard;
+        if (Object.prototype.toString.call(clipboard) !== '[object Clipboard]') {
+          useTip().message("warning", "该浏览器暂不支持复制功能");
+          return;
+        }
+
+        let codeText = await httpReq(navfunc.demoNavUrl.value);
+        await clipboard.writeText(codeText.toString());
+        useTip().message("success", "复制成功");
+      }
     };
 
     const currentPath = computed(() => {
@@ -94,7 +171,7 @@ export default {
       const grandParentCollapse =
         Object.prototype.toString.call(arr[1]) === "[object Object]" &&
         Object.prototype.toString.call(arr[1]["meta"]["collapse"]) !==
-          "[object Undefined]" &&
+        "[object Undefined]" &&
         !!arr[1]["meta"]["collapse"];
       if (!grandParentCollapse) {
         return arr[1] ? arr[1].path : "";
@@ -132,12 +209,18 @@ export default {
           state.nav = useStore(ctx).state.router[2]["children"];
         }
       },
-      { immediate: true }
+      {immediate: true}
     );
 
     const isChildren = (v) => {
       return v.meta.collapse && v["children"];
     };
+
+    const dialogCode = {
+      dialogCodeVisible: ref(false),
+      codeText: ref('')
+    };
+
     return {
       routePath,
       handleSelect,
@@ -146,6 +229,7 @@ export default {
       textColor: ref("#b3becd"),
       state,
       ...navfunc,
+      ...dialogCode
     };
   },
 };

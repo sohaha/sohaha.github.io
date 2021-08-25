@@ -184,12 +184,13 @@ const appendRouter2Children = [
     'name': '页面示例',
     'path': 'demo',
     'url': '',
+    'href': '//resources.73zls.com/vue-admin-demo/index.html',
     'icon': 'icon-folder',
     'meta': {
       'keepAlive': true,
       'show': true,
       'has': true,
-      'collapse': true,
+      'collapse': false,
     },
     'children': [
       {

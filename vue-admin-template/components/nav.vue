@@ -1,7 +1,8 @@
 <template>
   <el-scrollbar :native="false" wrap-class="nav_scrollbar" wrap-style view-style view-class="view-box">
     <el-menu :default-active='routePath' :router='true' :collapse="isCollapse" :mode="mode" @select="handleSelect"
-             :background-color='backgroundColor' :text-color="textColor" :active-text-color="activeTextColor" unique-opened>
+             :background-color='backgroundColor' :text-color="textColor" :active-text-color="activeTextColor"
+             unique-opened>
       <template v-for="(v, i) in state.nav">
         <el-submenu v-if="isChildren(v)&&navShow(v)" :index="'nav-'+i" :key="'submenu1-'+i">
           <template slot="title">
@@ -14,10 +15,20 @@
             <span>{{ vv.name }}</span>
           </el-menu-item>
         </el-submenu>
-        <el-menu-item v-if="!isChildren(v)&&navShow(v)" :index="v.path" :key="'submenu2-'+i">
-          <i v-if="v.hasOwnProperty('icon')&&!!v.icon" :class="v.icon"></i> <i v-else class="icon-flag"></i>
-          <span slot="title" class="menu_title">{{ v.name }}</span>
-        </el-menu-item>
+        <template v-if="!!v.href">
+          <el-menu-item v-if="!isChildren(v)&&navShow(v)" :key="'submenu2-'+i">
+            <a :href="v.href" target="_blank">
+              <i v-if="v.hasOwnProperty('icon')&&!!v.icon" :class="v.icon"></i> <i v-else class="icon-flag"></i>
+              <span slot="title" class="menu_title">{{ v.name }}</span>
+            </a>
+          </el-menu-item>
+        </template>
+        <template v-else>
+          <el-menu-item v-if="!isChildren(v)&&navShow(v)" :index="v.path" :key="'submenu2-'+i">
+            <i v-if="v.hasOwnProperty('icon')&&!!v.icon" :class="v.icon"></i> <i v-else class="icon-flag"></i>
+            <span slot="title" class="menu_title">{{ v.name }}</span>
+          </el-menu-item>
+        </template>
       </template>
     </el-menu>
   </el-scrollbar>
@@ -140,6 +151,10 @@ export default {
 </script>
 
 <style>
+.el-menu-item a, .el-submenu a {
+  color: inherit;
+}
+
 .el-menu {
   border: 0 !important;
 }
