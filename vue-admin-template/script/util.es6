@@ -128,7 +128,9 @@ export function getInfo() {
 }
 
 export function isMobile() {
-  let ua = navigator.userAgent;
+  return document.documentElement.clientWidth <= 640;
+
+  /*let ua = navigator.userAgent;
   if (typeof ua !== 'string') return false;
   let mobileRE = /(iphone|android|ipad|huawei|webos|samsung|midp|wap|phone|^ucweb)/i;
   let result = mobileRE.test(ua);
@@ -141,7 +143,7 @@ export function isMobile() {
     result = true;
   }
 
-  return result;
+  return result;*/
 }
 
 export function throttle(fn, delay) {

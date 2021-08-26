@@ -6,8 +6,7 @@
       </header-top>
     </el-header>
     <el-container class="content">
-      <div class="aside-nav-bg" :class="!!asideNavOpen ? 'open' : ''"
-           @click.self="asideNavOpen = !asideNavOpen"></div>
+      <div class="aside-nav-bg" :class="!!asideNavOpen ? 'open' : ''" @click.self="asideNavOpen = !asideNavOpen"></div>
       <el-aside v-if="themeLeftNav || iMobile" :class="asideClass">
         <nav-left :is-collapse='isCollapse'></nav-left>
       </el-aside>
