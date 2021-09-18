@@ -19,8 +19,8 @@ VueRun.config({
 var assetsCdn = '.'; // 'https://sohaha.73zls.com/vue-admin-template';
 var navColorConf = window.navColorConf ? window.navColorConf : {};
 var themeConf = {
-  name: '', // ['autumn','lavender', 'green', 'dark', 'diablo']
-  nav: 'top',
+  name: 'autumn', // ['autumn','lavender', 'green', 'dark', 'diablo']
+  nav: 'left',
 };
 
 // noinspection JSValidateTypes
