@@ -1,0 +1,54 @@
+{
+    "mcpServers": {
+        "feedback-enhanced": {
+            "command": "uvx",
+            "args": [
+                "mcp-feedback-enhanced@latest"
+            ]
+        },
+        "context7": {
+            "command": "bunx",
+            "args": [
+                "-y",
+                "@upstash/context7-mcp"
+            ],
+            "env": {
+                "DEFAULT_MINIMUM_TOKENS": "6000"
+            }
+        },
+        "code-reasoning": {
+            "command": "bunx",
+            "args": [
+                "-y",
+                "@mettamatt/code-reasoning"
+            ]
+        },
+        "shrimp-task-manager": {
+            "command": "bunx",
+            "args": [
+                "-y",
+                "mcp-shrimp-task-manager"
+            ],
+            "env": {
+                "DATA_DIR": "~/ide/mcp-shrimp-task-manager/data"
+            }
+        },
+        "mcp-deepwiki": {
+            "command": "bunx",
+            "args": [
+                "-y",
+                "mcp-deepwiki@latest"
+            ]
+        },
+        "memory": {
+            "command": "bunx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-memory"
+            ],
+            "env": {
+                "MEMORY_FILE_PATH": "~/ide/server-memory/memory.json"
+            }
+        }
+    }
+}
